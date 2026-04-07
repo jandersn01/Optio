@@ -10,8 +10,8 @@
 
 | Revisão | Data | Autor | Descrição |
 | :---: | :---: | :---: | :---: |
-|  |  |  |  |
-|  |  |  |  |
+| 1.0 | 24/02/2026 | Equipe Optio | Versão inicial da proposta |
+| 1.1 | 07/04/2026 | Maria Eduarda Vitorino | Revisão: reposicionamento competitivo, arquitetura de coleta (Firecrawl + LLM como parser), Módulo 6 redefinido como Alertas Salvos, orçamento de APIs atualizado com três cenários, IFPUG ampliado para 99 PF, equipe atualizada |
 
 
 
@@ -68,7 +68,7 @@ Os objetivos específicos do projeto são definidos segundo o critério S.M.A.R.
 
 **a) Confirmação de solicitação em tempo hábil** O sistema deve confirmar o recebimento de cada solicitação de busca em até **4 segundos** após o envio, garantindo ao usuário retorno imediato sobre o processamento da sua requisição, com entrega dos resultados realizada de forma assíncrona via e-mail. Meta a ser atingida até **junho de 2026**.
 
-**b) Relevância dos resultados** Pelo menos **80% dos resultados** retornados pelo sistema devem ser pertinentes à área de interesse ou às palavras-chave informadas pelo usuário, aferidos por meio de testes de validação com usuários ou avaliadores designados. Meta a ser atingida até **junho de 2026**.
+**b) Relevância dos resultados** Pelo menos **80% dos resultados** retornados pelo sistema devem ser pertinentes à área de interesse ou às palavras-chave informadas pelo usuário. A aferição será realizada por meio de um protocolo formal de avaliação, definido antes da Sprint 2, composto por: (a) amostra mínima de 30 buscas com critérios variados; (b) avaliação independente por ao menos 2 membros da equipe não envolvidos na coleta; (c) rubrica de relevância com critério binário (pertinente / não pertinente) baseado na correspondência entre a área/palavras-chave da busca e o conteúdo do curso retornado. O resultado final é calculado como precision (resultados pertinentes / total retornado). Meta a ser atingida até **junho de 2026**.
 
 **c) Cobertura nacional** O sistema deve ser capaz de indexar e retornar cursos de pós-graduação gratuitos de instituições localizadas em todos os **27 estados** do Brasil, contemplando ambas as modalidades: presencial e EAD. Meta a ser atingida até **junho de 2026**.
 
@@ -99,22 +99,27 @@ O sistema Optio é composto pelos seguintes módulos:
 * Recebimento e validação das requisições de busca;  
 * Confirmação do recebimento da solicitação ao usuário em até 4 segundos;  
 * Comunicação com o módulo de coleta de dados e com o serviço de filas;  
-* Envio dos resultados consolidados ao usuário via e-mail.
+* Envio dos resultados consolidados ao usuário no canal de sua preferência (e-mail ou notificação no aplicativo), configurável no perfil.
 
-**Módulo 4 — Coleta e Processamento de Dados** Responsável pela obtenção das informações sobre cursos de pós-graduação gratuitos. Utiliza uma abordagem híbrida, podendo combinar:
+**Módulo 4 — Coleta e Processamento de Dados** Responsável pela obtenção e estruturação das informações sobre cursos de pós-graduação gratuitos. Utiliza um pipeline estruturado em três etapas:
 
-* Integração com APIs de modelos de linguagem (LLMs), com desenvolvimento, teste e refinamento de prompts e possível uso de mais de um modelo em conjunto;  
-* Extração de dados via web scraping. A definição da estratégia predominante ocorrerá durante a fase de desenvolvimento, com base em testes de precisão e desempenho.
+* **Coleta:** realizada via **Firecrawl**, ferramenta consolidada de mercado que converte páginas web (incluindo páginas renderizadas com JavaScript) em conteúdo estruturado (markdown/JSON), eliminando a complexidade de gerenciar drivers de navegador. Fontes oficiais como Sucupira/CAPES são priorizadas como origem primária;
+* **Estruturação:** o conteúdo coletado pelo Firecrawl é processado por um **LLM** (OpenAI ou Google Gemini), que extrai e normaliza os campos relevantes (nome do curso, instituição, modalidade, área, estado, link oficial). O LLM atua exclusivamente como parser do conteúdo coletado — nunca como fonte primária de informação, eliminando o risco de alucinação de dados factuais;
+* **Verificação:** todo registro exposto ao usuário deve conter a URL de origem e a data de coleta. Registros sem link verificável para o site oficial do curso não são exibidos. Uma camada de abstração sobre os provedores de LLM será implementada desde o início, permitindo a troca de modelo sem impacto na lógica de negócio (ver R07).
 
 **Módulo 5 — Fila de Processamento Assíncrono** Responsável por garantir a escalabilidade e o desempenho do sistema. Compreende:
 
 * Gerenciamento da fila de solicitações de busca via RabbitMQ;  
 * Processamento assíncrono das requisições, desacoplando a confirmação imediata ao usuário da entrega final dos resultados.
 
-**Módulo 6 — Recomendação Automática** Responsável por sugerir cursos proativamente com base no perfil do usuário. Compreende:
+**Módulo 6 — Alertas Salvos** Responsável por notificar o usuário proativamente quando novos cursos corresponderem a critérios previamente definidos por ele. Compreende:
 
-* Análise do histórico de buscas e preferências cadastradas;  
-* Geração e envio de notificações sobre novos cursos aderentes ao perfil do usuário.  
+* Salvamento de buscas como alertas ativos (por palavras-chave, área, modalidade ou estado);
+* Verificação periódica de novos cursos aderentes aos alertas cadastrados;
+* Envio de notificação ao usuário no canal de sua preferência quando houver correspondência.
+
+> **Nota:** Esta abordagem substitui a recomendação baseada em histórico — que exigiria volume significativo de dados de uso para ser efetiva — por alertas explícitos configurados pelo próprio usuário, entregando valor imediato desde a v1 sem dependência de dados históricos.
+
   ---
 
 **3.2 Escopo Negativo**
@@ -129,14 +134,15 @@ Os itens a seguir estão explicitamente fora do escopo desta versão do Optio:
 
 **3.3 Características de Inovação e Justificativa**
 
-Embora existam no mercado plataformas agregadoras de cursos — como o Quero Educação —, essas soluções são predominantemente orientadas a cursos pagos e operam mediante parcerias comerciais com instituições de ensino, o que limita a abrangência e a imparcialidade dos resultados apresentados.
+Embora existam iniciativas de catalogação de cursos de pós-graduação — como a Plataforma Sucupira/CAPES (base oficial do governo com todos os programas stricto sensu do país) e o e-MEC — e plataformas comerciais como o Quero Educação, nenhuma dessas soluções atende plenamente ao problema identificado. A Sucupira é uma base completa, mas de navegação burocrática e hostil ao usuário não especializado; o e-MEC é focado em credenciamento institucional; o Quero Educação é orientado a cursos pagos e opera por parcerias comerciais com instituições de ensino, o que limita a abrangência e a imparcialidade dos resultados apresentados.
+
+O Optio se posiciona na intersecção dessas lacunas: utiliza fontes oficiais (como Sucupira/CAPES) como fonte primária confiável e as complementa com coleta automatizada via Firecrawl e processamento por LLM, entregando uma experiência de busca amigável, personalizada e assíncrona — com resultados enviados ao canal de preferência do usuário.
 
 O Optio se diferencia por três aspectos centrais:
 
 1. **Foco exclusivo em gratuidade:** o sistema é dedicado inteiramente a cursos de pós-graduação sem custo para o usuário, um segmento sistematicamente subrepresentado nas plataformas existentes;  
-2. **Abordagem híbrida de coleta:** ao combinar modelos de linguagem (LLMs) e web scraping, o Optio não depende de parcerias com instituições para indexar seus cursos, o que amplia a cobertura e reduz vieses comerciais nos resultados;  
-3. **Entrega personalizada e assíncrona:** os resultados são filtrados de acordo com o perfil do usuário e entregues diretamente por e-mail, sem exigir que o usuário permaneça navegando na plataforma durante o processamento da busca.  
-* 
+2. **Abordagem de coleta estruturada e confiável:** ao combinar fontes oficiais (Sucupira/CAPES), coleta automatizada via Firecrawl e estruturação por LLM, o Optio não depende de parcerias com instituições para indexar seus cursos, ampliando a cobertura e reduzindo vieses comerciais nos resultados;  
+3. **Entrega personalizada e assíncrona:** os resultados são filtrados de acordo com o perfil do usuário e entregues no canal de sua preferência (e-mail, notificação no aplicativo ou outros), sem exigir que o usuário permaneça navegando na plataforma durante o processamento da busca.
 
 5. # **Processo de Desenvolvimento** 
 
@@ -219,7 +225,7 @@ A qualidade e a abrangência dos resultados entregues ao usuário estão diretam
 
 **6.5 Restrições de Hardware e Compatibilidade**
 
-O sistema será otimizado para acesso via navegadores web em computadores e tablets em modo paisagem. A responsividade completa para smartphones não será priorizada na versão inicial, podendo ser incrementada em versões futuras.
+O sistema será otimizado para acesso via navegadores web em computadores e tablets em modo paisagem. A responsividade completa para smartphones não será implementada na versão inicial devido a restrições de prazo e recursos da equipe — reconhecida como dívida técnica crítica, dado que mais de 70% do tráfego web no Brasil é originado de dispositivos móveis. A implementação de interface responsiva para smartphones está prevista como prioridade para a v2.
 
 ---
 
@@ -304,11 +310,13 @@ A contagem NESMA indicativa é uma estimativa preliminar baseada exclusivamente 
 
 | Tipo | Quantidade | Fator NESMA | Pontos de Função |
 | ----- | ----- | ----- | ----- |
-| ALI | 5 | 35 | 175 |
+| ALI | 6 | 35 | 210 |
 | AIE | 1 | 15 | 15 |
-| **Total NESMA Indicativo** |  |  | **190 PF** |
+| **Total NESMA Indicativo** |  |  | **225 PF** |
 
-Os ALIs identificados são: Usuários, Histórico de Buscas, Cursos Favoritos, Resultados de Buscas e Configurações de Notificação. O AIE identificado é: Informações de Instituições de Ensino (dados obtidos via LLM/scraping de fontes externas).
+Os ALIs identificados são: Usuários, Histórico de Buscas, Cursos Favoritos, Resultados de Buscas, Configurações de Notificação e Alertas Salvos. O AIE identificado é: Informações de Instituições de Ensino (dados obtidos via Firecrawl e estruturados por LLM).
+
+> **Nota metodológica:** A contagem NESMA indicativa (225 PF) e a contagem IFPUG detalhada (99 PF) apresentam diferença de aproximadamente 2,3x. Isso é esperado: o método NESMA indicativo aplica fatores fixos de complexidade apenas sobre os arquivos lógicos, tendendo a superestimar. A contagem IFPUG, por detalhar individualmente cada função transacional (EEs, CEs e SEs) com sua complexidade real, é mais precisa e deve ser adotada como referência para estimativa de custo e cronograma.
 
 ---
 
@@ -329,7 +337,8 @@ ALIs são grupos de dados logicamente relacionados mantidos e gerenciados intern
 | ALI-03 | Cursos Favoritos | Armazena os cursos marcados como favoritos vinculados ao perfil do usuário | Baixa | 7 |
 | ALI-04 | Resultados de Buscas | Armazena os resultados retornados pelas buscas para consulta e reenvio | Média | 10 |
 | ALI-05 | Configurações de Notificação | Armazena as preferências de notificação de cada usuário | Baixa | 7 |
-|  |  |  | **Subtotal** | **41** |
+| ALI-06 | Alertas Salvos | Armazena os alertas de busca configurados pelo usuário (critérios, canal de entrega e status ativo/inativo) | Baixa | 7 |
+|  |  |  | **Subtotal** | **48** |
 
 ---
 
@@ -354,7 +363,8 @@ EEs são processos que recebem dados do usuário e alteram o estado interno do s
 | EE-02 | Login / Autenticação | Recebe credenciais e autentica o usuário na plataforma | ALI-01 | Baixa | 3 |
 | EE-03 | Solicitação de Busca | Recebe palavras-chave e filtros (área, modalidade, estado) e dispara o processamento assíncrono | ALI-02, ALI-04 | Média | 4 |
 | EE-04 | Marcar / Desmarcar Favorito | Recebe a indicação do usuário e atualiza a lista de cursos favoritos | ALI-03 | Baixa | 3 |
-|  |  |  |  | **Subtotal** | **13** |
+| EE-05 | Criar / Remover Alerta | Recebe os critérios definidos pelo usuário e salva ou remove um alerta de busca ativo | ALI-06 | Baixa | 3 |
+|  |  |  |  | **Subtotal** | **16** |
 
 ---
 
@@ -379,8 +389,9 @@ SEs são processos que geram e entregam dados ao usuário, envolvendo lógica de
 | ----- | ----- | ----- | ----- | ----- | ----- |
 | SE-01 | Confirmação de Recebimento da Busca | Gera e exibe mensagem de confirmação ao usuário em até 4 segundos após a solicitação | ALI-02 | Baixa | 4 |
 | SE-02 | Exibição dos Resultados na Interface | Apresenta os resultados consolidados da busca na interface web do usuário | ALI-04, AIE-01 | Média | 5 |
-| SE-03 | Envio dos Resultados por E-mail | Gera e envia e-mail com os resultados da busca ao endereço do usuário cadastrado | ALI-04, AIE-01 | Média | 5 |
-|  |  |  |  | **Subtotal** | **14** |
+| SE-03 | Envio dos Resultados por Canal Preferido | Gera e envia os resultados da busca ao usuário no canal de sua preferência (e-mail ou notificação no aplicativo) | ALI-04, ALI-05, AIE-01 | Média | 5 |
+| SE-04 | Notificação de Novo Curso via Alerta | Verifica periodicamente novos cursos aderentes aos alertas salvos e notifica o usuário no canal configurado | ALI-06, AIE-01 | Média | 5 |
+|  |  |  |  | **Subtotal** | **19** |
 
 ---
 
@@ -388,12 +399,12 @@ SEs são processos que geram e entregam dados ao usuário, envolvendo lógica de
 
 | Tipo | Quantidade | Pontos de Função |
 | ----- | ----- | ----- |
-| Arquivos Lógicos Internos (ALIs) | 5 | 41 |
+| Arquivos Lógicos Internos (ALIs) | 6 | 48 |
 | Arquivos de Interface Externa (AIEs) | 1 | 7 |
-| Entradas Externas (EEs) | 4 | 13 |
+| Entradas Externas (EEs) | 5 | 16 |
 | Consultas Externas (CEs) | 3 | 9 |
-| Saídas Externas (SEs) | 3 | 14 |
-| **Total IFPUG** | **16 funções** | **84 PF** |
+| Saídas Externas (SEs) | 4 | 19 |
+| **Total IFPUG** | **19 funções** | **99 PF** |
 
 10. # **Cronograma**  
 
@@ -427,41 +438,58 @@ A equipe proposta para o desenvolvimento deste projeto é a seguinte:
 
 | Nome | Função | Horas/Mês | Número de Meses |
 | :---: | :---: | :---: | :---: |
-| Janderson Lima Dos Santos | P.O |  |  |
-| Joana Elise Araujo Lopes |  |  |  |
-| Felipe Brito |  |  |  |
-| Maria Eduarda de Almeida Vitorino |  |  |  |
+| Janderson Lima Dos Santos | Product Owner | | |
+| Joana Elise Araujo Lopes | Desenvolvedora | | |
+| Maria Eduarda de Almeida Vitorino | Desenvolvedora | | |
 
 12. # **Orçamento** 
 **12.1 Custo de Desenvolvimento**
 
-Considerando o escopo apurado de **84 Pontos de Função (PF)**, conforme detalhado na contagem IFPUG apresentada na Seção 9, e o custo unitário de **R$ 600,00 (seiscentos reais) por Ponto de Função**, o valor estimado para o desenvolvimento do projeto é de:
+Considerando o escopo apurado de **99 Pontos de Função (PF)**, conforme detalhado na contagem IFPUG apresentada na Seção 9, e o custo unitário de **R$ 600,00 (seiscentos reais) por Ponto de Função**, o valor estimado para o desenvolvimento do projeto é de:
 
-**R$ 50.400,00 (cinquenta mil e quatrocentos reais)**
+**R$ 59.400,00 (cinquenta e nove mil e quatrocentos reais)**
 
 ---
 
-**12.2 Custo de Consumo de API de LLM**
+**12.2 Custo de Consumo de APIs Externas (Firecrawl + LLM)**
 
-O custo de consumo de API de modelos de linguagem foi estimado com base na tabela de preços do **Claude Sonnet 4.6**, adotado como referência por representar um modelo de uso geral com equilíbrio entre desempenho e custo. Isso não implica a escolha definitiva deste modelo ou provedor para o projeto.
+O pipeline de coleta do Optio envolve dois serviços externos cobrados por uso: o **Firecrawl** (responsável pela coleta e conversão de páginas web) e uma **API de LLM** (responsável pela estruturação do conteúdo coletado). Os custos foram estimados com três cenários — otimista, realista e pessimista — para refletir a incerteza sobre o volume de uso e a complexidade das páginas processadas.
 
-As premissas adotadas para a estimativa são:
+**Premissas do pipeline por busca:**
 
-* Volume inicial de **100 buscas por mês**;  
-* Estimativa de **2.000 tokens de entrada** e **1.500 tokens de saída** por busca;  
-* Preço de referência: **US$ 3,00 por milhão de tokens de entrada** e **US$ 15,00 por milhão de tokens de saída**;  
-* Cotação do dólar adotada: **R$ 5,80** (valor conservador);  
-* Período de operação considerado: **6 meses** (janeiro a junho de 2026).
+* O Firecrawl coleta N páginas por busca e as converte em markdown estruturado (1 crédito/página);
+* O LLM processa cada página individualmente para extrair os campos relevantes do curso;
+* Estimativa de **5.000 tokens de entrada e 400 tokens de saída por página** processada pelo LLM;
+* Cotação do dólar adotada: **R$ 5,80** (valor conservador);
+* Período considerado: **6 meses** (janeiro a junho de 2026).
 
-| Item | Cálculo | Valor |
-| ----- | ----- | ----- |
-| Tokens de entrada (mensal) | 100 × 2.000 \= 200.000 tokens → 0,2M × US$ 3,00 | US$ 0,60 |
-| Tokens de saída (mensal) | 100 × 1.500 \= 150.000 tokens → 0,15M × US$ 15,00 | US$ 2,25 |
-| **Total mensal (USD)** |  | **US$ 2,85** |
-| **Total mensal (BRL)** | US$ 2,85 × R$ 5,80 | **R$ 16,53** |
-| **Total em 6 meses (BRL)** | R$ 16,53 × 6 | **R$ 99,18** |
+**Modelos de LLM de referência por cenário:**
 
-O custo estimado de consumo de API de LLM ao longo do projeto é de aproximadamente **R$ 100,00 (cem reais)**, valor que poderá variar conforme o modelo escolhido, o volume real de buscas e as oscilações cambiais.
+| Cenário | Modelo | Input /1M tokens | Output /1M tokens |
+| ----- | ----- | ----- | ----- |
+| Otimista | Gemini 2.5 Flash-Lite | US$ 0,10 | US$ 0,40 |
+| Realista | GPT-4o-mini | US$ 0,15 | US$ 0,60 |
+| Pessimista | GPT-4o | US$ 2,50 | US$ 10,00 |
+
+> A escolha definitiva do modelo ocorrerá durante as Sprints, com base em testes de precisão e custo. A camada de abstração de LLM (ver Módulo 4) permite troca de modelo sem impacto na lógica de negócio.
+
+**Estimativa por cenário (6 meses):**
+
+| Componente | Otimista | Realista | Pessimista |
+| ----- | ----- | ----- | ----- |
+| Volume (buscas/mês) | 100 | 300 | 1.000 |
+| Páginas coletadas por busca | 5 | 8 | 15 |
+| Plano Firecrawl | Hobby (US$ 16/mês) | Hobby (US$ 16/mês) | Standard (US$ 83/mês) |
+| Tokens de entrada por busca | ~25.000 | ~40.000 | ~150.000 |
+| Tokens de saída por busca | ~2.000 | ~3.200 | ~6.000 |
+| Custo LLM por busca | US$ 0,003 | US$ 0,008 | US$ 0,435 |
+| Custo LLM mensal | US$ 0,33 | US$ 2,40 | US$ 435,00 |
+| Custo Firecrawl mensal | US$ 16,00 | US$ 16,00 | US$ 83,00 |
+| **Total mensal (USD)** | **US$ 16,33** | **US$ 18,40** | **US$ 518,00** |
+| **Total mensal (BRL)** | **R$ 94,71** | **R$ 106,72** | **R$ 3.004,40** |
+| **Total 6 meses (BRL)** | **R$ 568,26** | **R$ 640,32** | **R$ 18.026,40** |
+
+O orçamento do projeto adota o **cenário realista** como base (R$ 640,32 em 6 meses). Caso o volume de buscas supere 500/mês de forma sustentada, o custo mensal deverá ser reavaliado — o cenário pessimista representa um gatilho de revisão orçamentária a ser monitorado a partir da Sprint 2.
 
 ---
 
@@ -471,11 +499,11 @@ Para cobrir custos variáveis de infraestrutura — incluindo hospedagem da apli
 
 | Item | Valor |
 | ----- | ----- |
-| Custo de desenvolvimento (PF) | R$ 50.400,00 |
-| Custo estimado de API de LLM | R$ 100,00 |
-| **Subtotal** | **R$ 50.500,00** |
-| Margem de contingência (20%) | R$ 10.100,00 |
-| **Total Geral Estimado** | **R$ 60.600,00** |
+| Custo de desenvolvimento (PF) | R$ 59.400,00 |
+| Custo estimado de APIs externas — cenário realista (6 meses) | R$ 640,32 |
+| **Subtotal** | **R$ 60.040,32** |
+| Margem de contingência (20%) | R$ 12.008,06 |
+| **Total Geral Estimado** | **R$ 72.048,38** |
 
 ---
 
@@ -483,8 +511,8 @@ Para cobrir custos variáveis de infraestrutura — incluindo hospedagem da apli
 
 | Componente | Valor |
 | ----- | ----- |
-| Desenvolvimento (84 PF × R$ 600,00) | R$ 50.400,00 |
-| API de LLM (6 meses, 100 buscas/mês) | R$ 100,00 |
-| Contingência de infraestrutura (20%) | R$ 10.100,00 |
-| **Total Estimado do Projeto** | **R$ 60.600,00** |
+| Desenvolvimento (99 PF × R$ 600,00) | R$ 59.400,00 |
+| APIs externas — Firecrawl + LLM (cenário realista, 6 meses) | R$ 640,32 |
+| Contingência de infraestrutura (20%) | R$ 12.008,06 |
+| **Total Estimado do Projeto** | **R$ 72.048,38** |
 
