@@ -12,6 +12,7 @@
 | :---: | :---: | :---: | :---: |
 | 1.0 | 24/02/2026 | Equipe Optio | Versão inicial da proposta |
 | 1.1 | 07/04/2026 | Maria Eduarda Vitorino | Revisão: reposicionamento competitivo, arquitetura de coleta (Firecrawl + LLM como parser), Módulo 6 redefinido como Alertas Salvos, orçamento de APIs atualizado com três cenários, IFPUG ampliado para 99 PF, equipe atualizada |
+| 1.1.0 | 21/04/2026 | Janderson Lima | Revisão: Reestruturação do cronograma baseado em 4 sprints de duas semanas |
 
 
 
@@ -156,7 +157,7 @@ A adoção isolada de um framework ágil, por si só, não é suficiente para co
 
 **5.2 Estrutura das Sprints**
 
-Cada Sprint terá duração de **3 semanas**. O ciclo de cada Sprint contempla as seguintes etapas:
+Cada Sprint terá duração de **2 semanas**. O ciclo de cada Sprint contempla as seguintes etapas:
 
 * **Sprint Planning:** definição dos itens do backlog a serem desenvolvidos na Sprint, com estimativa de esforço e critérios de aceite;  
 * **Daily Standup:** alinhamento diário do time sobre progresso, impedimentos e próximos passos;  
@@ -408,29 +409,29 @@ SEs são processos que geram e entregam dados ao usuário, envolvendo lógica de
 
 10. # **Cronograma**  
 
-O desenvolvimento do Optio está organizado em **3 Sprints de 3 semanas** cada, com previsão de entrega até **junho de 2026**. A distribuição das funcionalidades prioriza, na Sprint 1, o fluxo de maior valor para o usuário — a busca e a entrega de resultados por e-mail — evoluindo nas Sprints seguintes para refinamento, experiência do usuário, recomendação automática e estabilização.
+O desenvolvimento do Optio está organizado em **4 Sprints de 2 semanas** cada, com previsão de entrega até **junho de 2026**. A distribuição das funcionalidades prioriza, na Sprint 1, o fluxo de maior valor para o usuário — a busca e a entrega de resultados por e-mail — evoluindo nas Sprints seguintes para refinamento, experiência do usuário, recomendação automática e estabilização.
 
-| Funcionalidades | Sprint 1 | Sprint 2 | Sprint 3 |
-| ----- | :---: | :---: | :---: |
+| Funcionalidades | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
+| ----- | :---: | :---: | :---: | :---: |
 | cadastro e autenticação de usuários | x |  |  |
 | Formulário de busca com palavras chaves e filtros básicos | x |  |  |
 | Integração Inicial com LLM e/ou WebScrapping | x |  |  |
 | Fila de processamento assíncrono | x |  |  |
 | Confirmação de recebimento da busca em até 4 segundos | x |  |  |
 | Envio dos resultados por e-mail | x |  |  |
-| Refinamento de prompts e estratégia de coleta híbrida |  | x |  |
+| Refinamento de prompts e estratégia de coleta |  | x |  |
 | Validação de precisão de resultados (meta \>= 80%) |  | x |  |
 | Cobertura nacional (EAD e presencial) |  | x |  |
 | Filtro por modalidade (presencial ou EAD) |  | x |  |
 | Filtro por estado ou região |  | x |  |
-| Histórico de buscas  |  |  | x |
 | Cursos Favoritos |  |  | x |
+| Configuração e gestão de Alertas Salvos  |  |  | x |
 | Consulta ao perfil do usuário |  |  | x |
 | Configurações de notificação |  |  | x |
-| Testes de carga e desempenho |  |  | x |
-| Ajuste de segurança e conformidade LGPD |  |  | x |
-| Correção de bugs e refinamentos finais |  |  | x |
-| Documentação técnica final |  |  | x |
+| Testes de carga e desempenho |  |  |  | x |
+| Ajuste de segurança e conformidade LGPD |  |  |  | x |
+| Correção de bugs e refinamentos finais |  |  |  | x |
+| Documentação técnica final |  |  |  | x |
 
 11. # **Equipe**
 
