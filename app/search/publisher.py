@@ -1,0 +1,1 @@
+#Isola a lógica de comunicação com o RabbitMQ em um módulo separado, facilitando a manutenção e a reutilização do código.
