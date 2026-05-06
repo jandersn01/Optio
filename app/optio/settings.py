@@ -86,6 +86,7 @@ DATABASES = {
         "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv("POSTGRES_PORT"),
     }
+}
 
 
 # Password validation
@@ -131,6 +132,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'core.CustomUser'
 
 # Autenticação
 LOGIN_URL = 'login'
