@@ -2,12 +2,14 @@ FROM python:3.12
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app
 
 WORKDIR /worker
 
-COPY ./worker /worker
-COPY requirements.txt .
-
+COPY requirements.txt /worker/
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./app /app
+COPY ./worker /worker
 
 CMD ["python", "worker.py"]

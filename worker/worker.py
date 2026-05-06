@@ -1,9 +1,16 @@
 import json
 import os
 import time
+import sys
 
 import pika
 
+sys.path.append("/app")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "optio.settings")
+
+import django
+django.setup()
+from search.emails import EmailDeliveryError, send_results_email
 
 RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "rabbitmq")
 QUEUE_NAME = os.getenv("RABBITMQ_QUEUE", "search_requests")
@@ -27,16 +34,53 @@ def connect_to_rabbitmq():
 
 
 def process_search_request(payload: dict) -> None:
+    search_id = payload.get("search_request_id")
+    user_email = payload.get("notification_email")
+    
     print("=" * 60, flush=True)
     print("Nova solicitação de busca recebida", flush=True)
     print(f"ID da busca: {payload.get('search_request_id')}", flush=True)
-    print(f"ID do usuário: {payload.get('user_id')}", flush=True)
     print(f"E-mail de notificação: {payload.get('notification_email')}", flush=True)
     print(f"Palavras-chave: {payload.get('keywords')}", flush=True)
     print(f"Área: {payload.get('area')}", flush=True)
     print(f"Modalidade: {payload.get('modality')}", flush=True)
     print(f"Estado: {payload.get('state')}", flush=True)
     print("=" * 60, flush=True)
+    
+    courses = [
+        {
+            "title": "Pós-graduação em Engenharia de Software",
+            "institution": "Instituição Exemplo",
+            "modality": "EAD",
+            "state": "PB",
+            "url": "https://exemplo.com/curso-engenharia-software",
+        },
+        {
+            "title": "Especialização em Ciência de Dados",
+            "institution": "Universidade Exemplo",
+            "modality": "Presencial",
+            "state": "SP",
+            "url": "https://exemplo.com/curso-ciencia-dados",
+        },
+    ]
+    
+    try:
+        send_results_email(
+            user_email=user_email,
+            courses=courses,
+            search_id=search_id,
+        )
+
+        print(
+            f"E-mail de resultados enviado para a busca {search_id}.",
+            flush=True,
+        )
+
+    except EmailDeliveryError as error:
+        print(
+            f"Falha ao enviar e-mail da busca {search_id}: {error}",
+            flush=True,
+        )
 
     # Próximas etapas futuras:
     # 1. buscar dados em fontes externas
