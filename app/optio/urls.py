@@ -13,6 +13,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
 
     # App Core (dashboard, pesquisas e logout)
-    path('', include('core.urls')),
+    path("core/", include("core.urls")),
     path("search/", include("search.urls")),
 ]
