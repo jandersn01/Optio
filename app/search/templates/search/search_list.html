@@ -9,7 +9,7 @@
             <h1>📋 Minhas Pesquisas</h1>
             <p class="header-subtitle">Visualize e gerencie todas as suas pesquisas</p>
         </div>
-        <a href="{% url 'core:new_search' %}" class="btn btn-primary">
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">
             + Nova Pesquisa
         </a>
     </header>
@@ -18,23 +18,23 @@
     <div class="filters-bar">
         <span class="filters-label">Filtrar por:</span>
         <div class="filters-buttons">
-            <a href="{% url 'core:search_list' %}"
+            <a href="{% url 'search:request_list' %}"
                class="filter-btn {% if not current_filter %}active{% endif %}">
                 Todas
             </a>
-            <a href="{% url 'core:search_list' %}?status=pending"
+            <a href="{% url 'search:request_list' %}?status=pending"
                class="filter-btn {% if current_filter == 'pending' %}active{% endif %}">
                 ⏳ Pendentes
             </a>
-            <a href="{% url 'core:search_list' %}?status=processing"
+            <a href="{% url 'search:request_list' %}?status=processing"
                class="filter-btn {% if current_filter == 'processing' %}active{% endif %}">
                 🔄 Em Andamento
             </a>
-            <a href="{% url 'core:search_list' %}?status=completed"
+            <a href="{% url 'search:request_list' %}?status=completed"
                class="filter-btn {% if current_filter == 'completed' %}active{% endif %}">
                 ✅ Concluídas
             </a>
-            <a href="{% url 'core:search_list' %}?status=failed"
+            <a href="{% url 'search:request_list' %}?status=failed"
                class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">
                 ❌ Com Erro
             </a>
@@ -53,7 +53,7 @@
                 <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
             </div>
 
-            <h3 class="search-query">{{ search.query }}</h3>
+            <h3 class="search-query">{{ search.keywords }}</h3>
 
             <div class="search-meta">
                 {% if search.area %}
@@ -84,10 +84,10 @@
         <h3>Nenhuma pesquisa encontrada</h3>
         {% if current_filter %}
         <p>Não há pesquisas com o filtro selecionado.</p>
-        <a href="{% url 'core:search_list' %}" class="btn btn-secondary">Ver Todas</a>
+        <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Ver Todas</a>
         {% else %}
         <p>Comece criando sua primeira pesquisa de cursos!</p>
-        <a href="{% url 'core:new_search' %}" class="btn btn-primary">Criar Pesquisa</a>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Criar Pesquisa</a>
         {% endif %}
     </div>
     {% endif %}

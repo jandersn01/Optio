@@ -26,12 +26,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'core:search_list' %}" class="nav-link {% if request.resolver_match.url_name == 'search_list' %}active{% endif %}">
+                    <a href="{% url 'search:request_list' %}" class="nav-link {% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">
                         Pesquisas
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'core:new_search' %}" class="nav-link btn-primary-nav">
+                    <a href="{% url 'search:request_create' %}" class="nav-link btn-primary-nav">
                         + Nova Pesquisa
                     </a>
                 </li>
