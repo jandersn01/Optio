@@ -26,7 +26,7 @@ def search_request_create(request):
         if form.is_valid():
             search_request = form.save(commit=False)
             search_request.user = request.user
-
+            search_request.notification_email = request.user.email
             search_request.status = SearchStatus.PENDING
             search_request.save()
 
