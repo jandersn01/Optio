@@ -14,4 +14,5 @@ urlpatterns = [
 
     # App Core (dashboard, pesquisas e logout)
     path('', include('core.urls')),
+    path("search/", include("search.urls")),
 ]
