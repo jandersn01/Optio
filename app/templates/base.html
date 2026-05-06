@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Optio{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'core:dashboard' %}" class="navbar-brand">
+                <span class="brand-icon">🎓</span>
+                <span class="brand-text">Optio</span>
+            </a>
+
+            <ul class="navbar-menu">
+                <li>
+                    <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'core:search_list' %}" class="nav-link {% if request.resolver_match.url_name == 'search_list' %}active{% endif %}">
+                        Pesquisas
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'core:new_search' %}" class="nav-link btn-primary-nav">
+                        + Nova Pesquisa
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-user">
+                <span class="user-greeting">Olá, <strong>{{ user.first_name|default:user.username }}</strong></span>
+                <a href="{% url 'core:logout' %}" class="btn-logout">Sair</a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Optio - Descoberta de Cursos de Pós-Graduação</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
