@@ -4,20 +4,15 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from search.models import SearchRequest
 from search.choices import SearchStatus
+from .forms import CadastroForm
 
 
 @login_required
 def dashboard(request):
-    """
-    Dashboard principal do usuário.
-    Exibe pesquisas em andamento, concluídas e recentes.
-    """
     user = request.user
 
-    # Pesquisas do usuário
     all_searches = SearchRequest.objects.filter(user=user)
 
-    # Separar por status
     processing = all_searches.filter(
         status__in=[SearchStatus.PENDING, SearchStatus.PROCESSING]
     )[:5]
@@ -28,7 +23,6 @@ def dashboard(request):
 
     recent = all_searches[:10]
 
-    # Estatísticas
     stats = {
         'total': all_searches.count(),
         'processing': all_searches.filter(
@@ -47,8 +41,19 @@ def dashboard(request):
 
     return render(request, 'core/dashboard.html', context)
 
+
 def logout_view(request):
-    """Logout do usuário."""
     logout(request)
     messages.info(request, 'Você saiu da sua conta.')
     return redirect('login')
+
+
+def cadastro(request):
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+    form = CadastroForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Conta criada com sucesso! Faça login para continuar.')
+        return redirect('login')
+    return render(request, 'registration/register.html', {'form': form})

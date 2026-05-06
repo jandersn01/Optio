@@ -40,13 +40,13 @@
                  {% endif %}
 
                 <div class="form-group">
-                    <label for="id_username">Usuário</label>
+                    <label for="id_username">E-mail</label>
                     <input
-                        type="text"
+                        type="email"
                         name="username"
                         id="id_username"
                         class="form-control"
-                        placeholder="Digite seu usuário"
+                        placeholder="Digite seu e-mail"
                         required
                         autofocus
                     >
@@ -70,7 +70,7 @@
             </form>
 
             <div class="login-footer">
-                <p>Plataforma de descoberta de cursos gratuitos</p>
+                <p>Não tem uma conta? <a href="{% url 'core:cadastro' %}">Cadastre-se gratuitamente</a></p>
             </div>
         </div>
     </div>

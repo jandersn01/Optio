@@ -796,8 +796,23 @@ a:hover {
 }
 
 .login-footer p {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+.field-errors {
+    margin-top: var(--spacing-xs);
+}
+
+.error-message {
+    display: block;
     font-size: 0.8rem;
-    color: var(--gray-400);
+    color: var(--danger);
+    margin-top: 2px;
+}
+
+.form-control.is-invalid {
+    border-color: var(--danger);
 }
 
 /* === Footer === */

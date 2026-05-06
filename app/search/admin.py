@@ -6,7 +6,7 @@ from .models import SearchRequest
 class SearchRequestAdmin(admin.ModelAdmin):
     list_display = ['keywords', 'user', 'status', 'created_at']
     list_filter = ['status', 'created_at', 'area', 'modality']
-    search_fields = ['keywords', 'user__username', 'user__email']
+    search_fields = ['keywords', 'user__email', 'user__first_name']
     readonly_fields = ['created_at', 'updated_at']
     date_hierarchy = 'created_at'
 
