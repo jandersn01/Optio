@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
 from .models import SearchRequest
+from .forms import CadastroForm
 
 
 @login_required
@@ -96,3 +97,14 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'Você saiu da sua conta.')
     return redirect('login')
+
+
+def cadastro(request):
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+    form = CadastroForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Conta criada com sucesso! Faça login para continuar.')
+        return redirect('login')
+    return render(request, 'registration/register.html', {'form': form})
