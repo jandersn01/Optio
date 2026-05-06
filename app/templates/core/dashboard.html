@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Optio{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Header com saudação -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>Bem-vindo, {{ user.first_name|default:user.username }}! 👋</h1>
+            <p class="header-subtitle">Acompanhe suas pesquisas de cursos de pós-graduação</p>
+        </div>
+        <a href="{% url 'core:new_search' %}" class="btn btn-primary">
+            + Nova Pesquisa
+        </a>
+    </header>
+
+    <!-- Cards de estatísticas -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-total">📊</div>
+            <div class="stat-info">
+                <span class="stat-number">{{ stats.total }}</span>
+                <span class="stat-label">Total de Pesquisas</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-processing">🔄</div>
+            <div class="stat-info">
+                <span class="stat-number">{{ stats.processing }}</span>
+                <span class="stat-label">Em Andamento</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-completed">✅</div>
+            <div class="stat-info">
+                <span class="stat-number">{{ stats.completed }}</span>
+                <span class="stat-label">Concluídas</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-failed">❌</div>
+            <div class="stat-info">
+                <span class="stat-number">{{ stats.failed }}</span>
+                <span class="stat-label">Com Erro</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pesquisas em andamento -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>🔄 Pesquisas em Andamento</h2>
+        </div>
+
+        {% if processing_searches %}
+        <div class="search-cards">
+            {% for search in processing_searches %}
+            <div class="search-card search-card-{{ search.status }}">
+                <div class="search-card-header">
+                    <span class="search-status status-{{ search.status }}">
+                        {{ search.status_icon }} {{ search.get_status_display }}
+                    </span>
+                    <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <h3 class="search-query">{{ search.query }}</h3>
+                <div class="search-meta">
+                    {% if search.area %}
+                    <span class="meta-tag">📚 {{ search.area }}</span>
+                    {% endif %}
+                    {% if search.modality %}
+                    <span class="meta-tag">🏫 {{ search.modality }}</span>
+                    {% endif %}
+                    {% if search.state %}
+                    <span class="meta-tag">📍 {{ search.state }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>Nenhuma pesquisa em andamento</p>
+            <a href="{% url 'core:new_search' %}" class="btn btn-secondary">Criar Pesquisa</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Pesquisas concluídas -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>✅ Pesquisas Concluídas</h2>
+            {% if completed_searches %}
+            <a href="{% url 'core:search_list' %}?status=completed" class="btn-link">Ver todas →</a>
+            {% endif %}
+        </div>
+
+        {% if completed_searches %}
+        <div class="search-cards">
+            {% for search in completed_searches %}
+            <div class="search-card search-card-completed">
+                <div class="search-card-header">
+                    <span class="search-status status-completed">
+                        ✅ Concluída
+                    </span>
+                    <span class="search-results">{{ search.results_count }} resultados</span>
+                </div>
+                <h3 class="search-query">{{ search.query }}</h3>
+                <div class="search-meta">
+                    {% if search.area %}
+                    <span class="meta-tag">📚 {{ search.area }}</span>
+                    {% endif %}
+                    <span class="meta-tag">📅 {{ search.updated_at|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>Nenhuma pesquisa concluída ainda</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Pesquisas recentes -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>🕐 Histórico Recente</h2>
+            <a href="{% url 'core:search_list' %}" class="btn-link">Ver todas →</a>
+        </div>
+
+        {% if recent_searches %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Pesquisa</th>
+                        <th>Área</th>
+                        <th>Status</th>
+                        <th>Resultados</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for search in recent_searches %}
+                    <tr>
+                        <td class="td-query">{{ search.query }}</td>
+                        <td>{{ search.area|default:"-" }}</td>
+                        <td>
+                            <span class="badge badge-{{ search.status_color }}">
+                                {{ search.status_icon }} {{ search.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ search.results_count }}</td>
+                        <td>{{ search.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p>Você ainda não realizou nenhuma pesquisa</p>
+            <a href="{% url 'core:new_search' %}" class="btn btn-primary">Criar Primeira Pesquisa</a>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

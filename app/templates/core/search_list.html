@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Pesquisas - Optio{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-content">
+            <h1>📋 Minhas Pesquisas</h1>
+            <p class="header-subtitle">Visualize e gerencie todas as suas pesquisas</p>
+        </div>
+        <a href="{% url 'core:new_search' %}" class="btn btn-primary">
+            + Nova Pesquisa
+        </a>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters-bar">
+        <span class="filters-label">Filtrar por:</span>
+        <div class="filters-buttons">
+            <a href="{% url 'core:search_list' %}"
+               class="filter-btn {% if not current_filter %}active{% endif %}">
+                Todas
+            </a>
+            <a href="{% url 'core:search_list' %}?status=pending"
+               class="filter-btn {% if current_filter == 'pending' %}active{% endif %}">
+                ⏳ Pendentes
+            </a>
+            <a href="{% url 'core:search_list' %}?status=processing"
+               class="filter-btn {% if current_filter == 'processing' %}active{% endif %}">
+                🔄 Em Andamento
+            </a>
+            <a href="{% url 'core:search_list' %}?status=completed"
+               class="filter-btn {% if current_filter == 'completed' %}active{% endif %}">
+                ✅ Concluídas
+            </a>
+            <a href="{% url 'core:search_list' %}?status=failed"
+               class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">
+                ❌ Com Erro
+            </a>
+        </div>
+    </div>
+
+    <!-- Lista de pesquisas -->
+    {% if searches %}
+    <div class="search-cards search-cards-list">
+        {% for search in searches %}
+        <div class="search-card search-card-{{ search.status }}">
+            <div class="search-card-header">
+                <span class="search-status status-{{ search.status }}">
+                    {{ search.status_icon }} {{ search.get_status_display }}
+                </span>
+                <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+
+            <h3 class="search-query">{{ search.query }}</h3>
+
+            <div class="search-meta">
+                {% if search.area %}
+                <span class="meta-tag">📚 {{ search.area }}</span>
+                {% endif %}
+                {% if search.modality %}
+                <span class="meta-tag">🏫 {{ search.modality }}</span>
+                {% endif %}
+                {% if search.state %}
+                <span class="meta-tag">📍 {{ search.state }}</span>
+                {% endif %}
+            </div>
+
+            <div class="search-card-footer">
+                <span class="search-results-count">
+                    {{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}
+                </span>
+                <span class="search-updated">
+                    Atualizado em {{ search.updated_at|date:"d/m/Y H:i" }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">🔍</div>
+        <h3>Nenhuma pesquisa encontrada</h3>
+        {% if current_filter %}
+        <p>Não há pesquisas com o filtro selecionado.</p>
+        <a href="{% url 'core:search_list' %}" class="btn btn-secondary">Ver Todas</a>
+        {% else %}
+        <p>Comece criando sua primeira pesquisa de cursos!</p>
+        <a href="{% url 'core:new_search' %}" class="btn btn-primary">Criar Pesquisa</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Pesquisa - Optio{% endblock %}
+
+{% block content %}
+<div class="page-container page-container-narrow">
+    <header class="page-header page-header-centered">
+        <h1>🔍 Nova Pesquisa</h1>
+        <p class="header-subtitle">Busque por cursos de pós-graduação gratuitos</p>
+    </header>
+
+    <div class="form-card">
+        <form method="post" class="search-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="query">Termo de Busca *</label>
+                <input
+                    type="text"
+                    name="query"
+                    id="query"
+                    class="form-control form-control-lg"
+                    placeholder="Ex: Mestrado em Inteligência Artificial"
+                    required
+                    autofocus
+                >
+                <span class="form-help">Digite palavras-chave relacionadas ao curso que procura</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="area">Área de Conhecimento</label>
+                    <select name="area" id="area" class="form-control">
+                        <option value="">Todas as áreas</option>
+                        <option value="Ciências Exatas">Ciências Exatas e da Terra</option>
+                        <option value="Engenharias">Engenharias</option>
+                        <option value="Ciências da Saúde">Ciências da Saúde</option>
+                        <option value="Ciências Biológicas">Ciências Biológicas</option>
+                        <option value="Ciências Agrárias">Ciências Agrárias</option>
+                        <option value="Ciências Sociais">Ciências Sociais Aplicadas</option>
+                        <option value="Ciências Humanas">Ciências Humanas</option>
+                        <option value="Linguística e Artes">Linguística, Letras e Artes</option>
+                        <option value="Multidisciplinar">Multidisciplinar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="modality">Modalidade</label>
+                    <select name="modality" id="modality" class="form-control">
+                        <option value="">Todas</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="EaD">Educação a Distância (EaD)</option>
+                        <option value="Híbrido">Híbrido</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="state">Estado</label>
+                <select name="state" id="state" class="form-control">
+                    <option value="">Todos os estados</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    🔍 Iniciar Pesquisa
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="info-box">
+        <h4>💡 Como funciona?</h4>
+        <ul>
+            <li>Sua pesquisa será processada em segundo plano</li>
+            <li>Buscamos em diversas fontes de universidades públicas</li>
+            <li>Você será notificado quando os resultados estiverem prontos</li>
+            <li>Pode acompanhar o progresso no seu dashboard</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
