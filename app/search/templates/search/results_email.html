@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados da sua busca</title>
+</head>
+<body>
+    <h1>Resultados da sua busca no Optio</h1>
+
+    <p>Olá!</p>
+
+    <p>
+        Encontramos alguns resultados relacionados à sua solicitação de busca.
+    </p>
+
+    <h2>Cursos encontrados</h2>
+
+    {% if courses %}
+        <ul>
+            {% for course in courses %}
+                <li>
+                    <strong>{{ course.title }}</strong><br>
+                    Instituição: {{ course.institution }}<br>
+                    Modalidade: {{ course.modality }}<br>
+                    Estado: {{ course.state }}<br>
+
+                    {% if course.url %}
+                        <a href="{{ course.url }}">Ver curso</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum curso foi encontrado para os critérios informados.</p>
+    {% endif %}
+
+    <p>
+        <a href="{{ results_url }}">
+            Ver resultados no Optio
+        </a>
+    </p>
+
+    <hr>
+
+    <p>
+        Este e-mail foi enviado automaticamente pelo Optio.
+    </p>
+</body>
+</html>
