@@ -10,8 +10,7 @@ class SearchRequest(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="search_requests",
-        null=True,
-        blank=True,
+        verbose_name="Usuário",
     )
      
      keywords = models.CharField(
@@ -56,6 +55,39 @@ class SearchRequest(models.Model):
         auto_now=True,
         verbose_name="Atualizado em",
     )
+     
+     results_count = models.PositiveIntegerField(
+         default=0,
+         verbose_name="Quantidade de resultados",
+      )
+     
+     class Meta:
+        verbose_name = "Requisição de busca"
+        verbose_name_plural = "Requisições de busca"
+        ordering = ["-created_at"]
+
+
 
      def __str__(self):
         return f"SearchRequest #{self.id} - {self.keywords}"
+     
+     @property
+     def status_color(self):
+      colors = {
+         "pending": "warning",
+         "processing": "info",
+         "completed": "success",
+         "failed": "danger",
+      }
+      return colors.get(self.status, "secondary")
+
+
+     @property
+     def status_icon(self):
+      icons = {
+         "pending": "⏳",
+         "processing": "🔄",
+         "completed": "✅",
+         "failed": "❌",
+      }
+      return icons.get(self.status, "•")

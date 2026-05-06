@@ -23,6 +23,7 @@ def publish_search_request(search_request) -> None:
         "area": search_request.area,
         "modality": search_request.modality,
         "state": search_request.state,
+        "status": search_request.status,
         "created_at": search_request.created_at.isoformat(),
     }
 

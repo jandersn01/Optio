@@ -10,7 +10,7 @@
             <h1>Bem-vindo, {{ user.first_name|default:user.username }}! 👋</h1>
             <p class="header-subtitle">Acompanhe suas pesquisas de cursos de pós-graduação</p>
         </div>
-        <a href="{% url 'core:new_search' %}" class="btn btn-primary">
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">
             + Nova Pesquisa
         </a>
     </header>
@@ -66,7 +66,7 @@
                     </span>
                     <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
                 </div>
-                <h3 class="search-query">{{ search.query }}</h3>
+                <h3 class="search-query">{{ search.keywords }}</h3>
                 <div class="search-meta">
                     {% if search.area %}
                     <span class="meta-tag">📚 {{ search.area }}</span>
@@ -85,7 +85,7 @@
         <div class="empty-state">
             <div class="empty-icon">🔍</div>
             <p>Nenhuma pesquisa em andamento</p>
-            <a href="{% url 'core:new_search' %}" class="btn btn-secondary">Criar Pesquisa</a>
+            <a href="{% url 'search:request_create' %}" class="btn btn-secondary">Criar Pesquisa</a>
         </div>
         {% endif %}
     </section>
@@ -95,7 +95,7 @@
         <div class="section-header">
             <h2>✅ Pesquisas Concluídas</h2>
             {% if completed_searches %}
-            <a href="{% url 'core:search_list' %}?status=completed" class="btn-link">Ver todas →</a>
+            <a href="{% url 'search:request_list' %}?status=completed" class="btn-link">Ver todas →</a>
             {% endif %}
         </div>
 
@@ -109,7 +109,7 @@
                     </span>
                     <span class="search-results">{{ search.results_count }} resultados</span>
                 </div>
-                <h3 class="search-query">{{ search.query }}</h3>
+                <h3 class="search-query">{{ search.keywords }}</h3>
                 <div class="search-meta">
                     {% if search.area %}
                     <span class="meta-tag">📚 {{ search.area }}</span>
@@ -131,7 +131,7 @@
     <section class="dashboard-section">
         <div class="section-header">
             <h2>🕐 Histórico Recente</h2>
-            <a href="{% url 'core:search_list' %}" class="btn-link">Ver todas →</a>
+            <a href="{% url 'search:request_list' %}" class="btn-link">Ver todas →</a>
         </div>
 
         {% if recent_searches %}
@@ -149,7 +149,7 @@
                 <tbody>
                     {% for search in recent_searches %}
                     <tr>
-                        <td class="td-query">{{ search.query }}</td>
+                        <td class="td-query">{{ search.keywords }}</td>
                         <td>{{ search.area|default:"-" }}</td>
                         <td>
                             <span class="badge badge-{{ search.status_color }}">
@@ -167,7 +167,7 @@
         <div class="empty-state">
             <div class="empty-icon">📋</div>
             <p>Você ainda não realizou nenhuma pesquisa</p>
-            <a href="{% url 'core:new_search' %}" class="btn btn-primary">Criar Primeira Pesquisa</a>
+            <a href="{% url 'search:request_create' %}" class="btn btn-primary">Criar Primeira Pesquisa</a>
         </div>
         {% endif %}
     </section>

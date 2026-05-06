@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, SearchRequest
+from .models import CustomUser
 
 
 @admin.register(CustomUser)
@@ -20,27 +20,5 @@ class CustomUserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'password1', 'password2'),
-        }),
-    )
-
-
-@admin.register(SearchRequest)
-class SearchRequestAdmin(admin.ModelAdmin):
-    list_display = ['query', 'user', 'status', 'results_count', 'created_at']
-    list_filter = ['status', 'created_at', 'area', 'modality']
-    search_fields = ['query', 'user__email', 'user__first_name']
-    readonly_fields = ['created_at', 'updated_at']
-    date_hierarchy = 'created_at'
-
-    fieldsets = (
-        ('Informações da Pesquisa', {
-            'fields': ('user', 'query', 'area', 'modality', 'state')
-        }),
-        ('Status', {
-            'fields': ('status', 'results_count')
-        }),
-        ('Datas', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
         }),
     )
