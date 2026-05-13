@@ -20,7 +20,9 @@ def get_notification_email(search_request) -> str:
     if search_request.user_id and search_request.user.email:
         return search_request.user.email
 
-    return ""
+    raise QueuePublishError(
+        f"SearchRequest {search_request.id} não possui e-mail de notificação."
+    )
 
 def publish_search_request(search_request) -> None:
     payload = {
