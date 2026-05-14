@@ -142,15 +142,15 @@ LOGOUT_REDIRECT_URL = 'login'
 
 #do que diz respeito ao envio de emails, o console backend é usado para desenvolvimento, enquanto o SMTP backend é configurado para produção usando variáveis de ambiente. Isso permite flexibilidade e segurança na gestão das credenciais de email.
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.sendgrid.net")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "apikey")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "optio.notification@gmail.com")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 
 DEFAULT_FROM_EMAIL = os.getenv(
-    "EMAIL_FROM",
-    "Optio <no-reply@optio.local>",
+    "DEFAULT_FROM_EMAIL",
+    "Optio <optio.notification@gmail.com>",
 )
 
 SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")
