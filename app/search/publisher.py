@@ -13,12 +13,23 @@ RABBITMQ_QUEUE = os.getenv("RABBITMQ_QUEUE", "search_requests")
 class QueuePublishError(Exception): # implementar quando tiver tempo tempo 
     pass
 
+def get_notification_email(search_request) -> str:
+    if search_request.notification_email:
+        return search_request.notification_email
+
+    if search_request.user_id and search_request.user.email:
+        return search_request.user.email
+
+    raise QueuePublishError(
+        f"SearchRequest {search_request.id} não possui e-mail de notificação."
+    )
 
 def publish_search_request(search_request) -> None:
     payload = {
         "type": "search_requested",
         "search_request_id": search_request.id,
         "user_id": search_request.user_id,
+        "notification_email": get_notification_email(search_request),
         "keywords": search_request.keywords,
         "area": search_request.area,
         "modality": search_request.modality,

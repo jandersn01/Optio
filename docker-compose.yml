@@ -19,6 +19,7 @@ services:
       dockerfile: docker/worker/Dockerfile
     volumes:
       - ./worker:/worker
+      - ./app:/app
     env_file:
       - .env
     depends_on:

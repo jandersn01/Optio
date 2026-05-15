@@ -13,6 +13,10 @@ class SearchRequest(models.Model):
         verbose_name="Usuário",
     )
      
+     notification_email = models.EmailField(
+        verbose_name="E-mail para notificação",
+    )
+     
      keywords = models.CharField(
         max_length=255,
         verbose_name="Palavras-chave",
