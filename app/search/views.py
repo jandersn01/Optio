@@ -1,13 +1,13 @@
-from django.shortcuts import redirect, render
-
-# Create your views here.
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from datetime import timedelta
 
 import logging
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 
-from search.models import SearchRequest
+from search.models import Course, SearchRequest
 
 from .choices import SearchStatus
 from .forms import SearchRequestForm
@@ -24,6 +24,24 @@ def search_request_create(request):
         form = SearchRequestForm(request.POST)
 
         if form.is_valid():
+            data = form.cleaned_data
+            cached = SearchRequest.objects.filter(
+                user=request.user,
+                keywords=data["keywords"],
+                area=data.get("area", ""),
+                modality=data.get("modality", ""),
+                state=data.get("state", ""),
+                status=SearchStatus.COMPLETED,
+                created_at__gte=timezone.now() - timedelta(days=2),
+            ).first()
+
+            if cached:
+                messages.info(
+                    request,
+                    "Encontramos uma busca recente com os mesmos critérios. Exibindo resultados anteriores.",
+                )
+                return redirect("search:search_results", pk=cached.pk)
+
             search_request = form.save(commit=False)
             search_request.user = request.user
             search_request.notification_email = request.user.email
@@ -65,19 +83,27 @@ def search_request_create(request):
         {"form": form},
     )
 
+
 @login_required
 def search_list(request):
-    """Lista todas as pesquisas do usuário."""
     searches = SearchRequest.objects.filter(user=request.user)
 
-    # Filtro por status (opcional via query param)
     status_filter = request.GET.get('status')
     if status_filter:
         searches = searches.filter(status=status_filter)
 
-    context = {
+    return render(request, 'search/search_list.html', {
         'searches': searches,
         'current_filter': status_filter,
-    }
+    })
 
-    return render(request, 'search/search_list.html', context)
+
+@login_required
+def search_results(request, pk):
+    search_request = get_object_or_404(SearchRequest, pk=pk, user=request.user)
+    courses = Course.objects.filter(search_request=search_request)
+
+    return render(request, 'search/search_results.html', {
+        'search_request': search_request,
+        'courses': courses,
+    })

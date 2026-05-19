@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultados — {{ search_request.keywords }} - Optio{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-content">
+            <a href="{% url 'search:request_list' %}" class="btn btn-secondary" style="margin-bottom: 0.5rem;">
+                ← Voltar
+            </a>
+            <h1>Resultados da busca</h1>
+            <p class="header-subtitle">
+                <strong>{{ search_request.keywords }}</strong>
+                {% if search_request.area %} · {{ search_request.area }}{% endif %}
+                {% if search_request.modality %} · {{ search_request.get_modality_display }}{% endif %}
+                {% if search_request.state %} · {{ search_request.state }}{% endif %}
+            </p>
+        </div>
+        <span class="search-status status-{{ search_request.status }}">
+            {{ search_request.status_icon }} {{ search_request.get_status_display }}
+        </span>
+    </header>
+
+    {% if courses %}
+    <div class="search-cards">
+        {% for course in courses %}
+        <div class="search-card">
+            <div class="search-card-header">
+                <h3 class="search-query" style="margin: 0;">{{ course.name }}</h3>
+            </div>
+
+            <div class="search-meta" style="margin-top: 0.5rem;">
+                <span class="meta-tag">🏛 {{ course.institution }}</span>
+                {% if course.modality %}
+                <span class="meta-tag">🖥 {{ course.get_modality_display }}</span>
+                {% endif %}
+                {% if course.state %}
+                <span class="meta-tag">📍 {{ course.state }}</span>
+                {% endif %}
+            </div>
+
+            {% if course.link %}
+            <div class="search-card-footer" style="margin-top: 1rem;">
+                <a href="{{ course.link }}" target="_blank" rel="noopener" class="btn btn-primary">
+                    Acessar curso
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% elif search_request.status == 'completed' %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">🔍</div>
+        <h3>Nenhum curso encontrado</h3>
+        <p>O sistema não encontrou cursos para os critérios informados.</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
+    </div>
+
+    {% else %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">⏳</div>
+        <h3>Processando sua busca...</h3>
+        <p>Os resultados aparecerão aqui assim que o processamento for concluído.</p>
+        <meta http-equiv="refresh" content="5">
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

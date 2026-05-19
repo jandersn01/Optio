@@ -1,0 +1,76 @@
+import json
+import logging
+import os
+
+from openai import OpenAI
+
+from prompts import SYSTEM_PROMPT
+
+logger = logging.getLogger("optio.worker.llm")
+
+LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-4o-mini")
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+_client: OpenAI | None = None
+
+VALID_MODALITIES = {"ead", "presencial", "hibrido", "all"}
+VALID_STATES = {
+    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
+    "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI",
+    "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+}
+
+
+def _get_client() -> OpenAI:
+    global _client
+    if _client is None:
+        _client = OpenAI(
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url=OPENROUTER_BASE_URL,
+        )
+    return _client
+
+
+def call_llm(prompt: str) -> str:
+    client = _get_client()
+    logger.info("Chamando LLM. model=%s", LLM_MODEL)
+
+    response = client.chat.completions.create(
+        model=LLM_MODEL,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.2,
+        max_tokens=4096,
+    )
+
+    result = response.choices[0].message.content
+    logger.info("LLM respondeu. tokens_used=%d", response.usage.total_tokens)
+    return result
+
+
+def parse_llm_response(response_text: str) -> list[dict]:
+    data = json.loads(response_text)
+    raw_courses = data.get("courses", [])
+
+    courses = []
+    for item in raw_courses:
+        name = item.get("name", "").strip()
+        if not name:
+            continue
+
+        modality = item.get("modality", "").lower().strip()
+        state = item.get("state", "").upper().strip()
+
+        courses.append({
+            "name": name,
+            "institution": item.get("institution", "").strip(),
+            "modality": modality if modality in VALID_MODALITIES else "",
+            "state": state if state in VALID_STATES else "",
+            "link": item.get("link", "").strip(),
+        })
+
+    logger.info("Cursos extraídos do LLM. count=%d", len(courses))
+    return courses

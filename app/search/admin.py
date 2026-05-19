@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SearchRequest
+from .models import Course, SearchRequest
 
 # Register your models here.
 @admin.register(SearchRequest)
@@ -22,3 +22,11 @@ class SearchRequestAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['name', 'institution', 'modality', 'state', 'search_request']
+    list_filter = ['modality', 'state']
+    search_fields = ['name', 'institution']
+    raw_id_fields = ['search_request']

@@ -23,3 +23,9 @@ pydantic
 
 # Email (opcional, mas comum)
 django-anymail
+
+# LLM
+openai
+
+# Web scraping via Firecrawl
+firecrawl-py
