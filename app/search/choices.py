@@ -11,6 +11,9 @@ class SearchStatus(models.TextChoices):
     PROCESSING = "processing", "Processando"
     COMPLETED = "completed", "Concluída"
     FAILED = "failed", "Falhou"
+    # Novos status para redesign (compatíveis com lowercase existente)
+    NO_RESULTS = "no_results", "Sem resultados"
+    EXPIRED = "expired", "Expirada"
 
 class SearchArea(models.TextChoices):
     ADMINISTRACAO = "administracao", "Administração"

@@ -1,3 +1,22 @@
 CLAUDE.md
-.env
 .claude/
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+staticfiles/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Temporary redesign reference
+django-templates/
