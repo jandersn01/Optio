@@ -95,3 +95,34 @@ class SearchRequest(models.Model):
          "failed": "❌",
       }
       return icons.get(self.status, "•")
+
+
+class Course(models.Model):
+    search_request = models.ForeignKey(
+        SearchRequest,
+        on_delete=models.CASCADE,
+        related_name="courses",
+        verbose_name="Requisição de busca",
+    )
+    name = models.CharField(max_length=255, verbose_name="Nome do curso")
+    institution = models.CharField(max_length=255, verbose_name="Instituição")
+    modality = models.CharField(
+        max_length=20,
+        choices=SearchModality.choices,
+        blank=True,
+        verbose_name="Modalidade",
+    )
+    state = models.CharField(
+        max_length=2,
+        choices=SearchStates_Br.choices,
+        blank=True,
+        verbose_name="Estado",
+    )
+    link = models.URLField(blank=True, verbose_name="Link")
+
+    class Meta:
+        verbose_name = "Curso"
+        verbose_name_plural = "Cursos"
+
+    def __str__(self):
+        return f"{self.name} — {self.institution}"
