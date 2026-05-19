@@ -71,9 +71,15 @@
                 <span class="search-results-count">
                     {{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}
                 </span>
+                {% if search.status == 'completed' %}
+                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                    Ver resultados
+                </a>
+                {% else %}
                 <span class="search-updated">
                     Atualizado em {{ search.updated_at|date:"d/m/Y H:i" }}
                 </span>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
