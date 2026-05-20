@@ -10,7 +10,7 @@ MAX_PAGES = 10
 
 
 def _build_query(payload: dict) -> str:
-    parts = ["pós-graduação", payload.get("keywords", "")]
+    parts = ["pós-graduação", payload.get("keywords", ""), "gratuito", "universidade federal estadual instituto federal"]
     if area := payload.get("area"):
         parts.append(area)
     modality = payload.get("modality", "")
