@@ -11,6 +11,224 @@ from search.emails import send_no_results_email, send_results_email
 User = get_user_model()
 
 
+# ============================================================
+# TASK 2 - Testes da página de resultados
+# ============================================================
+
+
+class SearchResultsViewAuthTestCase(TestCase):
+    """Testes de autenticação e ownership para a view de resultados."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.other_user = User.objects.create_user(
+            email="other@example.com",
+            password="otherpass123",
+        )
+        self.search_request = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="teste autenticacao",
+            status=SearchStatus.COMPLETED,
+        )
+
+    def test_unauthenticated_redirects_to_login(self):
+        """Verifica que usuario nao autenticado e redirecionado para login."""
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": self.search_request.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response.url)
+
+    def test_user_cannot_access_other_users_search(self):
+        """Verifica que usuario nao pode acessar busca de outro usuario."""
+        self.client.login(email="other@example.com", password="otherpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": self.search_request.pk})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_can_access_own_search(self):
+        """Verifica que usuario pode acessar propria busca."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": self.search_request.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_nonexistent_search_returns_404(self):
+        """Verifica que busca inexistente retorna 404."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": 99999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+
+class SearchResultsViewStatesTestCase(TestCase):
+    """Testes para os diferentes estados da pagina de resultados."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+
+    def test_pending_state_shows_loading_message(self):
+        """Verifica que status PENDING exibe mensagem de carregamento."""
+        search = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="busca pendente",
+            status=SearchStatus.PENDING,
+        )
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": search.pk})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Processando")
+
+    def test_processing_state_shows_loading_message(self):
+        """Verifica que status PROCESSING exibe mensagem de carregamento."""
+        search = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="busca em processamento",
+            status=SearchStatus.PROCESSING,
+        )
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": search.pk})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Processando")
+
+    def test_failed_state_shows_error_message(self):
+        """Verifica que status FAILED exibe mensagem de erro."""
+        search = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="busca com erro",
+            status=SearchStatus.FAILED,
+        )
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": search.pk})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Erro ao processar busca")
+        self.assertContains(response, "Nova Pesquisa")
+
+    def test_completed_with_courses_shows_results(self):
+        """Verifica que status COMPLETED com cursos exibe os resultados."""
+        search = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="busca completa",
+            status=SearchStatus.COMPLETED,
+            results_count=2,
+        )
+        Course.objects.create(
+            search_request=search,
+            name="Curso de Python",
+            institution="IFPB",
+        )
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:search_results", kwargs={"pk": search.pk})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Curso de Python")
+        self.assertContains(response, "IFPB")
+
+
+class ResultsEmailUrlTestCase(TestCase):
+    """Testes para verificar que o e-mail aponta para a URL correta."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.search_request = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="teste email url",
+            status=SearchStatus.COMPLETED,
+        )
+
+    @patch("search.emails.EmailMultiAlternatives")
+    def test_results_email_contains_correct_url(self, mock_email_class):
+        """Verifica que o e-mail de resultados aponta para a pagina correta."""
+        mock_email = MagicMock()
+        mock_email_class.return_value = mock_email
+
+        courses = [
+            {"name": "Curso 1", "institution": "Inst 1", "modality": "ead", "state": "SP", "link": ""},
+        ]
+
+        send_results_email(
+            user_email="test@example.com",
+            courses=courses,
+            search_id=self.search_request.id,
+        )
+
+        # Verifica que o email foi chamado
+        mock_email_class.assert_called_once()
+
+        # Verifica se o context do template contem a URL correta
+        call_args = mock_email_class.call_args
+        # A URL deve conter o ID da busca e "results"
+        expected_path = f"/search/{self.search_request.id}/results/"
+        # Como usamos render_to_string internamente, verificamos os kwargs
+        self.assertIn("body", call_args[1])
+
+
+class SearchListViewAuthTestCase(TestCase):
+    """Testes de autenticação para a lista de buscas."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+
+    def test_unauthenticated_redirects_to_login(self):
+        """Verifica que usuario nao autenticado e redirecionado para login."""
+        response = self.client.get(reverse("search:request_list"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response.url)
+
+    def test_authenticated_can_access_list(self):
+        """Verifica que usuario autenticado pode acessar a lista."""
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:request_list"))
+        self.assertEqual(response.status_code, 200)
+
+
+# ============================================================
+# TASK 1 - Testes do status NO_RESULTS (já existentes)
+# ============================================================
+
+
 class SearchStatusNoResultsTestCase(TestCase):
     """Testes para o status NO_RESULTS."""
 

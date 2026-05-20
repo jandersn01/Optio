@@ -19,13 +19,13 @@
         <ul>
             {% for course in courses %}
                 <li>
-                    <strong>{{ course.title }}</strong><br>
+                    <strong>{{ course.name }}</strong><br>
                     Instituição: {{ course.institution }}<br>
                     Modalidade: {{ course.modality }}<br>
                     Estado: {{ course.state }}<br>
 
-                    {% if course.url %}
-                        <a href="{{ course.url }}">Ver curso</a>
+                    {% if course.link %}
+                        <a href="{{ course.link }}">Ver curso</a>
                     {% endif %}
                 </li>
             {% endfor %}

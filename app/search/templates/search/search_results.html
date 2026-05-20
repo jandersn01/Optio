@@ -77,6 +77,14 @@
         <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
     </div>
 
+    {% elif search_request.status == 'failed' %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">❌</div>
+        <h3>Erro ao processar busca</h3>
+        <p>Ocorreu um erro durante o processamento da sua busca. Por favor, tente novamente.</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
+    </div>
+
     {% else %}
     <div class="empty-state empty-state-large">
         <div class="empty-icon">⏳</div>

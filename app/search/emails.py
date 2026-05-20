@@ -21,12 +21,8 @@ def send_results_email(user_email: str, courses: list[dict], search_id: int) -> 
     try:
         subject = "Resultados da sua busca no Optio"
 
-        ##results_url = f"{settings.SITE_URL}/search/{search_id}/results/"
-        
         site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
-        results_path = reverse('search:request_list')
-        # Como ainda não temos uma tela de detalhe de resultados,
-        # apontamos para a listagem de buscas do usuário.
+        results_path = reverse('search:search_results', kwargs={'pk': search_id})
         results_url = f"{site_url}{results_path}"
 
 
