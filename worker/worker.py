@@ -11,7 +11,7 @@ import django
 django.setup()
 
 import pika
-from search.emails import EmailDeliveryError, send_results_email
+from search.emails import EmailDeliveryError, send_results_email, send_no_results_email
 from search.choices import SearchStatus
 from search.models import Course, SearchRequest
 from scraper import search_courses_web
@@ -92,6 +92,21 @@ def process_search_request(payload: dict) -> None:
     llm_response = call_llm(prompt)
     courses_data = parse_llm_response(llm_response)
 
+    # Tratamento de lista vazia (TASK 1)
+    if not courses_data:
+        mark_search_status(search_id, SearchStatus.NO_RESULTS, results_count=0)
+        send_no_results_email(
+            user_email=user_email,
+            search_id=search_id,
+            keywords=payload.get("keywords", ""),
+        )
+        logger.info(
+            "Busca concluída sem resultados. search_id=%s",
+            search_id,
+        )
+        return
+
+    # Fluxo normal: cursos encontrados
     search_request = SearchRequest.objects.get(id=search_id)
     course_objects = [
         Course(

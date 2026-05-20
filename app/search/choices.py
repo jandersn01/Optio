@@ -11,6 +11,7 @@ class SearchStatus(models.TextChoices):
     PROCESSING = "processing", "Processando"
     COMPLETED = "completed", "Concluída"
     FAILED = "failed", "Falhou"
+    NO_RESULTS = "no_results", "Sem resultados"
 
 class SearchArea(models.TextChoices):
     ADMINISTRACAO = "administracao", "Administração"

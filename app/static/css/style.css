@@ -342,6 +342,7 @@ a:hover {
 .search-card-processing { border-left-color: var(--info); }
 .search-card-completed { border-left-color: var(--success); }
 .search-card-failed { border-left-color: var(--danger); }
+.search-card-no_results { border-left-color: var(--gray-400); }
 
 .search-card-header {
     display: flex;

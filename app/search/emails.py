@@ -68,3 +68,55 @@ def send_results_email(user_email: str, courses: list[dict], search_id: int) -> 
         raise EmailDeliveryError(
             f"Falha ao enviar e-mail da busca {search_id}."
         ) from error
+
+
+def send_no_results_email(user_email: str, search_id: int, keywords: str = "") -> None:
+    """Envia e-mail informando que nenhum curso foi encontrado."""
+    if not user_email:
+        raise EmailDeliveryError("E-mail do usuário não informado.")
+
+    try:
+        subject = "Sua busca foi concluída - Optio"
+
+        site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
+        new_search_path = reverse('search:request_create')
+        new_search_url = f"{site_url}{new_search_path}"
+
+        context = {
+            "search_id": search_id,
+            "keywords": keywords,
+            "new_search_url": new_search_url,
+        }
+
+        html_content = render_to_string(
+            "search/emails/no_results_email.html",
+            context,
+        )
+
+        text_content = strip_tags(html_content)
+
+        message = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[user_email],
+        )
+
+        message.attach_alternative(html_content, "text/html")
+        message.send(fail_silently=False)
+
+        logger.info(
+            "E-mail de 'sem resultados' enviado. search_id=%s email=%s",
+            search_id,
+            user_email,
+        )
+
+    except Exception as error:
+        logger.exception(
+            "Falha ao enviar e-mail de 'sem resultados'. search_id=%s email=%s",
+            search_id,
+            user_email,
+        )
+        raise EmailDeliveryError(
+            f"Falha ao enviar e-mail da busca {search_id}."
+        ) from error
