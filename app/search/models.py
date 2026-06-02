@@ -82,6 +82,7 @@ class SearchRequest(models.Model):
          "processing": "info",
          "completed": "success",
          "failed": "danger",
+         "no_results": "secondary",
       }
       return colors.get(self.status, "secondary")
 
@@ -93,6 +94,7 @@ class SearchRequest(models.Model):
          "processing": "🔄",
          "completed": "✅",
          "failed": "❌",
+         "no_results": "🔍",
       }
       return icons.get(self.status, "•")
 

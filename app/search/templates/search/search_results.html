@@ -51,11 +51,37 @@
         {% endfor %}
     </div>
 
+    {% elif search_request.status == 'no_results' %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">🔍</div>
+        <h3>Nenhum curso encontrado</h3>
+        <p>Não encontramos cursos de pós-graduação gratuitos para os critérios informados.</p>
+
+        <div style="text-align: left; margin: 1.5rem auto; max-width: 400px; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+            <p style="margin-bottom: 0.5rem;"><strong>Sugestões para ampliar sua busca:</strong></p>
+            <ul style="margin: 0; padding-left: 1.2rem;">
+                <li>Use palavras-chave mais genéricas</li>
+                <li>Remova filtros de estado ou modalidade</li>
+                <li>Experimente áreas de conhecimento relacionadas</li>
+            </ul>
+        </div>
+
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
+    </div>
+
     {% elif search_request.status == 'completed' %}
     <div class="empty-state empty-state-large">
         <div class="empty-icon">🔍</div>
         <h3>Nenhum curso encontrado</h3>
         <p>O sistema não encontrou cursos para os critérios informados.</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
+    </div>
+
+    {% elif search_request.status == 'failed' %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">❌</div>
+        <h3>Erro ao processar busca</h3>
+        <p>Ocorreu um erro durante o processamento da sua busca. Por favor, tente novamente.</p>
         <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
     </div>
 

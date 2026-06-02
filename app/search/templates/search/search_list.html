@@ -38,6 +38,10 @@
                class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">
                 ❌ Com Erro
             </a>
+            <a href="{% url 'search:request_list' %}?status=no_results"
+               class="filter-btn {% if current_filter == 'no_results' %}active{% endif %}">
+                🔍 Sem Resultados
+            </a>
         </div>
     </div>
 
@@ -74,6 +78,10 @@
                 {% if search.status == 'completed' %}
                 <a href="{% url 'search:search_results' search.pk %}" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
                     Ver resultados
+                </a>
+                {% elif search.status == 'no_results' %}
+                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                    Ver detalhes
                 </a>
                 {% else %}
                 <span class="search-updated">

@@ -342,6 +342,7 @@ a:hover {
 .search-card-processing { border-left-color: var(--info); }
 .search-card-completed { border-left-color: var(--success); }
 .search-card-failed { border-left-color: var(--danger); }
+.search-card-no_results { border-left-color: var(--gray-400); }
 
 .search-card-header {
     display: flex;
@@ -361,6 +362,7 @@ a:hover {
 .status-processing { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
 .status-completed { background: rgba(16, 185, 129, 0.15); color: #047857; }
 .status-failed { background: rgba(239, 68, 68, 0.15); color: #b91c1c; }
+.status-no_results { background: rgba(156, 163, 175, 0.15); color: #4b5563; }
 
 .search-date,
 .search-results {
