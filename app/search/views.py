@@ -1,17 +1,19 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 from datetime import timedelta
 
 import logging
+
 from django.contrib import messages
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods, require_POST
 
 from search.models import Course, SearchRequest
 
-from .choices import SearchStatus
+from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
 from .publisher import QueuePublishError, publish_search_request
+from .services import delete_search, get_search_history, repeat_search
 
 
 logger = logging.getLogger(__name__)
@@ -50,51 +52,58 @@ def search_request_create(request):
 
             try:
                 publish_search_request(search_request)
-
             except QueuePublishError:
                 search_request.status = SearchStatus.FAILED
                 search_request.save(update_fields=["status"])
-
-                logger.exception(
-                    "Falha ao publicar SearchRequest %s na fila.",
-                    search_request.id,
-                )
-
+                logger.exception("Falha ao publicar SearchRequest %s na fila.", search_request.id)
                 messages.error(
                     request,
                     "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes.",
                 )
-
                 return redirect("search:request_create")
 
             messages.success(
                 request,
                 "Busca recebida com sucesso. Os resultados serão processados em segundo plano.",
             )
-
             return redirect("search:request_list")
 
     else:
         form = SearchRequestForm()
 
-    return render(
-        request,
-        "search/search_request_form.html",
-        {"form": form},
-    )
+    return render(request, "search/search_request_form.html", {
+        "form": form,
+        "example_chips": [
+            "Engenharia de software",
+            "Inteligência Artificial",
+            "Ciência de dados",
+            "Educação e docência",
+        ],
+    })
 
 
 @login_required
 def search_list(request):
-    searches = SearchRequest.objects.filter(user=request.user)
+    filters = {
+        "status": request.GET.get("status", ""),
+        "q": request.GET.get("q", ""),
+    }
+    page_obj = get_search_history(request.user, filters, request.GET.get("page", 1))
 
-    status_filter = request.GET.get('status')
-    if status_filter:
-        searches = searches.filter(status=status_filter)
+    all_qs = SearchRequest.objects.for_user(request.user)
+    counts = {
+        "all": all_qs.count(),
+        "completed": all_qs.filter(status=SearchStatus.COMPLETED).count(),
+        "processing": all_qs.filter(
+            status__in=[SearchStatus.PENDING, SearchStatus.PROCESSING]
+        ).count(),
+        "no_results": all_qs.filter(status=SearchStatus.NO_RESULTS).count(),
+    }
 
-    return render(request, 'search/search_list.html', {
-        'searches': searches,
-        'current_filter': status_filter,
+    return render(request, "search/search_list.html", {
+        "page_obj": page_obj,
+        "filters": filters,
+        "counts": counts,
     })
 
 
@@ -102,8 +111,38 @@ def search_list(request):
 def search_results(request, pk):
     search_request = get_object_or_404(SearchRequest, pk=pk, user=request.user)
     courses = Course.objects.filter(search_request=search_request)
-
-    return render(request, 'search/search_results.html', {
-        'search_request': search_request,
-        'courses': courses,
+    return render(request, "search/search_results.html", {
+        "search_request": search_request,
+        "courses": courses,
     })
+
+
+@login_required
+@require_POST
+def search_delete(request, pk):
+    try:
+        delete_search(request.user, pk)
+        messages.success(request, "Busca removida do histórico.")
+    except SearchRequest.DoesNotExist:
+        messages.error(request, "Busca não encontrada.")
+    return redirect("search:request_list")
+
+
+@login_required
+@require_POST
+def search_repeat(request, pk):
+    try:
+        new_search, published = repeat_search(request.user, pk)
+    except SearchRequest.DoesNotExist:
+        messages.error(request, "Busca não encontrada.")
+        return redirect("search:request_list")
+
+    if not published:
+        messages.error(
+            request,
+            "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes.",
+        )
+        return redirect("search:request_list")
+
+    messages.success(request, "Busca repetida com sucesso.")
+    return redirect("search:search_results", pk=new_search.pk)
