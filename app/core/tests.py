@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import CustomUser
+from .models import CustomUser, NotificationPreference
 
 
 class CadastroTests(TestCase):
@@ -57,3 +57,65 @@ class CadastroTests(TestCase):
         self.client.login(email='joao@example.com', password='SenhaForte123!')
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('core:dashboard'))
+
+
+class NotificationPreferenceTests(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email='pref@example.com',
+            password='SenhaForte123!',
+            first_name='Maria',
+        )
+        self.client.login(email='pref@example.com', password='SenhaForte123!')
+        self.url = reverse('core:preferences')
+
+    def test_get_exibe_formulario(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/preferences.html')
+
+    def test_get_cria_preferencia_se_nao_existir(self):
+        self.client.get(self.url)
+        self.assertTrue(NotificationPreference.objects.filter(user=self.user).exists())
+
+    def test_salva_preferencias(self):
+        response = self.client.post(self.url, {
+            'first_name': 'Maria',
+            'email': 'pref@example.com',
+            'area': 'exatas',
+            'modality': 'ead',
+            'active': 'on',
+        })
+        self.assertRedirects(response, self.url)
+        pref = NotificationPreference.objects.get(user=self.user)
+        self.assertEqual(pref.area, 'exatas')
+        self.assertEqual(pref.modality, 'ead')
+        self.assertTrue(pref.active)
+
+    def test_toggle_desativa_notificacao(self):
+        NotificationPreference.objects.create(user=self.user, active=True)
+        # sem 'area' = lista vazia (nenhuma área selecionada)
+        # sem 'active' = False no BooleanField de checkbox
+        self.client.post(self.url, {
+            'first_name': 'Maria',
+            'email': 'pref@example.com',
+            'modality': '',
+        })
+        pref = NotificationPreference.objects.get(user=self.user)
+        self.assertFalse(pref.active)
+
+    def test_toggle_ativa_notificacao(self):
+        NotificationPreference.objects.create(user=self.user, active=False)
+        self.client.post(self.url, {
+            'first_name': 'Maria',
+            'email': 'pref@example.com',
+            'modality': '',
+            'active': 'on',
+        })
+        pref = NotificationPreference.objects.get(user=self.user)
+        self.assertTrue(pref.active)
+
+    def test_pagina_exige_autenticacao(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertRedirects(response, f'/login/?next={self.url}')

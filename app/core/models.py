@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
@@ -37,3 +38,40 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class NotificationPreference(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='notification_preference',
+        verbose_name='Usuário',
+    )
+    area = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Áreas de interesse',
+        help_text='Valores separados por vírgula',
+    )
+    modality = models.CharField(
+        max_length=20,
+        blank=True,
+        verbose_name='Modalidade preferida',
+    )
+    active = models.BooleanField(
+        default=True,
+        verbose_name='Notificações ativas',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Preferência de notificação'
+        verbose_name_plural = 'Preferências de notificação'
+
+    @property
+    def area_list(self) -> list[str]:
+        return [a for a in self.area.split(',') if a]
+
+    def __str__(self):
+        return f'Preferência de {self.user.email}'

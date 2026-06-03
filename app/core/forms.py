@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, NotificationPreference
+from search.choices import SearchArea, SearchModality
 
 
 class CadastroForm(UserCreationForm):
@@ -51,3 +52,49 @@ class CadastroForm(UserCreationForm):
             user.save()
             self.save_m2m()
         return user
+
+
+class UserIdentityForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'email']
+        labels = {'first_name': 'Nome', 'email': 'E-mail'}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'input'
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        qs = CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError('Este e-mail já está em uso.')
+        return email
+
+
+class NotificationPreferenceForm(forms.ModelForm):
+    area = forms.MultipleChoiceField(
+        choices=SearchArea.choices,
+        required=False,
+        label='Áreas de interesse',
+        widget=forms.MultipleHiddenInput,
+    )
+    modality = forms.ChoiceField(
+        choices=[('', 'Todas')] + list(SearchModality.choices),
+        required=False,
+        label='Modalidade preferida',
+    )
+
+    class Meta:
+        model = NotificationPreference
+        fields = ['area', 'modality', 'active']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Converte o TextField CSV → lista para o MultipleChoiceField
+        if self.instance and self.instance.pk:
+            self.initial['area'] = self.instance.area_list
+
+    def clean_area(self):
+        return ','.join(self.cleaned_data.get('area') or [])
