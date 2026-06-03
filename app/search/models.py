@@ -21,112 +21,128 @@ class SearchRequestManager(models.Manager):
 
 class SearchRequest(models.Model):
 
-     user = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="search_requests",
         verbose_name="Usuário",
     )
-     
-     notification_email = models.EmailField(
+
+    notification_email = models.EmailField(
         verbose_name="E-mail para notificação",
     )
-     
-     keywords = models.CharField(
+
+    keywords = models.CharField(
         max_length=255,
         verbose_name="Palavras-chave",
     )
-     
-     area = models.CharField(
+
+    area = models.CharField(
         max_length=100,
         choices=SearchArea.choices,
         blank=True,
         verbose_name="Área do conhecimento",
     )
-     
-     modality = models.CharField(
+
+    modality = models.CharField(
         max_length=20,
         choices=SearchModality.choices,
         blank=True,
         verbose_name="Modalidade",
     )
 
-     state = models.CharField(
+    state = models.CharField(
         max_length=2,
         choices=SearchStates_Br.choices,
         blank=True,
         verbose_name="Estado",
     )
 
-     status = models.CharField(
+    status = models.CharField(
         max_length=20,
         choices=SearchStatus.choices,
         default=SearchStatus.PENDING,
         verbose_name="Status",
     )
 
-     created_at = models.DateTimeField(
+    results_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Quantidade de resultados",
+    )
+
+    is_deleted = models.BooleanField(
+        default=False,
+        verbose_name="Excluído",
+    )
+
+    deleted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Excluído em",
+    )
+
+    created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Criado em",
     )
 
-     updated_at = models.DateTimeField(
+    updated_at = models.DateTimeField(
         auto_now=True,
         verbose_name="Atualizado em",
     )
-     
-     results_count = models.PositiveIntegerField(
-         default=0,
-         verbose_name="Quantidade de resultados",
-      )
 
-     is_deleted = models.BooleanField(
-        default=False,
-        verbose_name="Excluído",
-     )
+    objects = SearchRequestManager()
+    all_objects = models.Manager()
 
-     deleted_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Excluído em",
-     )
-
-     objects = SearchRequestManager()
-     all_objects = models.Manager()
-
-     class Meta:
+    class Meta:
         verbose_name = "Requisição de busca"
         verbose_name_plural = "Requisições de busca"
         ordering = ["-created_at"]
         default_manager_name = "objects"
 
-
-
-     def __str__(self):
+    def __str__(self):
         return f"SearchRequest #{self.id} - {self.keywords}"
-     
-     @property
-     def status_color(self):
-      colors = {
-         "pending": "warning",
-         "processing": "info",
-         "completed": "success",
-         "failed": "danger",
-         "no_results": "secondary",
-      }
-      return colors.get(self.status, "secondary")
 
+    @property
+    def status_color(self):
+        colors = {
+            "pending": "warning",
+            "processing": "info",
+            "completed": "success",
+            "failed": "danger",
+            "no_results": "secondary",
+        }
+        return colors.get(self.status, "secondary")
 
-     @property
-     def status_icon(self):
-      icons = {
-         "pending": "⏳",
-         "processing": "🔄",
-         "completed": "✅",
-         "failed": "❌",
-         "no_results": "🔍",
-      }
-      return icons.get(self.status, "•")
+    @property
+    def relative_time(self) -> str:
+        from django.utils import timezone
+        diff = timezone.now() - self.created_at
+        s = diff.total_seconds()
+        if s < 60:
+            return "agora mesmo"
+        if s < 3600:
+            m = int(s // 60)
+            return f"há {m} min"
+        if s < 86400:
+            h = int(s // 3600)
+            return f"há {h}h"
+        if s < 86400 * 2:
+            return "ontem"
+        if s < 86400 * 7:
+            return f"há {int(s // 86400)} dias"
+        return self.created_at.strftime("%d/%m/%Y")
+
+    @property
+    def status_icon(self):
+        icons = {
+            "pending": "⏳",
+            "processing": "🔄",
+            "completed": "✅",
+            "failed": "❌",
+            "no_results": "🔍",
+        }
+        return icons.get(self.status, "•")
 
 
 class Course(models.Model):
@@ -190,4 +206,4 @@ class Favorite(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.email} - {self.course.name}"
+        return f"{self.user.email} — {self.course.name}"

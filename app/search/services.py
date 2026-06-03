@@ -12,13 +12,12 @@ def get_search_history(user, filters: dict, page: int):
     qs = SearchRequest.objects.for_user(user).order_by("-created_at")
 
     if status := filters.get("status"):
-        qs = qs.filter(status=status)
-    if area := filters.get("area"):
-        qs = qs.filter(area=area)
-    if modality := filters.get("modality"):
-        qs = qs.filter(modality=modality)
-    if state := filters.get("state"):
-        qs = qs.filter(state=state)
+        if status == "processing":
+            qs = qs.filter(status__in=[SearchStatus.PENDING, SearchStatus.PROCESSING])
+        else:
+            qs = qs.filter(status=status)
+    if q := filters.get("q"):
+        qs = qs.filter(keywords__icontains=q)
 
     return Paginator(qs, PAGE_SIZE).get_page(page)
 

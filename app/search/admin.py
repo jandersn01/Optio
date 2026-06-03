@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Course, SearchRequest
 
-# Register your models here.
+
 @admin.register(SearchRequest)
 class SearchRequestAdmin(admin.ModelAdmin):
     list_display = ['keywords', 'user', 'status', 'is_deleted', 'created_at']

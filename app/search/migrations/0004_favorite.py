@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("search", "0002_course"),
+        ("search", "0003_add_soft_delete_to_search_request"),
     ]
 
     operations = [

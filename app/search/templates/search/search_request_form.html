@@ -1,104 +1,225 @@
 {% extends 'base.html' %}
-
-{% block title %}Nova Pesquisa - Optio{% endblock %}
+{% block title %}Nova busca — Optio{% endblock %}
 
 {% block content %}
-<div class="page-container page-container-narrow">
-    <header class="page-header page-header-centered">
-        <h1>🔍 Nova Pesquisa</h1>
-        <p class="header-subtitle">Busque por cursos de pós-graduação gratuitos</p>
-    </header>
 
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-        {% endfor %}
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <span class="crumb-sep">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+    </span>
+    <span class="crumb-cur">Nova busca</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost btn-sm">Cancelar</a>
+  </div>
+</div>
+
+<div class="page" style="max-width:920px;">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">Configure uma nova busca</div>
+      <h1 class="h-1">O que <em>você</em> quer estudar?</h1>
+      <p class="lede" style="margin-top:var(--d-3);">
+        Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida.
+      </p>
+    </div>
+  </header>
+
+  <form method="post" id="search-form" class="col stagger" style="gap:var(--d-5);">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="toast toast-err" style="position:static; max-width:100%;">
+      <span class="dot"></span><span>{{ form.non_field_errors }}</span>
     </div>
     {% endif %}
 
-    <div class="form-card">
-        <form method="post" class="search-form">
-            {% csrf_token %}
+    {# ── 1. Palavras-chave — fonte dinâmica + ícone grande ── #}
+    <div class="field">
+      <label class="field-label" for="id_keywords">Palavras-chave *</label>
+      <div style="position:relative;">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+             style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
+          <circle cx="8" cy="8" r="5"/><path d="M12 12L17 17"/>
+        </svg>
+        <input
+          id="id_keywords"
+          name="{{ form.keywords.html_name }}"
+          type="text"
+          value="{{ form.keywords.value|default:'' }}"
+          placeholder="Ex.: mestrado profissional em ciência de dados"
+          autofocus
+          class="input {% if form.keywords.errors %}is-invalid{% endif %}"
+          style="padding-left:50px;font-size:18px;height:56px;font-family:{% if form.keywords.value %}var(--sans){% else %}var(--serif){% endif %};font-style:{% if form.keywords.value %}normal{% else %}italic{% endif %};"
+          oninput="var s=this.style;s.fontFamily=this.value?'var(--sans)':'var(--serif)';s.fontStyle=this.value?'normal':'italic';"
+        >
+      </div>
+      {% for error in form.keywords.errors %}
+      <span class="field-error">{{ error }}</span>
+      {% endfor %}
 
-            {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-                {{ form.non_field_errors }}
-            </div>
-            {% endif %}
-
-            <div class="form-group">
-                <label for="{{ form.keywords.id_for_label }}">Palavras-chave *</label>
-                {{ form.keywords }}
-
-                {% if form.keywords.errors %}
-                <div class="form-error">
-                    {{ form.keywords.errors }}
-                </div>
-                {% endif %}
-
-                <span class="form-help">
-                    Digite palavras-chave relacionadas ao curso que procura.
-                </span>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.area.id_for_label }}">Área de Conhecimento</label>
-                    {{ form.area }}
-
-                    {% if form.area.errors %}
-                    <div class="form-error">
-                        {{ form.area.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.modality.id_for_label }}">Modalidade</label>
-                    {{ form.modality }}
-
-                    {% if form.modality.errors %}
-                    <div class="form-error">
-                        {{ form.modality.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.state.id_for_label }}">Estado</label>
-                {{ form.state }}
-
-                {% if form.state.errors %}
-                <div class="form-error">
-                    {{ form.state.errors }}
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="form-actions">
-                <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">
-                    Cancelar
-                </a>
-
-                <button type="submit" class="btn btn-primary">
-                    🔍 Iniciar Pesquisa
-                </button>
-            </div>
-        </form>
+      {# Chips de exemplos clicáveis #}
+      <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap;">
+        <span class="text-xs muted" style="margin-right:2px;">Exemplos:</span>
+        {% for chip in example_chips %}
+        <button type="button"
+                class="badge"
+                style="cursor:pointer;transition:all var(--t-fast) var(--ease);"
+                onmouseover="this.style.borderColor='var(--ink-mute)';this.style.color='var(--ink)';"
+                onmouseout="this.style.borderColor='';this.style.color='';"
+                onclick="fillKeyword('{{ chip }}')">{{ chip }}</button>
+        {% endfor %}
+      </div>
     </div>
 
-    <div class="info-box">
-        <h4>💡 Como funciona?</h4>
-        <ul>
-            <li>Sua pesquisa será processada em segundo plano.</li>
-            <li>O sistema publicará a solicitação na fila do RabbitMQ.</li>
-            <li>O worker consumirá a mensagem em segundo plano.</li>
-            <li>Você poderá acompanhar o status no dashboard.</li>
-        </ul>
+    <hr class="sep-h">
+
+    {# ── 2. Filtros ── #}
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Refinar resultados</div>
+      <div class="form-grid-2">
+
+        <div class="field">
+          <label class="field-label" for="{{ form.area.id_for_label }}">Área do conhecimento</label>
+          <select class="select {% if form.area.errors %}is-invalid{% endif %}"
+                  name="{{ form.area.html_name }}" id="{{ form.area.id_for_label }}">
+            <option value="">Todas as áreas</option>
+            {% for value, label in form.area.field.choices %}{% if value %}
+            <option value="{{ value }}" {% if form.area.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endif %}{% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="{{ form.state.id_for_label }}">Estado</label>
+          <select class="select {% if form.state.errors %}is-invalid{% endif %}"
+                  name="{{ form.state.html_name }}" id="{{ form.state.id_for_label }}">
+            <option value="">Todo o Brasil</option>
+            {% for value, label in form.state.field.choices %}{% if value %}
+            <option value="{{ value }}" {% if form.state.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endif %}{% endfor %}
+          </select>
+        </div>
+
+        {# Modalidade — toggle buttons (ocupa as 2 colunas) #}
+        <div class="field" style="grid-column:1/-1;">
+          <label class="field-label">Modalidade</label>
+          <input type="hidden" id="modality-value" name="{{ form.modality.html_name }}"
+                 value="{{ form.modality.value|default:'all' }}">
+          <div class="row" style="gap:6px;flex-wrap:wrap;">
+            {% for value, label in form.modality.field.choices %}{% if value %}
+            <button type="button"
+                    class="btn btn-sm modality-btn"
+                    data-value="{{ value }}"
+                    onclick="selectModality('{{ value }}')">
+              {{ label }}
+            </button>
+            {% endif %}{% endfor %}
+          </div>
+        </div>
+
+      </div>
     </div>
+
+    <hr class="sep-h">
+
+    {# ── 3. Entrega e acompanhamento ── #}
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Entrega e acompanhamento</div>
+
+      <div class="field" style="margin-bottom:var(--d-3);">
+        <label class="field-label">Enviar resultados para</label>
+        <div style="position:relative;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+               style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
+            <rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 4l6 5 6-5"/>
+          </svg>
+          <input class="input" type="email" value="{{ user.email }}"
+                 style="padding-left:38px;" disabled>
+        </div>
+        <span class="field-help">Você também verá os resultados aqui no painel.</span>
+      </div>
+
+      {# Salvar como alerta — microinteração via JS #}
+      <label id="alert-card"
+             style="display:flex;align-items:flex-start;gap:var(--d-3);padding:var(--d-3) var(--d-4);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--r-2);cursor:pointer;transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);opacity:.55;"
+             title="Em breve — feature de alertas em desenvolvimento">
+        <input type="checkbox" name="save_as_alert" disabled
+               style="margin-top:3px;flex-shrink:0;"
+               onchange="toggleAlertCard(this)">
+        <div style="flex:1;">
+          <div class="row" style="gap:8px;margin-bottom:2px;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                 style="color:var(--ink-mute);flex-shrink:0;">
+              <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
+              <path d="M6 13.5a2 2 0 004 0"/>
+            </svg>
+            <strong class="text-sm">Salvar como alerta</strong>
+            <span class="badge" style="font-size:10px;">Em breve</span>
+          </div>
+          <span class="text-xs muted">
+            Quando novos cursos aderentes aparecerem, te avisamos por e‑mail.
+          </span>
+        </div>
+      </label>
+    </div>
+
+    <hr class="sep-h">
+
+    {# ── Submit ── #}
+    <div class="row" style="gap:var(--d-3);justify-content:flex-end;">
+      <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">Cancelar</a>
+      <button type="submit" class="btn btn-primary btn-lg">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="7" cy="7" r="4.5"/><path d="M11 11L15 15"/>
+        </svg>
+        Iniciar busca
+      </button>
+    </div>
+
+  </form>
 </div>
+
+<script>
+// ── Chips de exemplos ──
+function fillKeyword(val) {
+  var inp = document.getElementById('id_keywords');
+  inp.value = val;
+  inp.style.fontFamily = 'var(--sans)';
+  inp.style.fontStyle = 'normal';
+  inp.focus();
+}
+
+// ── Toggle de modalidade ──
+function selectModality(val) {
+  document.getElementById('modality-value').value = val;
+  document.querySelectorAll('.modality-btn').forEach(function(btn) {
+    var active = btn.dataset.value === val;
+    btn.className = 'btn btn-sm modality-btn ' + (active ? 'btn-primary' : 'btn-secondary');
+  });
+}
+
+// Inicializa estado dos botões ao carregar
+(function() {
+  var current = document.getElementById('modality-value').value || 'all';
+  selectModality(current);
+})();
+
+// ── Microinteração do card de alerta ──
+function toggleAlertCard(checkbox) {
+  var card = document.getElementById('alert-card');
+  if (checkbox.checked) {
+    card.style.background = 'var(--primary-soft)';
+    card.style.borderColor = 'var(--primary-line)';
+  } else {
+    card.style.background = 'var(--paper-2)';
+    card.style.borderColor = 'var(--line-soft)';
+  }
+}
+</script>
+
 {% endblock %}

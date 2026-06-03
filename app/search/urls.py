@@ -2,7 +2,6 @@ from django.urls import path
 
 from . import views
 
-
 app_name = "search"
 
 urlpatterns = [
@@ -12,5 +11,6 @@ urlpatterns = [
     path("<int:pk>/delete/", views.search_delete, name="search_delete"),
     path("<int:pk>/repeat/", views.search_repeat, name="search_repeat"),
     path("favoritos/", views.favorites_list, name="favorites_list"),
+    path("favorito/<int:pk>/adicionar/", views.favorite_add, name="favorite_add"),
     path("favorito/<int:pk>/remover/", views.favorite_remove, name="favorite_remove"),
 ]
