@@ -15,40 +15,51 @@
     </header>
 
     <!-- Filtros -->
-    <div class="filters-bar">
-        <span class="filters-label">Filtrar por:</span>
-        <div class="filters-buttons">
-            <a href="{% url 'search:request_list' %}"
-               class="filter-btn {% if not current_filter %}active{% endif %}">
-                Todas
-            </a>
-            <a href="{% url 'search:request_list' %}?status=pending"
-               class="filter-btn {% if current_filter == 'pending' %}active{% endif %}">
-                ⏳ Pendentes
-            </a>
-            <a href="{% url 'search:request_list' %}?status=processing"
-               class="filter-btn {% if current_filter == 'processing' %}active{% endif %}">
-                🔄 Em Andamento
-            </a>
-            <a href="{% url 'search:request_list' %}?status=completed"
-               class="filter-btn {% if current_filter == 'completed' %}active{% endif %}">
-                ✅ Concluídas
-            </a>
-            <a href="{% url 'search:request_list' %}?status=failed"
-               class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">
-                ❌ Com Erro
-            </a>
-            <a href="{% url 'search:request_list' %}?status=no_results"
-               class="filter-btn {% if current_filter == 'no_results' %}active{% endif %}">
-                🔍 Sem Resultados
-            </a>
+    <form method="get" action="{% url 'search:request_list' %}" class="filters-bar">
+        <div class="filters-selects">
+            <span class="filters-label">Filtrar por:</span>
+
+            <select name="status" class="filter-select">
+                <option value="">Todos os status</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="area" class="filter-select">
+                <option value="">Todas as áreas</option>
+                {% for value, label in area_choices %}
+                <option value="{{ value }}" {% if filters.area == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="modality" class="filter-select">
+                <option value="">Todas as modalidades</option>
+                {% for value, label in modality_choices %}
+                <option value="{{ value }}" {% if filters.modality == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="state" class="filter-select">
+                <option value="">Todos os estados</option>
+                {% for value, label in state_choices %}
+                <option value="{{ value }}" {% if filters.state == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
         </div>
-    </div>
+
+        <div class="filters-actions">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            {% if filters.status or filters.area or filters.modality or filters.state %}
+            <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Limpar</a>
+            {% endif %}
+        </div>
+    </form>
 
     <!-- Lista de pesquisas -->
-    {% if searches %}
+    {% if page_obj.object_list %}
     <div class="search-cards search-cards-list">
-        {% for search in searches %}
+        {% for search in page_obj %}
         <div class="search-card search-card-{{ search.status }}">
             <div class="search-card-header">
                 <span class="search-status status-{{ search.status }}">
@@ -61,13 +72,13 @@
 
             <div class="search-meta">
                 {% if search.area %}
-                <span class="meta-tag">📚 {{ search.area }}</span>
+                <span class="meta-tag">📚 {{ search.get_area_display }}</span>
                 {% endif %}
                 {% if search.modality %}
-                <span class="meta-tag">🏫 {{ search.modality }}</span>
+                <span class="meta-tag">🏫 {{ search.get_modality_display }}</span>
                 {% endif %}
                 {% if search.state %}
-                <span class="meta-tag">📍 {{ search.state }}</span>
+                <span class="meta-tag">📍 {{ search.get_state_display }}</span>
                 {% endif %}
             </div>
 
@@ -75,29 +86,64 @@
                 <span class="search-results-count">
                     {{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}
                 </span>
-                {% if search.status == 'completed' %}
-                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                    Ver resultados
-                </a>
-                {% elif search.status == 'no_results' %}
-                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                    Ver detalhes
-                </a>
-                {% else %}
-                <span class="search-updated">
-                    Atualizado em {{ search.updated_at|date:"d/m/Y H:i" }}
-                </span>
-                {% endif %}
+
+                <div class="search-card-actions">
+                    {% if search.status == 'completed' or search.status == 'no_results' %}
+                    <a href="{% url 'search:search_results' search.pk %}" class="btn btn-sm btn-primary">
+                        Ver resultados
+                    </a>
+                    {% endif %}
+
+                    <form action="{% url 'search:search_repeat' search.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-secondary">🔁 Repetir</button>
+                    </form>
+
+                    <form action="{% url 'search:search_delete' search.pk %}" method="post"
+                          onsubmit="return confirm('Remover esta busca do histórico?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">🗑 Excluir</button>
+                    </form>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Paginação -->
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+           class="btn btn-sm btn-secondary">← Anterior</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <span class="btn btn-sm btn-primary">{{ num }}</span>
+            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+               class="btn btn-sm btn-secondary">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+           class="btn btn-sm btn-secondary">Próxima →</a>
+        {% endif %}
+    </nav>
+    <p class="pagination-info">
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        · {{ page_obj.paginator.count }} busca{{ page_obj.paginator.count|pluralize:"s" }} no total
+    </p>
+    {% endif %}
+
     {% else %}
     <div class="empty-state empty-state-large">
         <div class="empty-icon">🔍</div>
         <h3>Nenhuma pesquisa encontrada</h3>
-        {% if current_filter %}
-        <p>Não há pesquisas com o filtro selecionado.</p>
+        {% if filters.status or filters.area or filters.modality or filters.state %}
+        <p>Não há pesquisas com os filtros selecionados.</p>
         <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Ver Todas</a>
         {% else %}
         <p>Comece criando sua primeira pesquisa de cursos!</p>

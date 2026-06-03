@@ -2,10 +2,25 @@ from django.db import models
 from .choices import SearchModality, SearchStatus, SearchStates_Br, SearchArea
 from django.conf import settings
 
-# Create your models here.
+
+class SearchRequestQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_deleted=False)
+
+    def for_user(self, user):
+        return self.filter(user=user)
+
+
+class SearchRequestManager(models.Manager):
+    def get_queryset(self):
+        return SearchRequestQuerySet(self.model, using=self._db).active()
+
+    def for_user(self, user):
+        return self.get_queryset().for_user(user)
+
 
 class SearchRequest(models.Model):
-     
+
      user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -64,11 +79,26 @@ class SearchRequest(models.Model):
          default=0,
          verbose_name="Quantidade de resultados",
       )
-     
+
+     is_deleted = models.BooleanField(
+        default=False,
+        verbose_name="Excluído",
+     )
+
+     deleted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Excluído em",
+     )
+
+     objects = SearchRequestManager()
+     all_objects = models.Manager()
+
      class Meta:
         verbose_name = "Requisição de busca"
         verbose_name_plural = "Requisições de busca"
         ordering = ["-created_at"]
+        default_manager_name = "objects"
 
 
 
