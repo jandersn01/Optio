@@ -396,11 +396,25 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-sm);
     border-top: 1px solid var(--gray-200);
     font-size: 0.8rem;
     color: var(--gray-500);
+}
+
+.search-card-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.search-card-actions form {
+    display: inline-flex;
+    align-items: center;
 }
 
 /* === Empty State === */
@@ -520,8 +534,23 @@ a:hover {
     color: var(--gray-900);
 }
 
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.85rem;
+}
+
 .btn-block {
     width: 100%;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    color: white;
 }
 
 /* === Forms === */
@@ -548,6 +577,24 @@ a:hover {
 }
 
 .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.filter-select {
+    width: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    background: white;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-select:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
@@ -603,6 +650,11 @@ a:hover {
 }
 
 .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
 }
 
@@ -624,6 +676,20 @@ a:hover {
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
     flex-wrap: wrap;
+}
+
+.filters-selects {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.filters-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .filters-label {
@@ -834,6 +900,23 @@ a:hover {
 .footer p {
     color: var(--gray-500);
     font-size: 0.85rem;
+}
+
+/* === Pagination === */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 0.85rem;
+    margin-top: var(--spacing-sm);
 }
 
 /* === Responsividade === */
