@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Favoritos - Optio{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-content">
+            <h1>Meus Favoritos</h1>
+            <p class="header-subtitle">Cursos que você salvou para ver depois</p>
+        </div>
+    </header>
+
+    {% if favorites %}
+    <div class="search-cards">
+        {% for favorite in favorites %}
+        <div class="search-card">
+            <div class="search-card-header">
+                <h3 class="search-query" style="margin: 0;">{{ favorite.course.name }}</h3>
+            </div>
+
+            <div class="search-meta" style="margin-top: 0.5rem;">
+                <span class="meta-tag">🏛 {{ favorite.course.institution }}</span>
+                {% if favorite.course.modality %}
+                <span class="meta-tag">🖥 {{ favorite.course.get_modality_display }}</span>
+                {% endif %}
+                {% if favorite.course.state %}
+                <span class="meta-tag">📍 {{ favorite.course.state }}</span>
+                {% endif %}
+            </div>
+
+            <div class="search-card-footer" style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                {% if favorite.course.link %}
+                <a href="{{ favorite.course.link }}" target="_blank" rel="noopener" class="btn btn-primary">
+                    Acessar curso
+                </a>
+                {% endif %}
+                <form action="{% url 'search:favorite_remove' pk=favorite.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">
+                        Remover
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state empty-state-large">
+        <div class="empty-icon">⭐</div>
+        <h3>Você ainda não tem favoritos</h3>
+        <p>Encontre cursos de pós-graduação e salve seus preferidos aqui para acessar depois.</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Fazer uma pesquisa</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

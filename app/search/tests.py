@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from unittest.mock import patch, MagicMock
 
-from search.models import SearchRequest, Course
+from search.models import SearchRequest, Course, Favorite
 from search.choices import SearchStatus
 from search.emails import send_no_results_email, send_results_email
 
@@ -42,7 +42,7 @@ class SearchResultsViewAuthTestCase(TestCase):
             reverse("search:search_results", kwargs={"pk": self.search_request.pk})
         )
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login/", response.url)
+        self.assertIn("/login/", response.url)
 
     def test_user_cannot_access_other_users_search(self):
         """Verifica que usuario nao pode acessar busca de outro usuario."""
@@ -215,7 +215,7 @@ class SearchListViewAuthTestCase(TestCase):
         """Verifica que usuario nao autenticado e redirecionado para login."""
         response = self.client.get(reverse("search:request_list"))
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login/", response.url)
+        self.assertIn("/login/", response.url)
 
     def test_authenticated_can_access_list(self):
         """Verifica que usuario autenticado pode acessar a lista."""
@@ -472,3 +472,259 @@ class CompletedFlowStillWorksTestCase(TestCase):
         )
 
         mock_email.send.assert_called_once()
+
+
+# ============================================================
+# TASK 3 - Testes da página de favoritos
+# ============================================================
+
+
+class FavoritesListViewTestCase(TestCase):
+    """Testes para a view de listagem de favoritos."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.other_user = User.objects.create_user(
+            email="other@example.com",
+            password="otherpass123",
+        )
+        self.search_request = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="teste favoritos",
+            status=SearchStatus.COMPLETED,
+        )
+        self.course = Course.objects.create(
+            search_request=self.search_request,
+            name="Curso de Teste",
+            institution="IFPB",
+            modality="ead",
+            state="PB",
+        )
+
+    def test_unauthenticated_redirects_to_login(self):
+        """Verifica que usuario nao autenticado e redirecionado para login."""
+        response = self.client.get(reverse("search:favorites_list"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login/", response.url)
+
+    def test_authenticated_can_access_favorites(self):
+        """Verifica que usuario autenticado pode acessar favoritos."""
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:favorites_list"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_sees_only_own_favorites(self):
+        """Verifica que usuario ve apenas seus proprios favoritos."""
+        # Criar favoritos para ambos usuarios
+        Favorite.objects.create(user=self.user, course=self.course)
+
+        other_search = SearchRequest.objects.create(
+            user=self.other_user,
+            notification_email="other@example.com",
+            keywords="teste outro",
+            status=SearchStatus.COMPLETED,
+        )
+        other_course = Course.objects.create(
+            search_request=other_search,
+            name="Curso do Outro",
+            institution="UFPB",
+        )
+        Favorite.objects.create(user=self.other_user, course=other_course)
+
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertContains(response, "Curso de Teste")
+        self.assertNotContains(response, "Curso do Outro")
+
+    def test_favorites_displayed_correctly(self):
+        """Verifica que favoritos sao exibidos corretamente."""
+        Favorite.objects.create(user=self.user, course=self.course)
+
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertContains(response, "Curso de Teste")
+        self.assertContains(response, "IFPB")
+        self.assertContains(response, "PB")
+
+    def test_select_related_used_in_query(self):
+        """Verifica que select_related e utilizado na consulta."""
+        Favorite.objects.create(user=self.user, course=self.course)
+
+        self.client.login(email="test@example.com", password="testpass123")
+
+        with self.assertNumQueries(3):
+            # 1: session, 2: user, 3: favorites com select_related(course)
+            response = self.client.get(reverse("search:favorites_list"))
+            self.assertEqual(response.status_code, 200)
+            # Acessar os cursos no template nao deve gerar queries adicionais
+            self.assertContains(response, "Curso de Teste")
+
+
+class FavoritesEmptyStateTestCase(TestCase):
+    """Testes para o estado vazio da lista de favoritos."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+
+    def test_empty_favorites_shows_message(self):
+        """Verifica que lista vazia exibe mensagem correta."""
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertContains(response, "Você ainda não tem favoritos")
+
+    def test_empty_favorites_shows_search_link(self):
+        """Verifica que lista vazia exibe link para pesquisa."""
+        self.client.login(email="test@example.com", password="testpass123")
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertContains(response, "Fazer uma pesquisa")
+        self.assertContains(response, reverse("search:request_create"))
+
+
+class FavoriteRemoveTestCase(TestCase):
+    """Testes para remocao de favoritos."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.other_user = User.objects.create_user(
+            email="other@example.com",
+            password="otherpass123",
+        )
+        self.search_request = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="teste remocao",
+            status=SearchStatus.COMPLETED,
+        )
+        self.course = Course.objects.create(
+            search_request=self.search_request,
+            name="Curso para Remover",
+            institution="IFPB",
+        )
+        self.favorite = Favorite.objects.create(user=self.user, course=self.course)
+
+    def test_user_can_remove_own_favorite(self):
+        """Verifica que usuario pode remover proprio favorito."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.post(
+            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("search:favorites_list"))
+
+    def test_favorite_is_deleted_from_database(self):
+        """Verifica que favorito e removido do banco."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        self.assertEqual(Favorite.objects.filter(user=self.user).count(), 1)
+
+        self.client.post(
+            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+        )
+
+        self.assertEqual(Favorite.objects.filter(user=self.user).count(), 0)
+
+    def test_user_cannot_remove_other_users_favorite(self):
+        """Verifica que usuario nao pode remover favorito de outro usuario."""
+        self.client.login(email="other@example.com", password="otherpass123")
+
+        response = self.client.post(
+            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+        )
+
+        self.assertEqual(response.status_code, 404)
+        # Favorito ainda existe
+        self.assertTrue(Favorite.objects.filter(pk=self.favorite.pk).exists())
+
+    def test_unauthenticated_cannot_remove_favorite(self):
+        """Verifica que usuario nao autenticado nao pode remover favorito."""
+        response = self.client.post(
+            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login/", response.url)
+        # Favorito ainda existe
+        self.assertTrue(Favorite.objects.filter(pk=self.favorite.pk).exists())
+
+    def test_remove_nonexistent_favorite_returns_404(self):
+        """Verifica que remover favorito inexistente retorna 404."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.post(
+            reverse("search:favorite_remove", kwargs={"pk": 99999})
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_request_not_allowed(self):
+        """Verifica que GET nao e permitido para remocao."""
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(
+            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+
+class FavoriteModelTestCase(TestCase):
+    """Testes para o modelo Favorite."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="testpass123",
+        )
+        self.search_request = SearchRequest.objects.create(
+            user=self.user,
+            notification_email="test@example.com",
+            keywords="teste modelo",
+            status=SearchStatus.COMPLETED,
+        )
+        self.course = Course.objects.create(
+            search_request=self.search_request,
+            name="Curso Modelo",
+            institution="IFPB",
+        )
+
+    def test_favorite_creation(self):
+        """Verifica que favorito pode ser criado."""
+        favorite = Favorite.objects.create(user=self.user, course=self.course)
+
+        self.assertEqual(favorite.user, self.user)
+        self.assertEqual(favorite.course, self.course)
+        self.assertIsNotNone(favorite.created_at)
+
+    def test_unique_constraint_user_course(self):
+        """Verifica que usuario nao pode favoritar mesmo curso duas vezes."""
+        from django.db import IntegrityError
+
+        Favorite.objects.create(user=self.user, course=self.course)
+
+        with self.assertRaises(IntegrityError):
+            Favorite.objects.create(user=self.user, course=self.course)
+
+    def test_favorite_str_representation(self):
+        """Verifica representacao string do favorito."""
+        favorite = Favorite.objects.create(user=self.user, course=self.course)
+
+        self.assertEqual(str(favorite), "test@example.com - Curso Modelo")

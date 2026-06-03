@@ -128,3 +128,36 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.institution}"
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="favorites",
+        verbose_name="Usuário",
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="favorited_by",
+        verbose_name="Curso",
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Adicionado em",
+    )
+
+    class Meta:
+        verbose_name = "Favorito"
+        verbose_name_plural = "Favoritos"
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "course"],
+                name="unique_user_course_favorite",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.course.name}"
