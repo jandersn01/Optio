@@ -43,13 +43,24 @@
       </a>
 
       <a href="{% url 'search:request_list' %}"
-         class="nav-item {% if request.resolver_match.app_name == 'search' and request.resolver_match.url_name != 'request_create' %}active{% endif %}">
+         class="nav-item {% if request.resolver_match.url_name in 'request_list search_delete search_repeat' %}active{% endif %}">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <path d="M2 4h12M2 8h12M2 12h12"/>
         </svg>
         Minhas buscas
         {% if total_searches %}
         <span class="nav-count">{{ total_searches }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'search:favorites_list' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'favorites_list' %}active{% endif %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 2h10a1 1 0 011 1v11l-5.5-3L3 14V3a1 1 0 011-1z"/>
+        </svg>
+        Favoritos
+        {% if total_favorites %}
+        <span class="nav-count">{{ total_favorites }}</span>
         {% endif %}
       </a>
 

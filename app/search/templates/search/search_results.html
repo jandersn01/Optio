@@ -49,9 +49,34 @@
       <div class="course-card-body">
         <div class="spread" style="margin-bottom: var(--d-3);">
           <span class="label-eyebrow">{{ course.institution }}</span>
-          {% if course.modality %}
-          <span class="badge">{{ course.get_modality_display }}</span>
-          {% endif %}
+          <div class="row" style="gap:var(--d-2);">
+            {% if course.modality %}
+            <span class="badge">{{ course.get_modality_display }}</span>
+            {% endif %}
+            {% if course.pk in favorite_map %}
+            <form action="{% url 'search:favorite_remove' course.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
+              <button type="submit" title="Remover dos favoritos"
+                      style="width:28px;height:28px;border-radius:var(--r-1);color:var(--primary);background:var(--primary-soft);display:grid;place-items:center;cursor:pointer;border:none;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" stroke="none">
+                  <path d="M2 1.5h10a.5.5 0 01.5.5v10.5l-5.5-3.2L2 12.5V2a.5.5 0 01.5-.5z"/>
+                </svg>
+              </button>
+            </form>
+            {% else %}
+            <form action="{% url 'search:favorite_add' course.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
+              <button type="submit" title="Salvar nos favoritos"
+                      style="width:28px;height:28px;border-radius:var(--r-1);color:var(--ink-mute);background:var(--paper-2);border:1px solid var(--line-soft);display:grid;place-items:center;cursor:pointer;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 1.5h10a.5.5 0 01.5.5v10.5l-5.5-3.2L2 12.5V2a.5.5 0 01.5-.5z"/>
+                </svg>
+              </button>
+            </form>
+            {% endif %}
+          </div>
         </div>
         <h3 class="course-name">{{ course.name }}</h3>
         <div class="meta-row">

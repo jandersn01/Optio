@@ -1,4 +1,4 @@
-from search.models import SearchRequest
+from search.models import Favorite, SearchRequest
 
 
 def sidebar_context(request):
@@ -6,4 +6,5 @@ def sidebar_context(request):
         return {}
     return {
         "total_searches": SearchRequest.objects.for_user(request.user).count(),
+        "total_favorites": Favorite.objects.filter(user=request.user).count(),
     }
