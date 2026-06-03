@@ -79,11 +79,12 @@ WSGI_APPLICATION = 'optio.wsgi.application'
 
 DATABASES = {
     "default": {
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST", "db"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", os.getenv("DB_NAME")),
+        "USER": os.getenv("POSTGRES_USER", os.getenv("DB_USER")),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", os.getenv("DB_PASSWORD")),
+        "HOST": os.getenv("POSTGRES_HOST", os.getenv("DB_HOST", "db")),
+        "PORT": os.getenv("POSTGRES_PORT", os.getenv("DB_PORT", "5432")),
     }
 }
 

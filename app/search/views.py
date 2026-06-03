@@ -4,14 +4,15 @@ from datetime import timedelta
 
 import logging
 from django.contrib import messages
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 
 from search.models import Course, SearchRequest
 
-from .choices import SearchStatus
+from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
 from .publisher import QueuePublishError, publish_search_request
+from .services import delete_search, get_search_history, repeat_search
 
 
 logger = logging.getLogger(__name__)
@@ -86,16 +87,52 @@ def search_request_create(request):
 
 @login_required
 def search_list(request):
-    searches = SearchRequest.objects.filter(user=request.user)
-
-    status_filter = request.GET.get('status')
-    if status_filter:
-        searches = searches.filter(status=status_filter)
-
-    return render(request, 'search/search_list.html', {
-        'searches': searches,
-        'current_filter': status_filter,
+    filters = {
+        "status": request.GET.get("status", ""),
+        "area": request.GET.get("area", ""),
+        "modality": request.GET.get("modality", ""),
+        "state": request.GET.get("state", ""),
+    }
+    page_obj = get_search_history(request.user, filters, request.GET.get("page", 1))
+    return render(request, "search/search_list.html", {
+        "page_obj": page_obj,
+        "filters": filters,
+        "status_choices": SearchStatus.choices,
+        "area_choices": SearchArea.choices,
+        "modality_choices": SearchModality.choices,
+        "state_choices": SearchStates_Br.choices,
     })
+
+
+@login_required
+@require_POST
+def search_delete(request, pk):
+    try:
+        delete_search(request.user, pk)
+        messages.success(request, "Busca removida do histórico.")
+    except SearchRequest.DoesNotExist:
+        messages.error(request, "Busca não encontrada.")
+    return redirect("search:request_list")
+
+
+@login_required
+@require_POST
+def search_repeat(request, pk):
+    try:
+        new_search, published = repeat_search(request.user, pk)
+    except SearchRequest.DoesNotExist:
+        messages.error(request, "Busca não encontrada.")
+        return redirect("search:request_list")
+
+    if not published:
+        messages.error(
+            request,
+            "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes.",
+        )
+        return redirect("search:request_list")
+
+    messages.success(request, "Busca repetida com sucesso.")
+    return redirect("search:search_results", pk=new_search.pk)
 
 
 @login_required
