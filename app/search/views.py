@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 
-from search.models import Course, SearchRequest
+from search.models import Course, Favorite, SearchRequest
 
 from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
@@ -144,3 +144,22 @@ def search_results(request, pk):
         'search_request': search_request,
         'courses': courses,
     })
+
+
+@login_required
+def favorites_list(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related("course")
+
+    return render(request, 'search/favorites_list.html', {
+        'favorites': favorites,
+    })
+
+
+@require_http_methods(["POST"])
+@login_required
+def favorite_remove(request, pk):
+    favorite = get_object_or_404(Favorite, pk=pk, user=request.user)
+    favorite.delete()
+
+    messages.success(request, "Curso removido dos favoritos.")
+    return redirect("search:favorites_list")
