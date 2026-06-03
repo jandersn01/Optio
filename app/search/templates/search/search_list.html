@@ -1,109 +1,211 @@
 {% extends 'base.html' %}
-
-{% block title %}Minhas Pesquisas - Optio{% endblock %}
+{% block title %}Minhas buscas — Optio{% endblock %}
 
 {% block content %}
-<div class="page-container">
-    <header class="page-header">
-        <div class="header-content">
-            <h1>📋 Minhas Pesquisas</h1>
-            <p class="header-subtitle">Visualize e gerencie todas as suas pesquisas</p>
-        </div>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">
-            + Nova Pesquisa
-        </a>
-    </header>
 
-    <!-- Filtros -->
-    <div class="filters-bar">
-        <span class="filters-label">Filtrar por:</span>
-        <div class="filters-buttons">
-            <a href="{% url 'search:request_list' %}"
-               class="filter-btn {% if not current_filter %}active{% endif %}">
-                Todas
-            </a>
-            <a href="{% url 'search:request_list' %}?status=pending"
-               class="filter-btn {% if current_filter == 'pending' %}active{% endif %}">
-                ⏳ Pendentes
-            </a>
-            <a href="{% url 'search:request_list' %}?status=processing"
-               class="filter-btn {% if current_filter == 'processing' %}active{% endif %}">
-                🔄 Em Andamento
-            </a>
-            <a href="{% url 'search:request_list' %}?status=completed"
-               class="filter-btn {% if current_filter == 'completed' %}active{% endif %}">
-                ✅ Concluídas
-            </a>
-            <a href="{% url 'search:request_list' %}?status=failed"
-               class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">
-                ❌ Com Erro
-            </a>
-            <a href="{% url 'search:request_list' %}?status=no_results"
-               class="filter-btn {% if current_filter == 'no_results' %}active{% endif %}">
-                🔍 Sem Resultados
-            </a>
-        </div>
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <span class="crumb-sep">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+    </span>
+    <span class="crumb-cur">Minhas buscas</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary btn-sm">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+      Nova busca
+    </a>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom: var(--d-3);">
+        {{ counts.all }} busca{{ counts.all|pluralize:"s" }} registrada{{ counts.all|pluralize:"s" }}
+      </div>
+      <h1 class="h-1">Histórico de <em>buscas</em></h1>
+      <p class="lede" style="margin-top: var(--d-3);">
+        Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou transforme em alerta salvo.
+      </p>
     </div>
+  </header>
 
-    <!-- Lista de pesquisas -->
-    {% if searches %}
-    <div class="search-cards search-cards-list">
-        {% for search in searches %}
-        <div class="search-card search-card-{{ search.status }}">
-            <div class="search-card-header">
-                <span class="search-status status-{{ search.status }}">
-                    {{ search.status_icon }} {{ search.get_status_display }}
-                </span>
-                <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
-            </div>
+  {# Barra de filtros #}
+  <div style="display:flex; gap:var(--d-3); margin-bottom:var(--d-5); align-items:center; flex-wrap:wrap;">
 
-            <h3 class="search-query">{{ search.keywords }}</h3>
+    {# Input de texto — submete com Enter #}
+    <form method="get" action="{% url 'search:request_list' %}"
+          style="position:relative; flex:1; min-width:240px; display:flex; gap:var(--d-2);">
+      {% if filters.status %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
+      <div style="position:relative; flex:1;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+             style="position:absolute;left:12px;top:14px;color:var(--ink-mute);">
+          <circle cx="7" cy="7" r="4"/><path d="M10.5 10.5L14 14"/>
+        </svg>
+        <input class="input" style="padding-left:38px;" name="q"
+               value="{{ filters.q|default:'' }}"
+               placeholder="Filtrar por palavras-chave…">
+      </div>
+    </form>
 
-            <div class="search-meta">
-                {% if search.area %}
-                <span class="meta-tag">📚 {{ search.area }}</span>
-                {% endif %}
-                {% if search.modality %}
-                <span class="meta-tag">🏫 {{ search.modality }}</span>
-                {% endif %}
-                {% if search.state %}
-                <span class="meta-tag">📍 {{ search.state }}</span>
-                {% endif %}
-            </div>
+    {# Segmented control de status #}
+    <nav class="segment">
+      <a href="?{% if filters.q %}q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if not filters.status %}active{% endif %}">
+        Todas · {{ counts.all }}
+      </a>
+      <a href="?status=completed{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'completed' %}active{% endif %}">
+        Concluídas · {{ counts.completed }}
+      </a>
+      <a href="?status=processing{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'processing' %}active{% endif %}">
+        Em andamento · {{ counts.processing }}
+      </a>
+      <a href="?status=no_results{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'no_results' %}active{% endif %}">
+        Sem resultados · {{ counts.no_results }}
+      </a>
+    </nav>
 
-            <div class="search-card-footer">
-                <span class="search-results-count">
-                    {{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}
-                </span>
-                {% if search.status == 'completed' %}
-                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                    Ver resultados
-                </a>
-                {% elif search.status == 'no_results' %}
-                <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                    Ver detalhes
-                </a>
-                {% else %}
-                <span class="search-updated">
-                    Atualizado em {{ search.updated_at|date:"d/m/Y H:i" }}
-                </span>
-                {% endif %}
-            </div>
+  </div>
+
+  {# Lista #}
+  {% if page_obj.object_list %}
+  <div class="history-list stagger">
+    {% for search in page_obj %}
+    {# Row inteira clicável via onclick; botões de ação param propagação #}
+    <div style="
+          display:grid;
+          grid-template-columns:160px 1fr auto;
+          gap:var(--d-5);
+          align-items:center;
+          padding:var(--d-4) var(--d-5);
+          border-bottom:1px solid var(--line-soft);
+          cursor:pointer;
+          transition:background var(--t-fast) var(--ease);
+         "
+         onclick="window.location='{% url 'search:search_results' search.pk %}'"
+         onmouseover="this.style.background='var(--paper-2)'"
+         onmouseout="this.style.background='transparent'">
+
+      {# Col 1 — status + data #}
+      <div>
+        <span class="badge dot status-{{ search.status }}">{{ search.get_status_display }}</span>
+        <div class="text-xs muted" style="margin-top:6px;">{{ search.created_at|date:"d/m/Y H:i" }}</div>
+      </div>
+
+      {# Col 2 — keywords em serif com aspas + meta #}
+      <div style="min-width:0;">
+        <h3 class="serif" style="font-size:19px;line-height:1.25;letter-spacing:-0.005em;margin-bottom:4px;">
+          "{{ search.keywords }}"
+        </h3>
+        <div class="meta-row">
+          {% if search.area %}<span>{{ search.get_area_display }}</span>{% endif %}
+          {% if search.area and search.modality %}<span class="sep">·</span>{% endif %}
+          {% if search.modality %}<span>{{ search.get_modality_display }}</span>{% endif %}
+          {% if search.state %}<span class="sep">·</span><span>{{ search.get_state_display }}</span>{% endif %}
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-state empty-state-large">
-        <div class="empty-icon">🔍</div>
-        <h3>Nenhuma pesquisa encontrada</h3>
-        {% if current_filter %}
-        <p>Não há pesquisas com o filtro selecionado.</p>
-        <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Ver Todas</a>
-        {% else %}
-        <p>Comece criando sua primeira pesquisa de cursos!</p>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Criar Pesquisa</a>
+      </div>
+
+      {# Col 3 — contagem / estado + ações + chevron #}
+      <div class="row" style="gap:var(--d-4); align-items:center;">
+
+        {% if search.status == 'completed' %}
+        <div style="text-align:right;">
+          <div class="serif" style="font-size:26px;line-height:1;letter-spacing:-0.02em;">{{ search.results_count }}</div>
+          <div class="text-xs muted" style="margin-top:2px;">resultado{{ search.results_count|pluralize:"s" }}</div>
+        </div>
+        {% elif search.status == 'processing' or search.status == 'pending' %}
+        <span class="pulse-dot text-xs" style="color:var(--info);">
+          <span style="margin-left:6px;">processando</span>
+        </span>
         {% endif %}
+
+        {# Ações — stopPropagation para não acionar o onclick da row #}
+        <div class="row" style="gap:var(--d-1);" onclick="event.stopPropagation()">
+          {% if search.status == 'completed' or search.status == 'no_results' %}
+          <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary btn-sm">Ver</a>
+          {% endif %}
+
+          <form action="{% url 'search:search_repeat' search.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm" title="Repetir busca">
+              {# Ícone redo — seta curvada no sentido horário #}
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 1v4h-4"/>
+                <path d="M13 5A6 6 0 101 7"/>
+              </svg>
+            </button>
+          </form>
+
+          <form action="{% url 'search:search_delete' search.pk %}" method="post"
+                onsubmit="return confirm('Remover esta busca do histórico?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm" title="Excluir" style="color:var(--err);">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3.5 4l.5 7.5h6L11 4"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        {# Chevron indicando navegação #}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-mute); flex-shrink:0;">
+          <path d="M6 4l4 4-4 4"/>
+        </svg>
+
+      </div>
     </div>
+    {% endfor %}
+  </div>
+
+  {# Paginação #}
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">← Anterior</a>
     {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <span class="btn btn-sm current">{{ num }}</span>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+      <a href="?page={{ num }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+         class="btn btn-secondary btn-sm">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">Próxima →</a>
+    {% endif %}
+  </nav>
+  <p class="pagination-info">
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    · {{ page_obj.paginator.count }} busca{{ page_obj.paginator.count|pluralize:"s" }} no total
+  </p>
+  {% endif %}
+
+  {% else %}
+  {# Estado vazio — ∅ em Instrument Serif #}
+  <div class="empty">
+    <div class="em-mark">∅</div>
+    <h3 class="h-3" style="margin-bottom:8px;">Nenhuma busca encontrada</h3>
+    {% if filters.status or filters.q %}
+    <p class="text-sm" style="margin-bottom:var(--d-4);">Tente outro filtro ou limpe a busca.</p>
+    <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Ver todas</a>
+    {% else %}
+    <p class="text-sm" style="margin-bottom:var(--d-4);">Comece criando sua primeira pesquisa de cursos.</p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}

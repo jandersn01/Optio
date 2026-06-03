@@ -1,71 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Optio{% endblock %}</title>
-
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    {% block extra_css %}{% endblock %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Optio{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% if user.is_authenticated %}
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="{% url 'core:dashboard' %}" class="navbar-brand">
-                <span class="brand-icon">🎓</span>
-                <span class="brand-text">Optio</span>
-            </a>
 
-            <ul class="navbar-menu">
-                <li>
-                    <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'search:request_list' %}" class="nav-link {% if request.resolver_match.url_name == 'request_list' %}active{% endif %}">
-                        Pesquisas
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'search:request_create' %}" class="nav-link btn-primary-nav">
-                        + Nova Pesquisa
-                    </a>
-                </li>
-            </ul>
+<div class="app {% if not user.is_authenticated %}guest{% endif %}">
 
-            <div class="navbar-user">
-                <span class="user-greeting">Olá, <strong>{{ user.first_name|default:user.username }}</strong></span>
-                <a href="{% url 'core:logout' %}" class="btn-logout">Sair</a>
-            </div>
-        </div>
+  {% if user.is_authenticated %}
+  <aside class="sidebar">
+    <a href="{% url 'core:dashboard' %}" class="brand">
+      <span class="brand-mark">Opti<em>o</em></span>
+      <span class="brand-tag">Beta</span>
+    </a>
+
+    <nav class="nav">
+      <span class="nav-group-label">Trabalho</span>
+
+      <a href="{% url 'core:dashboard' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z"/><path d="M6 15V9h4v6"/>
+        </svg>
+        Painel
+      </a>
+
+      <a href="{% url 'search:request_create' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'request_create' %}active{% endif %}"
+         style="color: var(--primary); font-weight: 600;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M8 2v12M2 8h12"/>
+        </svg>
+        Nova busca
+      </a>
+
+      <a href="{% url 'search:request_list' %}"
+         class="nav-item {% if request.resolver_match.app_name == 'search' and request.resolver_match.url_name != 'request_create' %}active{% endif %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M2 4h12M2 8h12M2 12h12"/>
+        </svg>
+        Minhas buscas
+        {% if total_searches %}
+        <span class="nav-count">{{ total_searches }}</span>
+        {% endif %}
+      </a>
+
+      <span class="nav-group-label" style="margin-top: auto;">Conta</span>
+
+      <a href="{% url 'core:preferences' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'preferences' %}active{% endif %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="2"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>
+        </svg>
+        Preferências
+      </a>
+
+      <form method="post" action="{% url 'core:logout' %}" style="display: contents;">
+        {% csrf_token %}
+        <button type="submit" class="nav-item">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2h3a1 1 0 011 1v10a1 1 0 01-1 1h-3M7 11l3-3-3-3M10 8H2"/>
+          </svg>
+          Sair
+        </button>
+      </form>
     </nav>
-    {% endif %}
 
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
-        </div>
-        {% endfor %}
+    <div class="sidebar-user">
+      <span class="avatar">{{ user.first_name.0|upper|default:user.email.0|upper }}</span>
+      <div class="sidebar-user-info">
+        <strong>{{ user.get_full_name|default:user.email }}</strong>
+        <span>{{ user.email }}</span>
+      </div>
     </div>
+  </aside>
+  {% endif %}
+
+  <main class="main">
+    {% if messages %}
+    <div class="toast-stack" id="toasts">
+      {% for message in messages %}
+      <div class="toast {% if 'success' in message.tags %}toast-ok{% elif 'error' in message.tags %}toast-err{% elif 'warning' in message.tags %}toast-warn{% endif %}">
+        <span class="dot"></span>
+        <span>{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(function(){
+        var t=document.getElementById('toasts');
+        if(t){t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(function(){t.remove()},400);}
+      },3500);
+    </script>
     {% endif %}
 
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
+  </main>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2025 Optio - Cursos de Pós-Graduação</p>
-        </div>
-    </footer>
+</div>
 
-    {% block extra_js %}{% endblock %}
+{% block extra_js %}{% endblock %}
 </body>
 </html>

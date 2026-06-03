@@ -1,97 +1,110 @@
 {% extends 'base.html' %}
-
-{% block title %}Resultados — {{ search_request.keywords }} - Optio{% endblock %}
+{% block title %}Resultados — {{ search_request.keywords }} — Optio{% endblock %}
 
 {% block content %}
-<div class="page-container">
-    <header class="page-header">
-        <div class="header-content">
-            <a href="{% url 'search:request_list' %}" class="btn btn-secondary" style="margin-bottom: 0.5rem;">
-                ← Voltar
-            </a>
-            <h1>Resultados da busca</h1>
-            <p class="header-subtitle">
-                <strong>{{ search_request.keywords }}</strong>
-                {% if search_request.area %} · {{ search_request.area }}{% endif %}
-                {% if search_request.modality %} · {{ search_request.get_modality_display }}{% endif %}
-                {% if search_request.state %} · {{ search_request.state }}{% endif %}
-            </p>
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <span class="crumb-sep">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+    </span>
+    <a href="{% url 'search:request_list' %}">Minhas buscas</a>
+    <span class="crumb-sep">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+    </span>
+    <span class="crumb-cur">Resultados</span>
+  </div>
+  <div class="topbar-actions">
+    <span class="badge dot status-{{ search_request.status }}">{{ search_request.get_status_display }}</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom: var(--d-3);">
+        {% if courses %}{{ courses|length }} resultado{{ courses|length|pluralize:"s" }} encontrado{{ courses|length|pluralize:"s" }}{% endif %}
+      </div>
+      <h1 class="h-1">"<em>{{ search_request.keywords }}</em>"</h1>
+      <div class="meta-row" style="margin-top: var(--d-3);">
+        {% if search_request.area %}<span>{{ search_request.get_area_display }}</span>{% endif %}
+        {% if search_request.area and search_request.modality %}<span class="sep">·</span>{% endif %}
+        {% if search_request.modality %}<span>{{ search_request.get_modality_display }}</span>{% endif %}
+        {% if search_request.state %}<span class="sep">·</span><span>{{ search_request.get_state_display }}</span>{% endif %}
+      </div>
+    </div>
+    <a href="{% url 'search:request_list' %}" class="btn btn-secondary btn-sm">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11L5 7l4-4"/></svg>
+      Voltar
+    </a>
+  </header>
+
+  {% if courses %}
+  <div class="course-grid stagger">
+    {% for course in courses %}
+    <article class="card interactive">
+      <div class="course-card-body">
+        <div class="spread" style="margin-bottom: var(--d-3);">
+          <span class="label-eyebrow">{{ course.institution }}</span>
+          {% if course.modality %}
+          <span class="badge">{{ course.get_modality_display }}</span>
+          {% endif %}
         </div>
-        <span class="search-status status-{{ search_request.status }}">
-            {{ search_request.status_icon }} {{ search_request.get_status_display }}
-        </span>
-    </header>
-
-    {% if courses %}
-    <div class="search-cards">
-        {% for course in courses %}
-        <div class="search-card">
-            <div class="search-card-header">
-                <h3 class="search-query" style="margin: 0;">{{ course.name }}</h3>
-            </div>
-
-            <div class="search-meta" style="margin-top: 0.5rem;">
-                <span class="meta-tag">🏛 {{ course.institution }}</span>
-                {% if course.modality %}
-                <span class="meta-tag">🖥 {{ course.get_modality_display }}</span>
-                {% endif %}
-                {% if course.state %}
-                <span class="meta-tag">📍 {{ course.state }}</span>
-                {% endif %}
-            </div>
-
-            {% if course.link %}
-            <div class="search-card-footer" style="margin-top: 1rem;">
-                <a href="{{ course.link }}" target="_blank" rel="noopener" class="btn btn-primary">
-                    Acessar curso
-                </a>
-            </div>
-            {% endif %}
+        <h3 class="course-name">{{ course.name }}</h3>
+        <div class="meta-row">
+          {% if course.state %}<span>{{ course.get_state_display }}</span>{% endif %}
         </div>
-        {% endfor %}
-    </div>
-
-    {% elif search_request.status == 'no_results' %}
-    <div class="empty-state empty-state-large">
-        <div class="empty-icon">🔍</div>
-        <h3>Nenhum curso encontrado</h3>
-        <p>Não encontramos cursos de pós-graduação gratuitos para os critérios informados.</p>
-
-        <div style="text-align: left; margin: 1.5rem auto; max-width: 400px; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
-            <p style="margin-bottom: 0.5rem;"><strong>Sugestões para ampliar sua busca:</strong></p>
-            <ul style="margin: 0; padding-left: 1.2rem;">
-                <li>Use palavras-chave mais genéricas</li>
-                <li>Remova filtros de estado ou modalidade</li>
-                <li>Experimente áreas de conhecimento relacionadas</li>
-            </ul>
+        {% if course.link %}
+        <div style="margin-top: var(--d-4); padding-top: var(--d-3); border-top: 1px solid var(--line-soft);">
+          <a href="{{ course.link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            Acessar curso
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2H10v5M10 2L4 8M2 5v5h5"/></svg>
+          </a>
         </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
 
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
-    </div>
+  {% elif search_request.status == 'no_results' %}
+  <div class="empty">
+    <div class="em-mark">∅</div>
+    <h3 class="h-3" style="margin-bottom: 8px;">Nenhum curso encontrado</h3>
+    <p class="text-sm" style="margin-bottom: var(--d-4);">
+      Não encontramos cursos de pós-graduação gratuitos para os critérios informados.<br>
+      Tente palavras-chave mais genéricas ou remova filtros de estado e modalidade.
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+  </div>
 
-    {% elif search_request.status == 'completed' %}
-    <div class="empty-state empty-state-large">
-        <div class="empty-icon">🔍</div>
-        <h3>Nenhum curso encontrado</h3>
-        <p>O sistema não encontrou cursos para os critérios informados.</p>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
-    </div>
+  {% elif search_request.status == 'failed' %}
+  <div class="empty">
+    <div class="em-mark">✗</div>
+    <h3 class="h-3" style="margin-bottom: 8px;">Erro ao processar busca</h3>
+    <p class="text-sm" style="margin-bottom: var(--d-4);">
+      Ocorreu um erro durante o processamento. Por favor, tente novamente.
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+  </div>
 
-    {% elif search_request.status == 'failed' %}
-    <div class="empty-state empty-state-large">
-        <div class="empty-icon">❌</div>
-        <h3>Erro ao processar busca</h3>
-        <p>Ocorreu um erro durante o processamento da sua busca. Por favor, tente novamente.</p>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova Pesquisa</a>
+  {% else %}
+  <div class="empty">
+    <div style="margin-bottom: var(--d-3);">
+      <span class="pulse-dot text-xs" style="color: var(--info); gap: 10px; font-size: 14px;">
+        <span style="margin-left: 8px;">Processando sua busca…</span>
+      </span>
     </div>
+    <p class="text-sm muted" style="margin-bottom: var(--d-4);">
+      Os resultados aparecerão aqui assim que o processamento for concluído.<br>
+      Você também receberá um e-mail quando estiverem prontos.
+    </p>
+    <meta http-equiv="refresh" content="5">
+  </div>
+  {% endif %}
 
-    {% else %}
-    <div class="empty-state empty-state-large">
-        <div class="empty-icon">⏳</div>
-        <h3>Processando sua busca...</h3>
-        <p>Os resultados aparecerão aqui assim que o processamento for concluído.</p>
-        <meta http-equiv="refresh" content="5">
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

@@ -1,175 +1,175 @@
 {% extends 'base.html' %}
-
-{% block title %}Dashboard - Optio{% endblock %}
+{% block title %}Painel  Optio{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    <!-- Header com saudação -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <h1>Bem-vindo, {{ user.first_name|default:user.username }}! 👋</h1>
-            <p class="header-subtitle">Acompanhe suas pesquisas de cursos de pós-graduação</p>
-        </div>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">
-            + Nova Pesquisa
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <span class="crumb-cur">Painel</span>
+  </div>
+  <div class="topbar-actions">
+    <span class="btn btn-secondary btn-sm" style="opacity:.5; cursor:not-allowed;" title="Em breve">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
+        <path d="M6 13.5a2 2 0 004 0"/>
+      </svg>
+      Alertas
+    </span>
+  </div>
+</div>
+
+<div class="page stagger">
+
+  {# ── Hero: saudação + CTA nova busca ── #}
+  <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:var(--d-6); margin-bottom:var(--d-7); align-items:end;">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
+        {% now "H" as hour %}
+        {% if hour < "12" %}Bom dia{% elif hour < "18" %}Boa tarde{% else %}Boa noite{% endif %}
+        · {% now "d \d\e N \d\e Y" %}
+      </div>
+      <h1 class="h-display" style="font-size:clamp(40px,4.4vw,60px);">
+        Oi, {{ user.first_name|default:user.email }}. <em>O que</em> você quer descobrir hoje?
+      </h1>
+    </div>
+
+    <a href="{% url 'search:request_create' %}"
+       style="background:var(--paper);border:1px solid var(--line);border-radius:var(--r-3);padding:var(--d-4) var(--d-5);display:flex;align-items:center;gap:var(--d-4);box-shadow:var(--sh-1);transition:border-color var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease);text-align:left;"
+       onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='var(--sh-2)'"
+       onmouseout="this.style.borderColor='var(--line)';this.style.boxShadow='var(--sh-1)'">
+      <span style="width:44px;height:44px;flex-shrink:0;border-radius:var(--r-2);background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>
+      </span>
+      <span style="flex:1;">
+        <span class="serif" style="display:block;font-size:22px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px;">
+          Começar uma <em style="color:var(--primary);">nova busca</em>
+        </span>
+        <span class="text-xs muted" style="display:block;">Filtre por área, modalidade e estado</span>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--ink-mute);flex-shrink:0;"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </a>
+  </div>
+
+  {# ── Stats ── #}
+  <div class="stats-grid" style="margin-bottom:var(--d-7);">
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">Buscas concluídas</div>
+      <div class="serif stat-value">{{ stats.completed }}</div>
+      <div class="text-xs muted">Últimos 30 dias</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">Resultados encontrados</div>
+      <div class="serif stat-value">{{ stats.total_results }}</div>
+      <div class="text-xs muted">Cursos no histórico</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">Em andamento</div>
+      <div class="serif stat-value {% if stats.processing %}accent{% endif %}">{{ stats.processing }}</div>
+      <div class="text-xs muted">Processando agora</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">Total de buscas</div>
+      <div class="serif stat-value">{{ stats.total }}</div>
+      <div class="text-xs muted">Histórico completo</div>
+    </div>
+  </div>
+
+  {# ── Duas colunas: buscas recentes + aside ── #}
+  <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:var(--d-6);">
+
+    {# Coluna esquerda — buscas recentes #}
+    <section>
+      <div class="spread" style="margin-bottom:var(--d-4);">
+        <h2 class="h-2">Suas buscas recentes</h2>
+        <a href="{% url 'search:request_list' %}" class="btn btn-ghost btn-sm">
+          Ver histórico completo
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
         </a>
-    </header>
+      </div>
 
-    <!-- Cards de estatísticas -->
-    <section class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-total">📊</div>
-            <div class="stat-info">
-                <span class="stat-number">{{ stats.total }}</span>
-                <span class="stat-label">Total de Pesquisas</span>
+      {% if recent_searches %}
+      <div class="col stagger" style="gap:var(--d-3);">
+        {% for search in recent_searches %}
+        <a href="{% url 'search:search_results' search.pk %}"
+           class="card interactive" style="padding:var(--d-4) var(--d-5);display:block;">
+          <div class="spread" style="margin-bottom:var(--d-3);">
+            <div class="row" style="gap:var(--d-3);">
+              <span class="badge dot status-{{ search.status }}">{{ search.get_status_display }}</span>
+              <span class="text-xs muted">{{ search.relative_time }}</span>
             </div>
-        </div>
+            <div class="row" style="gap:var(--d-3);">
+              {% if search.status == 'completed' %}
+              <span class="text-xs muted">{{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}</span>
+              {% elif search.status == 'processing' or search.status == 'pending' %}
+              <span class="pulse-dot text-xs" style="color:var(--info);"></span>
+              {% endif %}
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--ink-mute);"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
+            </div>
+          </div>
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-processing">🔄</div>
-            <div class="stat-info">
-                <span class="stat-number">{{ stats.processing }}</span>
-                <span class="stat-label">Em Andamento</span>
-            </div>
-        </div>
+          <h3 class="serif" style="font-size:22px;line-height:1.2;letter-spacing:-0.01em;margin-bottom:var(--d-3);">
+            "{{ search.keywords }}"
+          </h3>
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-completed">✅</div>
-            <div class="stat-info">
-                <span class="stat-number">{{ stats.completed }}</span>
-                <span class="stat-label">Concluídas</span>
-            </div>
-        </div>
+          <div class="meta-row">
+            {% if search.area %}<span>{{ search.get_area_display }}</span>{% endif %}
+            {% if search.area and search.modality %}<span class="sep">·</span>{% endif %}
+            {% if search.modality %}<span>{{ search.get_modality_display }}</span>{% endif %}
+            {% if search.state %}<span class="sep">·</span><span>{{ search.get_state_display }}</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
 
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-failed">❌</div>
-            <div class="stat-info">
-                <span class="stat-number">{{ stats.failed }}</span>
-                <span class="stat-label">Com Erro</span>
-            </div>
-        </div>
+      {% else %}
+      <div class="empty">
+        <div class="em-mark">∅</div>
+        <h3 class="h-3" style="margin-bottom:8px;">Nenhuma busca ainda</h3>
+        <p class="text-sm" style="margin-bottom:var(--d-4);">Comece criando sua primeira pesquisa de cursos.</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+      </div>
+      {% endif %}
     </section>
 
-    <!-- Pesquisas em andamento -->
-    <section class="dashboard-section">
-        <div class="section-header">
-            <h2>🔄 Pesquisas em Andamento</h2>
+    {# Coluna direita — aside #}
+    <aside style="display:flex; flex-direction:column; gap:var(--d-5);">
+
+      {# Card: Seus alertas #}
+      <section class="card" style="padding:var(--d-5);">
+        <div class="spread" style="margin-bottom:var(--d-4);">
+          <h3 class="h-3">Seus alertas</h3>
+          <span class="text-xs" style="color:var(--ink-mute);">Em breve</span>
         </div>
 
-        {% if processing_searches %}
-        <div class="search-cards">
-            {% for search in processing_searches %}
-            <div class="search-card search-card-{{ search.status }}">
-                <div class="search-card-header">
-                    <span class="search-status status-{{ search.status }}">
-                        {{ search.status_icon }} {{ search.get_status_display }}
-                    </span>
-                    <span class="search-date">{{ search.created_at|date:"d/m/Y H:i" }}</span>
-                </div>
-                <h3 class="search-query">{{ search.keywords }}</h3>
-                <div class="search-meta">
-                    {% if search.area %}
-                    <span class="meta-tag">📚 {{ search.area }}</span>
-                    {% endif %}
-                    {% if search.modality %}
-                    <span class="meta-tag">🏫 {{ search.modality }}</span>
-                    {% endif %}
-                    {% if search.state %}
-                    <span class="meta-tag">📍 {{ search.state }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
+        <div style="padding:var(--d-4) 0; text-align:center; border-top:1px solid var(--line-soft);">
+          <div style="font-family:var(--serif);font-style:italic;font-size:40px;color:var(--ink-mute);line-height:1;margin-bottom:var(--d-3);">∅</div>
+          <p class="text-xs muted" style="margin:0 0 var(--d-3);">
+            Nenhum alerta configurado ainda.
+          </p>
+          <span class="btn btn-secondary btn-sm" style="opacity:.5;cursor:not-allowed;">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v4M4 5v4M8 2v12M2 8h12"/></svg>
+            Criar alerta
+          </span>
         </div>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <p>Nenhuma pesquisa em andamento</p>
-            <a href="{% url 'search:request_create' %}" class="btn btn-secondary">Criar Pesquisa</a>
-        </div>
-        {% endif %}
-    </section>
+      </section>
 
-    <!-- Pesquisas concluídas -->
-    <section class="dashboard-section">
-        <div class="section-header">
-            <h2>✅ Pesquisas Concluídas</h2>
-            {% if completed_searches %}
-            <a href="{% url 'search:request_list' %}?status=completed" class="btn-link">Ver todas →</a>
-            {% endif %}
+      {# Card: Dica do Optio #}
+      <section style="padding:var(--d-5);border:1px dashed var(--line);border-radius:var(--r-3);">
+        <div class="row" style="gap:8px;margin-bottom:var(--d-3);">
+          {# Ícone sparkle (estrela de 4 pontas) #}
+          <svg width="14" height="14" viewBox="0 0 14 14" style="color:var(--primary);flex-shrink:0;" fill="currentColor">
+            <path d="M7 0C7 3.87 3.87 7 0 7c3.87 0 7 3.13 7 7 0-3.87 3.13-7 7-7-3.87 0-7-3.13-7-7z"/>
+          </svg>
+          <span class="label-eyebrow" style="color:var(--primary);">Dica do Optio</span>
         </div>
+        <p class="text-sm" style="margin:0;line-height:1.55;color:var(--ink-2);">
+          Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.
+        </p>
+      </section>
 
-        {% if completed_searches %}
-        <div class="search-cards">
-            {% for search in completed_searches %}
-            <div class="search-card search-card-completed">
-                <div class="search-card-header">
-                    <span class="search-status status-completed">
-                        ✅ Concluída
-                    </span>
-                    <span class="search-results">{{ search.results_count }} resultados</span>
-                </div>
-                <h3 class="search-query">{{ search.keywords }}</h3>
-                <div class="search-meta">
-                    {% if search.area %}
-                    <span class="meta-tag">📚 {{ search.area }}</span>
-                    {% endif %}
-                    <span class="meta-tag">📅 {{ search.updated_at|date:"d/m/Y" }}</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">📭</div>
-            <p>Nenhuma pesquisa concluída ainda</p>
-        </div>
-        {% endif %}
-    </section>
+    </aside>
+  </div>
 
-    <!-- Pesquisas recentes -->
-    <section class="dashboard-section">
-        <div class="section-header">
-            <h2>🕐 Histórico Recente</h2>
-            <a href="{% url 'search:request_list' %}" class="btn-link">Ver todas →</a>
-        </div>
-
-        {% if recent_searches %}
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Pesquisa</th>
-                        <th>Área</th>
-                        <th>Status</th>
-                        <th>Resultados</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for search in recent_searches %}
-                    <tr>
-                        <td class="td-query">{{ search.keywords }}</td>
-                        <td>{{ search.area|default:"-" }}</td>
-                        <td>
-                            <span class="badge badge-{{ search.status_color }}">
-                                {{ search.status_icon }} {{ search.get_status_display }}
-                            </span>
-                        </td>
-                        <td>{{ search.results_count }}</td>
-                        <td>{{ search.created_at|date:"d/m/Y H:i" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <p>Você ainda não realizou nenhuma pesquisa</p>
-            <a href="{% url 'search:request_create' %}" class="btn btn-primary">Criar Primeira Pesquisa</a>
-        </div>
-        {% endif %}
-    </section>
 </div>
 {% endblock %}
