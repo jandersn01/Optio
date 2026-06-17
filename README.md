@@ -594,3 +594,12 @@ A base atual prioriza:
 - Processamento assíncrono com RabbitMQ;
 - Separação de responsabilidades entre web e worker;
 - Evolução incremental do sistema.
+
+## 🔒 Segurança e Privacidade (LGPD)
+
+O Optio foi projetado com "Security by Design" e está em conformidade com as diretrizes de privacidade de dados:
+
+- **Isolamento de Tenant:** Todas as views e buscas impõem validação de ownership (`user=request.user`), garantindo que dados sejam estritamente privados.
+- **Proteção de Dados Sensíveis:** Senhas não são armazenadas em texto plano (Hash via algoritmo PBKDF2).
+- **Consentimento Explícito:** O aceite da Política de Privacidade é obrigatório no registro e armazenado no banco de dados (Auditoria LGPD).
+- **Hardening de Produção:** Aplicação configurada com HTTP Strict Transport Security (HSTS), cookies `Secure` e proteções nativas contra Clickjacking (`X-Frame-Options: DENY`) e CSRF.
