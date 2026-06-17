@@ -26,6 +26,12 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField('E-mail', unique=True)
+    
+    policy_accepted = models.BooleanField(
+        default= False,
+        verbose_name='Aceitou a política de Privacidade',
+        help_text='Indica se o usuário aceitou a política de privacidade no momento do cadastro'
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
