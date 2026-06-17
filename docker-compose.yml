@@ -17,6 +17,9 @@ services:
     build:
       context: .
       dockerfile: docker/worker/Dockerfile
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=optio.settings
     volumes:
       - ./worker:/worker
       - ./app:/app
