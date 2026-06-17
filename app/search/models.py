@@ -1,6 +1,8 @@
 from django.db import models
-from .choices import SearchModality, SearchStatus, SearchStates_Br, SearchArea
 from django.conf import settings
+from django.utils import timezone
+
+from .choices import SearchModality, SearchStatus, SearchStates_Br, SearchArea
 
 
 class SearchRequestQuerySet(models.QuerySet):
@@ -116,7 +118,6 @@ class SearchRequest(models.Model):
 
     @property
     def relative_time(self) -> str:
-        from django.utils import timezone
         diff = timezone.now() - self.created_at
         s = diff.total_seconds()
         if s < 60:

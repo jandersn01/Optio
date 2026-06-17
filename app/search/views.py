@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_http_methods, require_POST
 
 from search.models import Course, Favorite, SearchRequest
@@ -18,6 +19,18 @@ from .services import delete_search, get_search_history, repeat_search
 
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_next(request, fallback="search:favorites_list"):
+    """Retorna o destino de `next` apenas se for uma URL interna; senão, o fallback."""
+    next_url = request.POST.get("next", "")
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return next_url
+    return fallback
 
 
 @require_http_methods(["GET", "POST"])
@@ -163,13 +176,13 @@ def favorites_list(request):
 @login_required
 @require_POST
 def favorite_add(request, pk):
-    course = get_object_or_404(Course, pk=pk)
+    course = get_object_or_404(Course, pk=pk, search_request__user=request.user)
     try:
         Favorite.objects.create(user=request.user, course=course)
         messages.success(request, f'"{course.name}" salvo nos favoritos.')
     except IntegrityError:
         messages.info(request, "Curso já está nos seus favoritos.")
-    return redirect(request.POST.get("next", "search:favorites_list"))
+    return redirect(_safe_next(request))
 
 
 @login_required
@@ -180,4 +193,4 @@ def favorite_remove(request, pk):
     course_name = favorite.course.name
     favorite.delete()
     messages.success(request, f'"{course_name}" removido dos favoritos.')
-    return redirect(request.POST.get("next", "search:favorites_list"))
+    return redirect(_safe_next(request))
