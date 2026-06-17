@@ -4,7 +4,6 @@ import time
 import sys
 import logging
 
-sys.path.append("/app")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "optio.settings")
 
 import django
