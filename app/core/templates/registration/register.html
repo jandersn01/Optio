@@ -71,7 +71,9 @@
 
         {% for field in form %}
         <div class="field">
+          {% if field.field.widget.input_type != 'checkbox' %}
           <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {% endif %}
           {% if field.field.widget.input_type == 'password' %}
             <input class="input {% if field.errors %}is-invalid{% endif %}"
                    type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
@@ -81,6 +83,12 @@
                    type="email" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
                    value="{{ field.value|default:'' }}"
                    placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
+          {% elif field.field.widget.input_type == 'checkbox' %}
+            <div class="row" style="gap: 8px; margin-top: 8px;">
+                <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" 
+                      {% if field.value %}checked{% endif %}>
+                <span class="text-sm">{{ field.label }}</span>
+            </div>
           {% else %}
             <input class="input {% if field.errors %}is-invalid{% endif %}"
                    type="text" name="{{ field.html_name }}" id="{{ field.id_for_label }}"

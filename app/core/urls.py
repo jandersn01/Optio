@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
 
 app_name = 'core'
 
@@ -9,4 +10,5 @@ urlpatterns = [
     path('cadastro/', views.cadastro, name='cadastro'),
     path('preferencias/', views.preferences, name='preferences'),
     path('apagar-historico/', views.delete_search_history, name='delete_search_history'),
+    path('politica-de-privacidade', TemplateView.as_view(template_name='core/privacy.html'), name= 'privacy_policy')
 ]
