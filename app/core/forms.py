@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, NotificationPreference
 from search.choices import SearchArea, SearchModality
+from django.utils.safestring import mark_safe
+from django.urls import reverse
+from django.utils.html import format_html
 
 
 class CadastroForm(UserCreationForm):
@@ -13,6 +16,11 @@ class CadastroForm(UserCreationForm):
             'placeholder': 'Seu nome completo',
             'autofocus': True,
         }),
+    )
+    
+    policy_accepted = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'Você precisa aceitar a Política de Privacidade para criar uma conta.'}
     )
 
     class Meta(UserCreationForm.Meta):
@@ -37,7 +45,14 @@ class CadastroForm(UserCreationForm):
             'placeholder': 'Repita a senha',
         })
         self.fields['password2'].label = 'Confirmação de senha'
-        self.order_fields(['nome', 'email', 'password1', 'password2'])
+        
+        url_privacidade = reverse('core:privacy_policy')
+        self.fields['policy_accepted'].label = format_html(
+            'Li e aceito a <a href="{}" target="_blank" class="btn-link">Política de Privacidade</a>',
+            url_privacidade
+        )
+        
+        self.order_fields(['nome', 'email', 'password1', 'password2', 'policy_accepted'])
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -48,6 +63,7 @@ class CadastroForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.first_name = self.cleaned_data['nome']
+        user.policy_accepted = self.cleaned_data['policy_accepted']
         if commit:
             user.save()
             self.save_m2m()
