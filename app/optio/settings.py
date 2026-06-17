@@ -99,3 +99,22 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Optio <optio.notification@gmail.com>")
 
 SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")
+
+if not DEBUG:
+    # 1. HSTS: Força os navegadores a só se comunicarem com a aplicação via HTTPS
+    SECURE_HSTS_SECONDS = 31536000  # 1 ano
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # 2. Redirecionamento e Confiança
+    SECURE_SSL_REDIRECT = True
+    # O Render usa um proxy reverso. Isso diz ao Django para confiar no cabeçalho HTTPS enviado pelo proxy
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # 3. Cookies Seguros (Impede interceptação do token de login)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # 4. Proteção contra Clickjacking e XSS
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_BROWSER_XSS_FILTER = True
