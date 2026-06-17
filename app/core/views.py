@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.db.models import Sum
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 from search.models import SearchRequest
 from search.choices import SearchArea, SearchModality, SearchStatus
@@ -14,7 +16,6 @@ def dashboard(request):
     user = request.user
     all_searches = SearchRequest.objects.for_user(user)
 
-    from django.db.models import Sum
     stats = {
         'total': all_searches.count(),
         'processing': all_searches.filter(
@@ -66,7 +67,6 @@ def preferences(request):
 @login_required
 @require_POST
 def delete_search_history(request):
-    from django.utils import timezone
     SearchRequest.objects.for_user(request.user).update(
         is_deleted=True,
         deleted_at=timezone.now(),

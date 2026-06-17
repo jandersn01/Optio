@@ -47,12 +47,25 @@ def call_llm(prompt: str) -> str:
     )
 
     result = response.choices[0].message.content
-    logger.info("LLM respondeu. tokens_used=%d", response.usage.total_tokens)
-    return result
+
+    usage = getattr(response, "usage", None)
+    total_tokens = getattr(usage, "total_tokens", None)
+    logger.info("LLM respondeu. tokens_used=%s", total_tokens)
+
+    return result or ""
 
 
 def parse_llm_response(response_text: str) -> list[dict]:
-    data = json.loads(response_text)
+    if not response_text or not response_text.strip():
+        logger.warning("Resposta vazia do LLM; tratando como sem resultados.")
+        return []
+
+    try:
+        data = json.loads(response_text)
+    except json.JSONDecodeError:
+        logger.warning("Resposta do LLM não é JSON válido; tratando como sem resultados.")
+        return []
+
     raw_courses = data.get("courses", [])
 
     courses = []

@@ -14,105 +14,76 @@ class EmailDeliveryError(Exception):
     pass
 
 
-def send_results_email(user_email: str, courses: list[dict], search_id: int) -> None:
-    if not user_email:
+def _absolute_url(view_name: str, **kwargs) -> str:
+    site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
+    return f"{site_url}{reverse(view_name, kwargs=kwargs)}"
+
+
+def _send_html_email(
+    *,
+    subject: str,
+    template: str,
+    context: dict,
+    to_email: str,
+    search_id: int,
+) -> None:
+    """Renderiza um template HTML e envia o e-mail, convertendo falhas em EmailDeliveryError."""
+    if not to_email:
         raise EmailDeliveryError("E-mail do usuário não informado.")
 
     try:
-        subject = "Resultados da sua busca no Optio"
-
-        site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
-        results_path = reverse('search:search_results', kwargs={'pk': search_id})
-        results_url = f"{site_url}{results_path}"
-
-
-        context = {
-            "courses": courses,
-            "search_id": search_id,
-            "results_url": results_url,
-        }
-
-        html_content = render_to_string(
-            "search/emails/results_email.html",
-            context,
-        )
-
-        text_content = strip_tags(html_content)
-
+        html_content = render_to_string(template, context)
         message = EmailMultiAlternatives(
             subject=subject,
-            body=text_content,
+            body=strip_tags(html_content),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[user_email],
+            to=[to_email],
         )
-
         message.attach_alternative(html_content, "text/html")
         message.send(fail_silently=False)
-        
-        logger.info(
-            "E-mail de resultados enviado com sucesso. search_id=%s email=%s",
-            search_id,
-            user_email,
-        )
 
+        logger.info(
+            "E-mail enviado. template=%s search_id=%s email=%s",
+            template,
+            search_id,
+            to_email,
+        )
     except Exception as error:
         logger.exception(
-            "Falha ao preparar/enviar e-mail de resultados. search_id=%s email=%s",
+            "Falha ao enviar e-mail. template=%s search_id=%s email=%s",
+            template,
             search_id,
-            user_email,
+            to_email,
         )
         raise EmailDeliveryError(
             f"Falha ao enviar e-mail da busca {search_id}."
         ) from error
+
+
+def send_results_email(user_email: str, courses: list[dict], search_id: int) -> None:
+    _send_html_email(
+        subject="Resultados da sua busca no Optio",
+        template="search/emails/results_email.html",
+        context={
+            "courses": courses,
+            "search_id": search_id,
+            "results_url": _absolute_url("search:search_results", pk=search_id),
+        },
+        to_email=user_email,
+        search_id=search_id,
+    )
 
 
 def send_no_results_email(user_email: str, search_id: int, keywords: str = "") -> None:
     """Envia e-mail informando que nenhum curso foi encontrado."""
-    if not user_email:
-        raise EmailDeliveryError("E-mail do usuário não informado.")
-
-    try:
-        subject = "Sua busca foi concluída - Optio"
-
-        site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
-        new_search_path = reverse('search:request_create')
-        new_search_url = f"{site_url}{new_search_path}"
-
-        context = {
+    _send_html_email(
+        subject="Sua busca foi concluída - Optio",
+        template="search/emails/no_results_email.html",
+        context={
             "search_id": search_id,
             "keywords": keywords,
-            "new_search_url": new_search_url,
-        }
-
-        html_content = render_to_string(
-            "search/emails/no_results_email.html",
-            context,
-        )
-
-        text_content = strip_tags(html_content)
-
-        message = EmailMultiAlternatives(
-            subject=subject,
-            body=text_content,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[user_email],
-        )
-
-        message.attach_alternative(html_content, "text/html")
-        message.send(fail_silently=False)
-
-        logger.info(
-            "E-mail de 'sem resultados' enviado. search_id=%s email=%s",
-            search_id,
-            user_email,
-        )
-
-    except Exception as error:
-        logger.exception(
-            "Falha ao enviar e-mail de 'sem resultados'. search_id=%s email=%s",
-            search_id,
-            user_email,
-        )
-        raise EmailDeliveryError(
-            f"Falha ao enviar e-mail da busca {search_id}."
-        ) from error
+            "new_search_url": _absolute_url("search:request_create"),
+        },
+        to_email=user_email,
+        search_id=search_id,
+    )
