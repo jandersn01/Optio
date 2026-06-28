@@ -4,6 +4,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Sum
 from django.utils import timezone
+from django.utils.translation import gettext
 from django.views.decorators.http import require_POST
 from search.models import SearchRequest
 from search.choices import SearchArea, SearchModality, SearchStatus
@@ -35,13 +36,13 @@ def dashboard(request):
 
 def logout_view(request):
     logout(request)
-    messages.info(request, 'Você saiu da sua conta.')
+    messages.info(request, gettext('Você saiu da sua conta.'))
     return redirect('login')
 
 
 @login_required
 def preferences(request):
-    preference, _ = NotificationPreference.objects.get_or_create(user=request.user)
+    preference, _created = NotificationPreference.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
         identity_form = UserIdentityForm(request.POST, instance=request.user)
@@ -49,7 +50,7 @@ def preferences(request):
         if identity_form.is_valid() and pref_form.is_valid():
             identity_form.save()
             pref_form.save()
-            messages.success(request, 'Preferências salvas com sucesso.')
+            messages.success(request, gettext('Preferências salvas com sucesso.'))
             return redirect('core:preferences')
     else:
         identity_form = UserIdentityForm(instance=request.user)
@@ -71,7 +72,7 @@ def delete_search_history(request):
         is_deleted=True,
         deleted_at=timezone.now(),
     )
-    messages.success(request, 'Histórico de buscas apagado.')
+    messages.success(request, gettext('Histórico de buscas apagado.'))
     return redirect('core:preferences')
 
 
@@ -81,6 +82,6 @@ def cadastro(request):
     form = CadastroForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Conta criada com sucesso! Faça login para continuar.')
+        messages.success(request, gettext('Conta criada com sucesso! Faça login para continuar.'))
         return redirect('login')
     return render(request, 'registration/register.html', {'form': form})

@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
-{% block title %}Nova busca — Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Nova busca" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
     </span>
-    <span class="crumb-cur">Nova busca</span>
+    <span class="crumb-cur">{% trans "Nova busca" %}</span>
   </div>
   <div class="topbar-actions">
-    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost btn-sm">Cancelar</a>
+    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost btn-sm">{% trans "Cancelar" %}</a>
   </div>
 </div>
 
@@ -21,10 +22,10 @@
 
   <header class="page-header-editorial">
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">Configure uma nova busca</div>
-      <h1 class="h-1">O que <em>você</em> quer estudar?</h1>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">{% trans "Configure uma nova busca" %}</div>
+      <h1 class="h-1">{% blocktrans %}O que <em>você</em> quer estudar?{% endblocktrans %}</h1>
       <p class="lede" style="margin-top:var(--d-3);">
-        Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida.
+        {% trans "Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida." %}
       </p>
     </div>
   </header>
@@ -40,7 +41,7 @@
 
     {# ── 1. Palavras-chave — fonte dinâmica + ícone grande ── #}
     <div class="field">
-      <label class="field-label" for="id_keywords">Palavras-chave *</label>
+      <label class="field-label" for="id_keywords">{% trans "Palavras-chave *" %}</label>
       <div style="position:relative;">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
              style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
@@ -51,7 +52,7 @@
           name="{{ form.keywords.html_name }}"
           type="text"
           value="{{ form.keywords.value|default:'' }}"
-          placeholder="Ex.: mestrado profissional em ciência de dados"
+          placeholder="{% trans 'Ex.: mestrado profissional em ciência de dados' %}"
           autofocus
           class="input {% if form.keywords.errors %}is-invalid{% endif %}"
           style="padding-left:50px;font-size:18px;height:56px;font-family:{% if form.keywords.value %}var(--sans){% else %}var(--serif){% endif %};font-style:{% if form.keywords.value %}normal{% else %}italic{% endif %};"
@@ -64,7 +65,7 @@
 
       {# Chips de exemplos clicáveis #}
       <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap;">
-        <span class="text-xs muted" style="margin-right:2px;">Exemplos:</span>
+        <span class="text-xs muted" style="margin-right:2px;">{% trans "Exemplos:" %}</span>
         {% for chip in example_chips %}
         <button type="button"
                 class="badge"
@@ -80,14 +81,14 @@
 
     {# ── 2. Filtros ── #}
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Refinar resultados</div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">{% trans "Refinar resultados" %}</div>
       <div class="form-grid-2">
 
         <div class="field">
-          <label class="field-label" for="{{ form.area.id_for_label }}">Área do conhecimento</label>
+          <label class="field-label" for="{{ form.area.id_for_label }}">{% trans "Área do conhecimento" %}</label>
           <select class="select {% if form.area.errors %}is-invalid{% endif %}"
                   name="{{ form.area.html_name }}" id="{{ form.area.id_for_label }}">
-            <option value="">Todas as áreas</option>
+            <option value="">{% trans "Todas as áreas" %}</option>
             {% for value, label in form.area.field.choices %}{% if value %}
             <option value="{{ value }}" {% if form.area.value == value %}selected{% endif %}>{{ label }}</option>
             {% endif %}{% endfor %}
@@ -95,10 +96,10 @@
         </div>
 
         <div class="field">
-          <label class="field-label" for="{{ form.state.id_for_label }}">Estado</label>
+          <label class="field-label" for="{{ form.state.id_for_label }}">{% trans "Estado" %}</label>
           <select class="select {% if form.state.errors %}is-invalid{% endif %}"
                   name="{{ form.state.html_name }}" id="{{ form.state.id_for_label }}">
-            <option value="">Todo o Brasil</option>
+            <option value="">{% trans "Todo o Brasil" %}</option>
             {% for value, label in form.state.field.choices %}{% if value %}
             <option value="{{ value }}" {% if form.state.value == value %}selected{% endif %}>{{ label }}</option>
             {% endif %}{% endfor %}
@@ -107,7 +108,7 @@
 
         {# Modalidade — toggle buttons (ocupa as 2 colunas) #}
         <div class="field" style="grid-column:1/-1;">
-          <label class="field-label">Modalidade</label>
+          <label class="field-label">{% trans "Modalidade" %}</label>
           <input type="hidden" id="modality-value" name="{{ form.modality.html_name }}"
                  value="{{ form.modality.value|default:'all' }}">
           <div class="row" style="gap:6px;flex-wrap:wrap;">
@@ -129,10 +130,10 @@
 
     {# ── 3. Entrega e acompanhamento ── #}
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Entrega e acompanhamento</div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">{% trans "Entrega e acompanhamento" %}</div>
 
       <div class="field" style="margin-bottom:var(--d-3);">
-        <label class="field-label">Enviar resultados para</label>
+        <label class="field-label">{% trans "Enviar resultados para" %}</label>
         <div style="position:relative;">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
                style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
@@ -141,13 +142,13 @@
           <input class="input" type="email" value="{{ user.email }}"
                  style="padding-left:38px;" disabled>
         </div>
-        <span class="field-help">Você também verá os resultados aqui no painel.</span>
+        <span class="field-help">{% trans "Você também verá os resultados aqui no painel." %}</span>
       </div>
 
       {# Salvar como alerta — microinteração via JS #}
       <label id="alert-card"
              style="display:flex;align-items:flex-start;gap:var(--d-3);padding:var(--d-3) var(--d-4);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--r-2);cursor:pointer;transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);opacity:.55;"
-             title="Em breve — feature de alertas em desenvolvimento">
+             title="{% trans 'Em breve — feature de alertas em desenvolvimento' %}">
         <input type="checkbox" name="save_as_alert" disabled
                style="margin-top:3px;flex-shrink:0;"
                onchange="toggleAlertCard(this)">
@@ -158,11 +159,11 @@
               <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
               <path d="M6 13.5a2 2 0 004 0"/>
             </svg>
-            <strong class="text-sm">Salvar como alerta</strong>
-            <span class="badge" style="font-size:10px;">Em breve</span>
+            <strong class="text-sm">{% trans "Salvar como alerta" %}</strong>
+            <span class="badge" style="font-size:10px;">{% trans "Em breve" %}</span>
           </div>
           <span class="text-xs muted">
-            Quando novos cursos aderentes aparecerem, te avisamos por e‑mail.
+            {% trans "Quando novos cursos aderentes aparecerem, te avisamos por e‑mail." %}
           </span>
         </div>
       </label>
@@ -172,12 +173,12 @@
 
     {# ── Submit ── #}
     <div class="row" style="gap:var(--d-3);justify-content:flex-end;">
-      <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">Cancelar</a>
+      <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">{% trans "Cancelar" %}</a>
       <button type="submit" class="btn btn-primary btn-lg">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="7" cy="7" r="4.5"/><path d="M11 11L15 15"/>
         </svg>
-        Iniciar busca
+        {% trans "Iniciar busca" %}
       </button>
     </div>
 

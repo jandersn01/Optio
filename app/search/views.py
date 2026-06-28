@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext
 from django.views.decorators.http import require_http_methods, require_POST
 
 from search.models import Course, Favorite, SearchRequest
@@ -54,7 +55,7 @@ def search_request_create(request):
             if cached:
                 messages.info(
                     request,
-                    "Encontramos uma busca recente com os mesmos critérios. Exibindo resultados anteriores.",
+                    gettext("Encontramos uma busca recente com os mesmos critérios. Exibindo resultados anteriores."),
                 )
                 return redirect("search:search_results", pk=cached.pk)
 
@@ -72,13 +73,13 @@ def search_request_create(request):
                 logger.exception("Falha ao publicar SearchRequest %s na fila.", search_request.id)
                 messages.error(
                     request,
-                    "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes.",
+                    gettext("Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes."),
                 )
                 return redirect("search:request_create")
 
             messages.success(
                 request,
-                "Busca recebida com sucesso. Os resultados serão processados em segundo plano.",
+                gettext("Busca recebida com sucesso. Os resultados serão processados em segundo plano."),
             )
             return redirect("search:request_list")
 
@@ -141,9 +142,9 @@ def search_results(request, pk):
 def search_delete(request, pk):
     try:
         delete_search(request.user, pk)
-        messages.success(request, "Busca removida do histórico.")
+        messages.success(request, gettext("Busca removida do histórico."))
     except SearchRequest.DoesNotExist:
-        messages.error(request, "Busca não encontrada.")
+        messages.error(request, gettext("Busca não encontrada."))
     return redirect("search:request_list")
 
 
@@ -153,17 +154,17 @@ def search_repeat(request, pk):
     try:
         new_search, published = repeat_search(request.user, pk)
     except SearchRequest.DoesNotExist:
-        messages.error(request, "Busca não encontrada.")
+        messages.error(request, gettext("Busca não encontrada."))
         return redirect("search:request_list")
 
     if not published:
         messages.error(
             request,
-            "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes.",
+            gettext("Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes."),
         )
         return redirect("search:request_list")
 
-    messages.success(request, "Busca repetida com sucesso.")
+    messages.success(request, gettext("Busca repetida com sucesso."))
     return redirect("search:search_results", pk=new_search.pk)
 
 
@@ -179,9 +180,9 @@ def favorite_add(request, pk):
     course = get_object_or_404(Course, pk=pk, search_request__user=request.user)
     try:
         Favorite.objects.create(user=request.user, course=course)
-        messages.success(request, f'"{course.name}" salvo nos favoritos.')
+        messages.success(request, gettext('"%(name)s" salvo nos favoritos.') % {'name': course.name})
     except IntegrityError:
-        messages.info(request, "Curso já está nos seus favoritos.")
+        messages.info(request, gettext("Curso já está nos seus favoritos."))
     return redirect(_safe_next(request))
 
 
@@ -192,5 +193,5 @@ def favorite_remove(request, pk):
     favorite = get_object_or_404(Favorite, course_id=pk, user=request.user)
     course_name = favorite.course.name
     favorite.delete()
-    messages.success(request, f'"{course_name}" removido dos favoritos.')
+    messages.success(request, gettext('"%(name)s" removido dos favoritos.') % {'name': course_name})
     return redirect(_safe_next(request))
