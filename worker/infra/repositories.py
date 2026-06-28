@@ -8,7 +8,7 @@ django.setup()
 from search.models import Course, SearchRequest
 
 class SearchRepository:
-    def mark_search_status(search_id: int, status: str, results_count: int | None = None) -> None:
+    def mark_search_status(self, search_id: int, status: str, results_count: int | None = None) -> None:
         search_request = SearchRequest.objects.filter(id=search_id).first()
         if not search_request:
             raise SearchRequest.DoesNotExist(f"SearchRequest {search_id} não encontrada.")
