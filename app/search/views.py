@@ -124,6 +124,14 @@ def search_list(request):
 @login_required
 def search_results(request, pk):
     search_request = get_object_or_404(SearchRequest, pk=pk, user=request.user)
+    
+    if search_request.status == SearchStatus.PROCESSING:
+        limite_tempo = search_request.created_at + timedelta(minutes=5)
+
+        if timezone.now > limite_tempo:
+            search_request.status = SearchStatus.FAILED
+            search_request.save(update_fields=['status'])
+            
     courses = Course.objects.filter(search_request=search_request)
     favorite_map = {
         f.course_id: f.pk
