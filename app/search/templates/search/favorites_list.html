@@ -25,7 +25,7 @@
   <header class="page-header-editorial">
     <div>
       <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
-        {{ favorites|length }} programa{{ favorites|length|pluralize:"s" }} salvo{{ favorites|length|pluralize:"s" }}
+        {{ page_obj.paginator.count }} programa{{ page_obj.paginator.count|pluralize:"s" }} salvo{{ page_obj.paginator.count|pluralize:"s" }}
       </div>
       <h1 class="h-1">Cursos que <em>importam</em> para você</h1>
       <p class="lede" style="margin-top:var(--d-3);">
@@ -34,9 +34,9 @@
     </div>
   </header>
 
-  {% if favorites %}
+  {% if page_obj.object_list %}
   <div class="course-grid stagger">
-    {% for favorite in favorites %}
+    {% for favorite in page_obj %}
     <article class="card" style="padding:var(--d-5);display:flex;flex-direction:column;gap:var(--d-3);">
 
       <div class="spread">
@@ -85,6 +85,34 @@
     </article>
     {% endfor %}
   </div>
+
+  {# Paginação #}
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">← Anterior</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <span class="btn btn-sm current">{{ num }}</span>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+      <a href="?page={{ num }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+         class="btn btn-secondary btn-sm">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">Próxima →</a>
+    {% endif %}
+  </nav>
+  <p class="pagination-info">
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    · {{ page_obj.paginator.count }} programa{{ page_obj.paginator.count|pluralize:"s" }} no total
+  </p>
+  {% endif %}
 
   {% else %}
   <div class="empty">
