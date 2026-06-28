@@ -1,7 +1,7 @@
 import logging
 from domain.exceptions import InvalidMessageError, SearchNotFoundError
-from provideers.scraper import search_courses_web
-from provides.prompts import build_prompt
+from providers.scraper import search_courses_web
+from providers.prompts import build_prompt
 from providers.llm import call_llm, parse_llm_response
 
 logger = logging.getLogger("optio.worker.domain")
@@ -38,13 +38,13 @@ class SearchProcessor:
         
         saved_count = self.repository.save_courses(search_id, courses_data)
         self.repository.mark_search_status(search_id, "COMPLETED", results_count=saved_count)
-        self.notifier.send_results_email(user_email, courses_data, search_id)
+        self.notifier.send_results(user_email, courses_data, search_id)
         logger.info("Busca concluída com sucesso. search_id=%s results=%d", search_id, saved_count)
         
-        def _validate_payload(self, payload: dict) -> None:
-            required_fields = ["type", "search_request_id", "user_id", "notification_email", "keywords"]
-            missing = [f for f in required_fields if not payload.get(f)]
-            if missing:
-                raise InvalidMessageError(f"Campos obrigatórios ausentes: {', '.join(missing)}")
-            if payload.get("type") != "search_requested":
-                raise InvalidMessageError(f"Tipo de mensagem desconhecido: {payload.get('type')}")
+    def _validate_payload(self, payload: dict) -> None:
+        required_fields = ["type", "search_request_id", "user_id", "notification_email", "keywords"]
+        missing = [f for f in required_fields if not payload.get(f)]
+        if missing:
+            raise InvalidMessageError(f"Campos obrigatórios ausentes: {', '.join(missing)}")
+        if payload.get("type") != "search_requested":
+            raise InvalidMessageError(f"Tipo de mensagem desconhecido: {payload.get('type')}")
