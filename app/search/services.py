@@ -2,10 +2,15 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .choices import SearchStatus
-from .models import SearchRequest
+from .models import Favorite, SearchRequest
 from .publisher import QueuePublishError, publish_search_request
 
 PAGE_SIZE = 10
+
+
+def get_favorites(user, page: int):
+    qs = Favorite.objects.filter(user=user).select_related("course")
+    return Paginator(qs, PAGE_SIZE).get_page(page)
 
 
 def get_search_history(user, filters: dict, page: int):
