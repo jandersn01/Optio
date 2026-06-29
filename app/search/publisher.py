@@ -66,3 +66,32 @@ def publish_search_request(search_request) -> None:
         raise QueuePublishError(
             f"Erro ao publicar SearchRequest {search_request.id} na fila."
         ) from error
+    
+    def publish_background_job(job_type: str, job_id: int, notification_email: str, criteria: dict) -> None:
+        """
+        Publica um job gerado pelo Scheduler (alertas ou preferências) na fila.
+        """
+        payload = {
+            "type": job_type, # ex: "alert_requested" ou "preference_requested"
+            "job_id": job_id,
+            "notification_email": notification_email,
+            "keywords": criteria.get("keywords", ""),
+            "area": criteria.get("area", ""),
+            "modality": criteria.get("modality", ""),
+            "state": criteria.get("state", ""),
+        }
+
+        try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
+            channel = connection.channel()
+            channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
+
+            channel.basic_publish(
+                exchange="",
+                routing_key=RABBITMQ_QUEUE,
+                body=json.dumps(payload),
+                properties=pika.BasicProperties(delivery_mode=2, content_type="application/json"),
+            )
+            connection.close()
+        except pika.exceptions.AMQPError as error:
+            raise QueuePublishError(f"Erro ao publicar job {job_type} ID {job_id}.") from error
