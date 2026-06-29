@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novos cursos para você</title>
+</head>
+<body>
+    <h1>Novos cursos para você no Optio</h1>
+
+    <p>Olá!</p>
+
+    <p>
+        Encontramos novos cursos de pós-graduação pública e gratuita
+        relacionados às suas áreas de interesse.
+    </p>
+
+    <h2>Cursos encontrados</h2>
+
+    <ul>
+        {% for course in courses %}
+            <li>
+                <strong>{{ course.name }}</strong><br>
+                Instituição: {{ course.institution }}<br>
+                Modalidade: {{ course.modality }}<br>
+                Estado: {{ course.state }}<br>
+
+                {% if course.link %}
+                    <a href="{{ course.link }}">Ver curso</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <p>
+        Você está recebendo este e-mail porque ativou as notificações de novos
+        cursos no Optio. Para deixar de recebê-las, ajuste suas preferências de
+        notificação.
+    </p>
+</body>
+</html>
