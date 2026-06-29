@@ -5,6 +5,7 @@ import os
 from openai import OpenAI
 
 from providers.prompts import SYSTEM_PROMPT
+from search.choices import SearchModality, SearchStates_Br
 
 logger = logging.getLogger("optio.worker.llm")
 
@@ -13,12 +14,9 @@ OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 _client: OpenAI | None = None
 
-VALID_MODALITIES = {"ead", "presencial", "hibrido", "all"}
-VALID_STATES = {
-    "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
-    "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI",
-    "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
-}
+# Derivado dos enums canônicos (fonte única em search.choices).
+VALID_MODALITIES = {m.value for m in SearchModality}
+VALID_STATES = {s.value for s in SearchStates_Br}
 
 
 def _get_client() -> OpenAI:

@@ -32,8 +32,7 @@ def build_prompt(payload: dict, raw_content: str) -> str:
         filter_lines.append(f"- Palavras-chave: {keywords}")
     if area := payload.get("area"):
         filter_lines.append(f"- Área: {area}")
-    modality = payload.get("modality", "")
-    if modality and modality != "all":
+    if modality := payload.get("modality"):
         filter_lines.append(f"- Modalidade obrigatória: {modality} (descarte cursos de outra modalidade)")
     if state := payload.get("state"):
         filter_lines.append(f"- Estado obrigatório: {state} (descarte cursos de outros estados)")

@@ -18,6 +18,9 @@ selenium
 # Mensageria (RabbitMQ)
 pika
 
+# Agendamento de jobs (notificação de novos cursos)
+APScheduler
+
 # Serialização e parsing (útil para dados externos)
 pydantic
 

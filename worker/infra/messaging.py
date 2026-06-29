@@ -4,8 +4,10 @@ import logging
 import pika
 
 from domain.exceptions import InvalidMessageError, SearchNotFoundError
+from domain.contracts import SearchRequestedEvent
 
 from search.emails import EmailDeliveryError
+from search.choices import SearchStatus
 
 logger = logging.getLogger("optio.worker.messaging")
 
@@ -37,7 +39,8 @@ class RabbitMQConsumer:
 
             try:
                 payload = json.loads(body.decode("utf-8"))
-                self.processor.process(payload)
+                event = SearchRequestedEvent.from_payload(payload)
+                self.processor.process(event)
                 ch.basic_ack(delivery_tag=delivery_tag)
 
 
@@ -57,7 +60,7 @@ class RabbitMQConsumer:
                 logger.exception("Erro inesperado. error=%s", error)
                 if payload and payload.get("search_request_id"):
                     try:
-                        self.processor.repository.mark_search_status(payload.get("search_request_id"), "FAILED")
+                        self.processor.repository.mark_search_status(payload.get("search_request_id"), SearchStatus.FAILED.value)
                     except Exception:
                         pass
                 ch.basic_ack(delivery_tag=delivery_tag)
