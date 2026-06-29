@@ -20,6 +20,7 @@ from .services import (
     create_alert_from_search,
     delete_alert,
     delete_search,
+    get_favorites,
     get_saved_alerts,
     get_search_history,
     repeat_search,
@@ -203,8 +204,8 @@ def search_repeat(request, pk):
 
 @login_required
 def favorites_list(request):
-    favorites = Favorite.objects.filter(user=request.user).select_related("course")
-    return render(request, "search/favorites_list.html", {"favorites": favorites})
+    page_obj = get_favorites(request.user, request.GET.get("page", 1))
+    return render(request, "search/favorites_list.html", {"page_obj": page_obj})
 
 
 @login_required

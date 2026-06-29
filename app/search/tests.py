@@ -563,12 +563,56 @@ class FavoritesListViewTestCase(TestCase):
 
         self.client.login(email="test@example.com", password="testpass123")
 
-        with self.assertNumQueries(5):
-            # session, user, contagens da sidebar e favoritos com select_related(course)
+        with self.assertNumQueries(6):
+            # 1: session, 2: user, 3-4: COUNTs do sidebar_context (favoritos + buscas),
+            # 5: COUNT do Paginator, 6: favoritos com select_related(course)
             response = self.client.get(reverse("search:favorites_list"))
             self.assertEqual(response.status_code, 200)
             # Acessar os cursos no template nao deve gerar queries adicionais
             self.assertContains(response, "Curso de Teste")
+
+    def _create_favorites(self, total):
+        """Cria `total` favoritos do usuario para os testes de paginacao."""
+        for i in range(total):
+            course = Course.objects.create(
+                search_request=self.search_request,
+                name=f"Curso {i:02d}",
+                institution="IFPB",
+            )
+            Favorite.objects.create(user=self.user, course=course)
+
+    def test_second_page_returns_favorites_11_to_20(self):
+        """Verifica que ?page=2 retorna a segunda pagina (favoritos 11-20)."""
+        self._create_favorites(25)
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(reverse("search:favorites_list"), {"page": 2})
+
+        page_obj = response.context["page_obj"]
+        self.assertEqual(page_obj.number, 2)
+        self.assertEqual(len(page_obj.object_list), 10)
+        self.assertContains(response, "Curso 14")
+        self.assertContains(response, "Curso 05")
+        self.assertNotContains(response, "Curso 24")
+        self.assertNotContains(response, "Curso 04")
+
+    def test_pagination_controls_shown_with_multiple_pages(self):
+        """Verifica que controles aparecem quando ha mais de uma pagina."""
+        self._create_favorites(15)
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertContains(response, "Próxima")
+
+    def test_pagination_controls_hidden_with_single_page(self):
+        """Verifica que controles nao aparecem com uma unica pagina."""
+        self._create_favorites(5)
+        self.client.login(email="test@example.com", password="testpass123")
+
+        response = self.client.get(reverse("search:favorites_list"))
+
+        self.assertNotContains(response, "Próxima")
 
 
 class FavoritesEmptyStateTestCase(TestCase):

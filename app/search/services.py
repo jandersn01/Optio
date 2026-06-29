@@ -4,12 +4,17 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .choices import SearchStatus
-from .models import SearchRequest, SavedAlert
+from .models import Favorite, SavedAlert, SearchRequest
 from .publisher import QueuePublishError, publish_search_request
 
 PAGE_SIZE = 10
 
 MAX_ACTIVE_ALERTS_PER_USER = int(os.getenv("MAX_ACTIVE_ALERTS_PER_USER", "3"))
+
+
+def get_favorites(user, page: int):
+    qs = Favorite.objects.filter(user=user).select_related("course")
+    return Paginator(qs, PAGE_SIZE).get_page(page)
 
 
 def get_search_history(user, filters: dict, page: int):
