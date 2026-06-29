@@ -1,39 +1,43 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <title>Sua busca foi concluída</title>
+    <title>{% trans "Sua busca foi concluída" %}</title>
 </head>
 <body>
-    <h1>Sua busca foi concluída</h1>
+    <h1>{% trans "Sua busca foi concluída" %}</h1>
 
-    <p>Olá!</p>
+    <p>{% trans "Olá!" %}</p>
 
     <p>
-        Processamos sua busca{% if keywords %} por <strong>"{{ keywords }}"</strong>{% endif %},
-        mas infelizmente não encontramos cursos de pós-graduação gratuitos
-        que correspondam aos critérios informados.
+        {% if keywords %}
+        {% blocktrans %}Processamos sua busca por <strong>"{{ keywords }}"</strong>, mas infelizmente não encontramos cursos de pós-graduação gratuitos que correspondam aos critérios informados.{% endblocktrans %}
+        {% else %}
+        {% trans "Processamos sua busca, mas infelizmente não encontramos cursos de pós-graduação gratuitos que correspondam aos critérios informados." %}
+        {% endif %}
     </p>
 
-    <h2>Sugestões para ampliar sua busca</h2>
+    <h2>{% trans "Sugestões para ampliar sua busca" %}</h2>
 
     <ul>
-        <li>Tente usar palavras-chave mais genéricas</li>
-        <li>Remova filtros de estado ou modalidade</li>
-        <li>Experimente áreas de conhecimento relacionadas</li>
-        <li>Verifique se há variações no termo buscado</li>
+        <li>{% trans "Tente usar palavras-chave mais genéricas" %}</li>
+        <li>{% trans "Remova filtros de estado ou modalidade" %}</li>
+        <li>{% trans "Experimente áreas de conhecimento relacionadas" %}</li>
+        <li>{% trans "Verifique se há variações no termo buscado" %}</li>
     </ul>
 
     <p>
         <a href="{{ new_search_url }}">
-            Fazer uma nova busca
+            {% trans "Fazer uma nova busca" %}
         </a>
     </p>
 
     <hr>
 
     <p>
-        Este e-mail foi enviado automaticamente pelo Optio.
+        {% trans "Este e-mail foi enviado automaticamente pelo Optio." %}
     </p>
 </body>
 </html>

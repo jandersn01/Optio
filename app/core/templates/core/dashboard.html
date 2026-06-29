@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
-{% block title %}Painel  Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Painel" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <span class="crumb-cur">Painel</span>
+    <span class="crumb-cur">{% trans "Painel" %}</span>
   </div>
   <div class="topbar-actions">
     <a href="{% url 'search:alerts_list' %}" class="btn btn-secondary btn-sm">
       {% include "_icon.html" with name="bell" size=14 %}
-      Alertas
+      {% trans "Alertas" %}
     </a>
   </div>
 </div>
@@ -23,11 +24,11 @@
     <div>
       <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
         {% now "H" as hour %}
-        {% if hour < "12" %}Bom dia{% elif hour < "18" %}Boa tarde{% else %}Boa noite{% endif %}
+        {% if hour < "12" %}{% trans "Bom dia" %}{% elif hour < "18" %}{% trans "Boa tarde" %}{% else %}{% trans "Boa noite" %}{% endif %}
         · {% now "d \d\e N \d\e Y" %}
       </div>
       <h1 class="h-display" style="font-size:clamp(40px,4.4vw,60px);">
-        Oi, {{ user.first_name|default:user.email }}. <em>O que</em> você quer descobrir hoje?
+        {% blocktrans with name=user.first_name|default:user.email %}Oi, {{ name }}. <em>O que</em> você quer descobrir hoje?{% endblocktrans %}
       </h1>
     </div>
 
@@ -40,9 +41,9 @@
       </span>
       <span style="flex:1;">
         <span class="serif" style="display:block;font-size:22px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px;">
-          Começar uma <em style="color:var(--primary);">nova busca</em>
+          {% blocktrans %}Começar uma <em style="color:var(--primary);">nova busca</em>{% endblocktrans %}
         </span>
-        <span class="text-xs muted" style="display:block;">Filtre por área, modalidade e estado</span>
+        <span class="text-xs muted" style="display:block;">{% trans "Filtre por área, modalidade e estado" %}</span>
       </span>
       {% include "_icon.html" with name="arrow" size=16 style="color:var(--ink-mute);flex-shrink:0;" %}
     </a>
@@ -51,24 +52,24 @@
   {# ── Stats ── #}
   <div class="stats-grid" style="margin-bottom:var(--d-7);">
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Buscas concluídas</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Buscas concluídas" %}</div>
       <div class="serif stat-value">{{ stats.completed }}</div>
-      <div class="text-xs muted">Últimos 30 dias</div>
+      <div class="text-xs muted">{% trans "Últimos 30 dias" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Resultados encontrados</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Resultados encontrados" %}</div>
       <div class="serif stat-value">{{ stats.total_results }}</div>
-      <div class="text-xs muted">Cursos no histórico</div>
+      <div class="text-xs muted">{% trans "Cursos no histórico" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Em andamento</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Em andamento" %}</div>
       <div class="serif stat-value {% if stats.processing %}accent{% endif %}">{{ stats.processing }}</div>
-      <div class="text-xs muted">Processando agora</div>
+      <div class="text-xs muted">{% trans "Processando agora" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Total de buscas</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Total de buscas" %}</div>
       <div class="serif stat-value">{{ stats.total }}</div>
-      <div class="text-xs muted">Histórico completo</div>
+      <div class="text-xs muted">{% trans "Histórico completo" %}</div>
     </div>
   </div>
 
@@ -78,9 +79,9 @@
     {# Coluna esquerda — buscas recentes #}
     <section>
       <div class="spread" style="margin-bottom:var(--d-4);">
-        <h2 class="h-2">Suas buscas recentes</h2>
+        <h2 class="h-2">{% trans "Suas buscas recentes" %}</h2>
         <a href="{% url 'search:request_list' %}" class="btn btn-ghost btn-sm">
-          Ver histórico completo
+          {% trans "Ver histórico completo" %}
           {% include "_icon.html" with name="arrow" size=14 %}
         </a>
       </div>
@@ -97,7 +98,7 @@
             </div>
             <div class="row" style="gap:var(--d-3);">
               {% if search.status == 'completed' %}
-              <span class="text-xs muted">{{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}</span>
+              <span class="text-xs muted">{% blocktrans count counter=search.results_count %}{{ counter }} resultado{% plural %}{{ counter }} resultados{% endblocktrans %}</span>
               {% elif search.status == 'processing' or search.status == 'pending' %}
               <span class="pulse-dot text-xs" style="color:var(--info);"></span>
               {% endif %}
@@ -122,9 +123,9 @@
       {% else %}
       <div class="empty">
         <div class="em-mark">∅</div>
-        <h3 class="h-3" style="margin-bottom:8px;">Nenhuma busca ainda</h3>
-        <p class="text-sm" style="margin-bottom:var(--d-4);">Comece criando sua primeira pesquisa de cursos.</p>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+        <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhuma busca ainda" %}</h3>
+        <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Comece criando sua primeira pesquisa de cursos." %}</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
       </div>
       {% endif %}
     </section>
@@ -135,8 +136,8 @@
       {# Card: Seus alertas #}
       <section class="card" style="padding:var(--d-5);">
         <div class="spread" style="margin-bottom:var(--d-4);">
-          <h3 class="h-3">Seus alertas</h3>
-          <a href="{% url 'search:alerts_list' %}" class="btn-link text-xs">Gerenciar</a>
+          <h3 class="h-3">{% trans "Seus alertas" %}</h3>
+          <a href="{% url 'search:alerts_list' %}" class="btn-link text-xs">{% trans "Gerenciar" %}</a>
         </div>
 
         {% if alerts %}
@@ -157,11 +158,11 @@
         <div style="padding:var(--d-4) 0; text-align:center; border-top:1px solid var(--line-soft);">
           <div style="font-family:var(--serif);font-style:italic;font-size:40px;color:var(--ink-mute);line-height:1;margin-bottom:var(--d-3);">∅</div>
           <p class="text-xs muted" style="margin:0 0 var(--d-3);">
-            Nenhum alerta ativo ainda.
+            {% trans "Nenhum alerta ativo ainda." %}
           </p>
           <a href="{% url 'search:request_create' %}" class="btn btn-secondary btn-sm">
             {% include "_icon.html" with name="plus" size=12 %}
-            Criar alerta
+            {% trans "Criar alerta" %}
           </a>
         </div>
         {% endif %}
@@ -172,10 +173,10 @@
         <div class="row" style="gap:8px;margin-bottom:var(--d-3);">
           {# Ícone sparkle #}
           {% include "_icon.html" with name="sparkles" size=14 style="color:var(--primary);flex-shrink:0;" %}
-          <span class="label-eyebrow" style="color:var(--primary);">Dica do Optio</span>
+          <span class="label-eyebrow" style="color:var(--primary);">{% trans "Dica do Optio" %}</span>
         </div>
         <p class="text-sm" style="margin:0;line-height:1.55;color:var(--ink-2);">
-          Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.
+          {% blocktrans %}Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.{% endblocktrans %}
         </p>
       </section>
 

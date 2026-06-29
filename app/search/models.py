@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .choices import SearchModality, SearchStatus, SearchStates_Br, SearchArea
 
@@ -27,78 +28,78 @@ class SearchRequest(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="search_requests",
-        verbose_name="Usuário",
+        verbose_name=_("Usuário"),
     )
 
     notification_email = models.EmailField(
-        verbose_name="E-mail para notificação",
+        verbose_name=_("E-mail para notificação"),
     )
 
     keywords = models.CharField(
         max_length=255,
-        verbose_name="Palavras-chave",
+        verbose_name=_("Palavras-chave"),
     )
 
     area = models.CharField(
         max_length=100,
         choices=SearchArea.choices,
         blank=True,
-        verbose_name="Área do conhecimento",
+        verbose_name=_("Área do conhecimento"),
     )
 
     modality = models.CharField(
         max_length=20,
         choices=SearchModality.choices,
         blank=True,
-        verbose_name="Modalidade",
+        verbose_name=_("Modalidade"),
     )
 
     state = models.CharField(
         max_length=2,
         choices=SearchStates_Br.choices,
         blank=True,
-        verbose_name="Estado",
+        verbose_name=_("Estado"),
     )
 
     status = models.CharField(
         max_length=20,
         choices=SearchStatus.choices,
         default=SearchStatus.PENDING,
-        verbose_name="Status",
+        verbose_name=_("Status"),
     )
 
     results_count = models.PositiveIntegerField(
         default=0,
-        verbose_name="Quantidade de resultados",
+        verbose_name=_("Quantidade de resultados"),
     )
 
     is_deleted = models.BooleanField(
         default=False,
-        verbose_name="Excluído",
+        verbose_name=_("Excluído"),
     )
 
     deleted_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name="Excluído em",
+        verbose_name=_("Excluído em"),
     )
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name="Criado em",
+        verbose_name=_("Criado em"),
     )
 
     updated_at = models.DateTimeField(
         auto_now=True,
-        verbose_name="Atualizado em",
+        verbose_name=_("Atualizado em"),
     )
 
     objects = SearchRequestManager()
     all_objects = models.Manager()
 
     class Meta:
-        verbose_name = "Requisição de busca"
-        verbose_name_plural = "Requisições de busca"
+        verbose_name = _("Requisição de busca")
+        verbose_name_plural = _("Requisições de busca")
         ordering = ["-created_at"]
         default_manager_name = "objects"
 
@@ -151,27 +152,27 @@ class Course(models.Model):
         SearchRequest,
         on_delete=models.CASCADE,
         related_name="courses",
-        verbose_name="Requisição de busca",
+        verbose_name=_("Requisição de busca"),
     )
-    name = models.CharField(max_length=255, verbose_name="Nome do curso")
-    institution = models.CharField(max_length=255, verbose_name="Instituição")
+    name = models.CharField(max_length=255, verbose_name=_("Nome do curso"))
+    institution = models.CharField(max_length=255, verbose_name=_("Instituição"))
     modality = models.CharField(
         max_length=20,
         choices=SearchModality.choices,
         blank=True,
-        verbose_name="Modalidade",
+        verbose_name=_("Modalidade"),
     )
     state = models.CharField(
         max_length=2,
         choices=SearchStates_Br.choices,
         blank=True,
-        verbose_name="Estado",
+        verbose_name=_("Estado"),
     )
-    link = models.URLField(blank=True, verbose_name="Link")
+    link = models.URLField(blank=True, verbose_name=_("Link"))
 
     class Meta:
-        verbose_name = "Curso"
-        verbose_name_plural = "Cursos"
+        verbose_name = _("Curso")
+        verbose_name_plural = _("Cursos")
 
     def __str__(self):
         return f"{self.name} — {self.institution}"
@@ -182,22 +183,22 @@ class Favorite(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="favorites",
-        verbose_name="Usuário",
+        verbose_name=_("Usuário"),
     )
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
         related_name="favorited_by",
-        verbose_name="Curso",
+        verbose_name=_("Curso"),
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name="Adicionado em",
+        verbose_name=_("Adicionado em"),
     )
 
     class Meta:
-        verbose_name = "Favorito"
-        verbose_name_plural = "Favoritos"
+        verbose_name = _("Favorito")
+        verbose_name_plural = _("Favoritos")
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(

@@ -1,5 +1,7 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,18 +25,18 @@
     </a>
 
     <nav class="nav">
-      <span class="nav-group-label">Trabalho</span>
+      <span class="nav-group-label">{% trans "Trabalho" %}</span>
 
       <a href="{% url 'core:dashboard' %}"
          class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
         {% include "_icon.html" with name="home" %}
-        Painel
+        {% trans "Painel" %}
       </a>
 
       <a href="{% url 'search:request_list' %}"
          class="nav-item {% if request.resolver_match.url_name in 'request_list search_delete search_repeat' %}active{% endif %}">
         {% include "_icon.html" with name="list" %}
-        Minhas buscas
+        {% trans "Minhas buscas" %}
         {% if total_searches %}
         <span class="nav-count">{{ total_searches }}</span>
         {% endif %}
@@ -43,7 +45,7 @@
       <a href="{% url 'search:favorites_list' %}"
          class="nav-item {% if request.resolver_match.url_name == 'favorites_list' %}active{% endif %}">
         {% include "_icon.html" with name="bookmark" %}
-        Favoritos
+        {% trans "Favoritos" %}
         {% if total_favorites %}
         <span class="nav-count">{{ total_favorites }}</span>
         {% endif %}
@@ -52,22 +54,22 @@
       <a href="{% url 'search:alerts_list' %}"
          class="nav-item {% if request.resolver_match.url_name == 'alerts_list' %}active{% endif %}">
         {% include "_icon.html" with name="bell" %}
-        Alertas
+        {% trans "Alertas" %}
       </a>
 
-      <span class="nav-group-label" style="margin-top: auto;">Conta</span>
+      <span class="nav-group-label" style="margin-top: auto;">{% trans "Conta" %}</span>
 
       <a href="{% url 'core:preferences' %}"
          class="nav-item {% if request.resolver_match.url_name == 'preferences' %}active{% endif %}">
         {% include "_icon.html" with name="settings" %}
-        Preferências
+        {% trans "Preferências" %}
       </a>
 
       <form method="post" action="{% url 'core:logout' %}" style="display: contents;">
         {% csrf_token %}
         <button type="submit" class="nav-item">
           {% include "_icon.html" with name="logout" %}
-          Sair
+          {% trans "Sair" %}
         </button>
       </form>
     </nav>

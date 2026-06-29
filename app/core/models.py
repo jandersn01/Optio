@@ -4,6 +4,7 @@ import re
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils.translation import gettext_lazy as _
 
 
 def _normalize_text(value: str) -> str:
@@ -33,12 +34,12 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     username = None
-    email = models.EmailField('E-mail', unique=True)
-    
+    email = models.EmailField(_('E-mail'), unique=True)
+
     policy_accepted = models.BooleanField(
         default= False,
-        verbose_name='Aceitou a política de Privacidade',
-        help_text='Indica se o usuário aceitou a política de privacidade no momento do cadastro'
+        verbose_name=_('Aceitou a política de Privacidade'),
+        help_text=_('Indica se o usuário aceitou a política de privacidade no momento do cadastro')
     )
 
     USERNAME_FIELD = 'email'
@@ -47,8 +48,8 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
-        verbose_name = 'Usuário'
-        verbose_name_plural = 'Usuários'
+        verbose_name = _('Usuário')
+        verbose_name_plural = _('Usuários')
 
     def __str__(self):
         return self.email
@@ -59,29 +60,29 @@ class NotificationPreference(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='notification_preference',
-        verbose_name='Usuário',
+        verbose_name=_('Usuário'),
     )
     area = models.TextField(
         blank=True,
         default='',
-        verbose_name='Áreas de interesse',
-        help_text='Valores separados por vírgula',
+        verbose_name=_('Áreas de interesse'),
+        help_text=_('Valores separados por vírgula'),
     )
     modality = models.CharField(
         max_length=20,
         blank=True,
-        verbose_name='Modalidade preferida',
+        verbose_name=_('Modalidade preferida'),
     )
     active = models.BooleanField(
         default=True,
-        verbose_name='Notificações ativas',
+        verbose_name=_('Notificações ativas'),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'Preferência de notificação'
-        verbose_name_plural = 'Preferências de notificação'
+        verbose_name = _('Preferência de notificação')
+        verbose_name_plural = _('Preferências de notificação')
 
     @property
     def area_list(self) -> list[str]:

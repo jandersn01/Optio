@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}Preferências — Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Preferências" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
     </span>
-    <span class="crumb-cur">Preferências</span>
+    <span class="crumb-cur">{% trans "Preferências" %}</span>
   </div>
   <div class="topbar-actions">
     <button type="submit" form="preferences-form" class="btn btn-primary btn-sm">
-      Salvar alterações
+      {% trans "Salvar alterações" %}
     </button>
   </div>
 </div>
@@ -24,11 +25,11 @@
   <header class="page-header-editorial">
     <div>
       <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
-        Conta criada em {{ user.date_joined|date:"d/m/Y" }}
+        {% blocktrans with date=user.date_joined|date:"d/m/Y" %}Conta criada em {{ date }}{% endblocktrans %}
       </div>
-      <h1 class="h-1">Suas <em>preferências</em></h1>
+      <h1 class="h-1">{% blocktrans %}Suas <em>preferências</em>{% endblocktrans %}</h1>
       <p class="lede" style="margin-top:var(--d-3);">
-        Tudo que define como você usa o Optio: informações pessoais, perfil acadêmico e quando queremos te avisar.
+        {% trans "Tudo que define como você usa o Optio: informações pessoais, perfil acadêmico e quando queremos te avisar." %}
       </p>
     </div>
   </header>
@@ -39,15 +40,15 @@
     {% if identity_form.errors or pref_form.errors %}
     <div class="toast toast-err" style="position:static;max-width:100%;margin-bottom:var(--d-5);">
       <span class="dot"></span>
-      <span>Corrija os erros antes de salvar.</span>
+      <span>{% trans "Corrija os erros antes de salvar." %}</span>
     </div>
     {% endif %}
 
     {# ── Seção 1: Identidade ── #}
     <section style="margin-bottom:var(--d-7);">
       <div style="margin-bottom:var(--d-4);">
-        <h2 class="h-2" style="margin-bottom:4px;">Identidade</h2>
-        <p class="text-sm muted">Como o Optio te conhece.</p>
+        <h2 class="h-2" style="margin-bottom:4px;">{% trans "Identidade" %}</h2>
+        <p class="text-sm muted">{% trans "Como o Optio te conhece." %}</p>
       </div>
 
       <div class="row" style="gap:var(--d-4);margin-bottom:var(--d-5);align-items:center;">
@@ -62,7 +63,7 @@
 
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--d-4);">
         <div class="field">
-          <label class="field-label" for="{{ identity_form.first_name.id_for_label }}">Nome</label>
+          <label class="field-label" for="{{ identity_form.first_name.id_for_label }}">{% trans "Nome" %}</label>
           <input class="input {% if identity_form.first_name.errors %}is-invalid{% endif %}"
                  type="text" name="{{ identity_form.first_name.html_name }}"
                  id="{{ identity_form.first_name.id_for_label }}"
@@ -70,7 +71,7 @@
           {% for e in identity_form.first_name.errors %}<span class="field-error">{{ e }}</span>{% endfor %}
         </div>
         <div class="field">
-          <label class="field-label" for="{{ identity_form.email.id_for_label }}">E-mail</label>
+          <label class="field-label" for="{{ identity_form.email.id_for_label }}">{% trans "E-mail" %}</label>
           <input class="input {% if identity_form.email.errors %}is-invalid{% endif %}"
                  type="email" name="{{ identity_form.email.html_name }}"
                  id="{{ identity_form.email.id_for_label }}"
@@ -85,14 +86,14 @@
     {# ── Seção 2: Perfil acadêmico ── #}
     <section style="margin-bottom:var(--d-7);">
       <div style="margin-bottom:var(--d-4);">
-        <h2 class="h-2" style="margin-bottom:4px;">Perfil acadêmico</h2>
-        <p class="text-sm muted">Influencia a relevância dos resultados e das notificações.</p>
+        <h2 class="h-2" style="margin-bottom:4px;">{% trans "Perfil acadêmico" %}</h2>
+        <p class="text-sm muted">{% trans "Influencia a relevância dos resultados e das notificações." %}</p>
       </div>
 
       {# Áreas de interesse — multi-select via toggle buttons #}
       {# Valores selecionados enviados como múltiplos hidden inputs via JS #}
       <div class="field" style="margin-bottom:var(--d-5);">
-        <label class="field-label">Áreas de interesse</label>
+        <label class="field-label">{% trans "Áreas de interesse" %}</label>
         <div id="area-inputs"></div>
         <div class="row" style="gap:6px;flex-wrap:wrap;" id="area-buttons">
           {% for value, label in area_choices %}
@@ -104,16 +105,16 @@
           </button>
           {% endfor %}
         </div>
-        <span class="field-help" style="margin-top:6px;">Selecione uma ou mais áreas. Clique novamente para desmarcar.</span>
+        <span class="field-help" style="margin-top:6px;">{% trans "Selecione uma ou mais áreas. Clique novamente para desmarcar." %}</span>
       </div>
 
       <div class="field">
-        <label class="field-label">Modalidade preferida</label>
+        <label class="field-label">{% trans "Modalidade preferida" %}</label>
         <input type="hidden" id="modality-pref-value" name="{{ pref_form.modality.html_name }}"
                value="{{ pref_form.modality.value|default:'' }}">
         <div class="row" style="gap:6px;flex-wrap:wrap;">
           <button type="button" class="btn btn-sm modality-pref-btn" data-value=""
-                  onclick="selectModalityPref('')">Todas</button>
+                  onclick="selectModalityPref('')">{% trans "Todas" %}</button>
           {% for value, label in modality_choices %}
           <button type="button" class="btn btn-sm modality-pref-btn" data-value="{{ value }}"
                   onclick="selectModalityPref('{{ value }}')">{{ label }}</button>
@@ -127,15 +128,15 @@
     {# ── Seção 3: Notificações ── #}
     <section style="margin-bottom:var(--d-7);">
       <div style="margin-bottom:var(--d-4);">
-        <h2 class="h-2" style="margin-bottom:4px;">Notificações</h2>
-        <p class="text-sm muted">Como você quer que a gente te avise.</p>
+        <h2 class="h-2" style="margin-bottom:4px;">{% trans "Notificações" %}</h2>
+        <p class="text-sm muted">{% trans "Como você quer que a gente te avise." %}</p>
       </div>
 
       <div class="col" style="gap:0;">
         <div class="setting-row">
           <div class="grow">
-            <div class="text-sm" style="font-weight:500;margin-bottom:2px;">Resultados de busca por e-mail</div>
-            <div class="text-xs muted">Recebe assim que a busca termina.</div>
+            <div class="text-sm" style="font-weight:500;margin-bottom:2px;">{% trans "Resultados de busca por e-mail" %}</div>
+            <div class="text-xs muted">{% trans "Recebe assim que a busca termina." %}</div>
           </div>
           <label class="toggle-wrap">
             <input class="toggle-input" type="checkbox" name="{{ pref_form.active.html_name }}"
@@ -153,30 +154,31 @@
   {# ── Seção 4: Dados e privacidade (fora do form de preferências) ── #}
   <section>
     <div style="margin-bottom:var(--d-4);">
-      <h2 class="h-2" style="margin-bottom:4px;">Dados e privacidade</h2>
-      <p class="text-sm muted">Conformidade LGPD.</p>
+      <h2 class="h-2" style="margin-bottom:4px;">{% trans "Dados e privacidade" %}</h2>
+      <p class="text-sm muted">{% trans "Conformidade LGPD." %}</p>
     </div>
 
     <div class="col" style="gap:0;">
       <div class="setting-row">
         <div class="grow">
-          <div class="text-sm" style="font-weight:500;margin-bottom:2px;">Apagar histórico de buscas</div>
-          <div class="text-xs muted">Mantém sua conta. Remove todas as buscas do histórico.</div>
+          <div class="text-sm" style="font-weight:500;margin-bottom:2px;">{% trans "Apagar histórico de buscas" %}</div>
+          <div class="text-xs muted">{% trans "Mantém sua conta. Remove todas as buscas do histórico." %}</div>
         </div>
+        {% trans "Apagar todo o histórico de buscas? Esta ação não pode ser desfeita." as confirm_clear_history %}
         <form method="post" action="{% url 'core:delete_search_history' %}"
-              onsubmit="return confirm('Apagar todo o histórico de buscas? Esta ação não pode ser desfeita.')">
+              onsubmit="return confirm('{{ confirm_clear_history|escapejs }}')">
           {% csrf_token %}
-          <button type="submit" class="btn btn-secondary btn-sm">Apagar histórico</button>
+          <button type="submit" class="btn btn-secondary btn-sm">{% trans "Apagar histórico" %}</button>
         </form>
       </div>
 
       <div class="setting-row">
         <div class="grow">
-          <div class="text-sm" style="font-weight:500;margin-bottom:2px;">Excluir conta</div>
-          <div class="text-xs muted">Remove todos os seus dados em até 30 dias.</div>
+          <div class="text-sm" style="font-weight:500;margin-bottom:2px;">{% trans "Excluir conta" %}</div>
+          <div class="text-xs muted">{% trans "Remove todos os seus dados em até 30 dias." %}</div>
         </div>
-        <button type="button" class="btn btn-sm" style="color:var(--err);" disabled title="Em breve">
-          Excluir conta
+        <button type="button" class="btn btn-sm" style="color:var(--err);" disabled title="{% trans 'Em breve' %}">
+          {% trans "Excluir conta" %}
         </button>
       </div>
     </div>

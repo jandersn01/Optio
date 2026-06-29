@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
-{% block title %}Nova busca — Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Nova busca" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
       {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
-    <span class="crumb-cur">Nova busca</span>
+    <span class="crumb-cur">{% trans "Nova busca" %}</span>
   </div>
   <div class="topbar-actions">
-    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost btn-sm">Cancelar</a>
+    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost btn-sm">{% trans "Cancelar" %}</a>
   </div>
 </div>
 
@@ -21,10 +22,10 @@
 
   <header class="page-header-editorial">
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">Configure uma nova busca</div>
-      <h1 class="h-1">O que <em>você</em> quer estudar?</h1>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">{% trans "Configure uma nova busca" %}</div>
+      <h1 class="h-1">{% blocktrans %}O que <em>você</em> quer estudar?{% endblocktrans %}</h1>
       <p class="lede" style="margin-top:var(--d-3);">
-        Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida.
+        {% trans "Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida." %}
       </p>
     </div>
   </header>
@@ -40,7 +41,7 @@
 
     {# ── 1. Palavras-chave — fonte dinâmica + ícone grande ── #}
     <div class="field">
-      <label class="field-label" for="id_keywords">Palavras-chave *</label>
+      <label class="field-label" for="id_keywords">{% trans "Palavras-chave *" %}</label>
       <div style="position:relative;">
         {% include "_icon.html" with name="search" size=18 style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;" %}
         <input
@@ -48,7 +49,7 @@
           name="{{ form.keywords.html_name }}"
           type="text"
           value="{{ form.keywords.value|default:'' }}"
-          placeholder="Ex.: mestrado profissional em ciência de dados"
+          placeholder="{% trans 'Ex.: mestrado profissional em ciência de dados' %}"
           autofocus
           class="input {% if form.keywords.errors %}is-invalid{% endif %}"
           style="padding-left:50px;font-size:18px;height:56px;font-family:{% if form.keywords.value %}var(--sans){% else %}var(--serif){% endif %};font-style:{% if form.keywords.value %}normal{% else %}italic{% endif %};"
@@ -61,7 +62,7 @@
 
       {# Chips de exemplos clicáveis #}
       <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap;">
-        <span class="text-xs muted" style="margin-right:2px;">Exemplos:</span>
+        <span class="text-xs muted" style="margin-right:2px;">{% trans "Exemplos:" %}</span>
         {% for chip in example_chips %}
         <button type="button"
                 class="badge"
@@ -77,14 +78,14 @@
 
     {# ── 2. Filtros ── #}
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Refinar resultados</div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">{% trans "Refinar resultados" %}</div>
       <div class="form-grid-2">
 
         <div class="field">
-          <label class="field-label" for="{{ form.area.id_for_label }}">Área do conhecimento</label>
+          <label class="field-label" for="{{ form.area.id_for_label }}">{% trans "Área do conhecimento" %}</label>
           <select class="select {% if form.area.errors %}is-invalid{% endif %}"
                   name="{{ form.area.html_name }}" id="{{ form.area.id_for_label }}">
-            <option value="">Todas as áreas</option>
+            <option value="">{% trans "Todas as áreas" %}</option>
             {% for value, label in form.area.field.choices %}{% if value %}
             <option value="{{ value }}" {% if form.area.value == value %}selected{% endif %}>{{ label }}</option>
             {% endif %}{% endfor %}
@@ -92,10 +93,10 @@
         </div>
 
         <div class="field">
-          <label class="field-label" for="{{ form.state.id_for_label }}">Estado</label>
+          <label class="field-label" for="{{ form.state.id_for_label }}">{% trans "Estado" %}</label>
           <select class="select {% if form.state.errors %}is-invalid{% endif %}"
                   name="{{ form.state.html_name }}" id="{{ form.state.id_for_label }}">
-            <option value="">Todo o Brasil</option>
+            <option value="">{% trans "Todo o Brasil" %}</option>
             {% for value, label in form.state.field.choices %}{% if value %}
             <option value="{{ value }}" {% if form.state.value == value %}selected{% endif %}>{{ label }}</option>
             {% endif %}{% endfor %}
@@ -104,7 +105,7 @@
 
         {# Modalidade — toggle buttons (ocupa as 2 colunas) #}
         <div class="field" style="grid-column:1/-1;">
-          <label class="field-label">Modalidade</label>
+          <label class="field-label">{% trans "Modalidade" %}</label>
           <input type="hidden" id="modality-value" name="{{ form.modality.html_name }}"
                  value="{{ form.modality.value|default:'' }}">
           <div class="row" style="gap:6px;flex-wrap:wrap;">
@@ -128,16 +129,16 @@
 
     {# ── 3. Entrega e acompanhamento ── #}
     <div>
-      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">Entrega e acompanhamento</div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-4);">{% trans "Entrega e acompanhamento" %}</div>
 
       <div class="field" style="margin-bottom:var(--d-3);">
-        <label class="field-label">Enviar resultados para</label>
+        <label class="field-label">{% trans "Enviar resultados para" %}</label>
         <div style="position:relative;">
           {% include "_icon.html" with name="mail" size=16 style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;" %}
           <input class="input" type="email" value="{{ user.email }}"
                  style="padding-left:38px;" disabled>
         </div>
-        <span class="field-help">Você também verá os resultados aqui no painel.</span>
+        <span class="field-help">{% trans "Você também verá os resultados aqui no painel." %}</span>
       </div>
 
       {# Salvar como alerta — microinteração via JS #}
@@ -149,10 +150,10 @@
         <div style="flex:1;">
           <div class="row" style="gap:8px;margin-bottom:2px;">
             {% include "_icon.html" with name="bell" size=14 style="color:var(--ink-mute);flex-shrink:0;" %}
-            <strong class="text-sm">Salvar como alerta</strong>
+            <strong class="text-sm">{% trans "Salvar como alerta" %}</strong>
           </div>
           <span class="text-xs muted">
-            Quando novos cursos aderentes aparecerem, te avisamos por e‑mail.
+            {% trans "Quando novos cursos aderentes aparecerem, te avisamos por e‑mail." %}
           </span>
         </div>
       </label>
@@ -162,10 +163,10 @@
 
     {# ── Submit ── #}
     <div class="row" style="gap:var(--d-3);justify-content:flex-end;">
-      <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">Cancelar</a>
+      <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">{% trans "Cancelar" %}</a>
       <button type="submit" class="btn btn-primary btn-lg">
         {% include "_icon.html" with name="search" size=16 %}
-        Iniciar busca
+        {% trans "Iniciar busca" %}
       </button>
     </div>
 
