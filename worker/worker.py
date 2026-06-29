@@ -8,9 +8,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("worker.worker.main")
 
-from infra.repositories import SearchRepository
-from infra.notifications import EmailNotificationService
-from infra.messaging import RabbitMQConsumer
+from infra.messaging import RabbitMQConsumer, RabbitMQPublisher
 from providers.finder import CourseFinder
 from domain.use_cases import SearchProcessor
 
