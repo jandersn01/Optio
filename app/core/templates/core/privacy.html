@@ -1,96 +1,96 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Política de Privacidade — Optio{% endblock %}
+{% block title %}{% trans "Política de Privacidade" %} — Optio{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 800px; margin: 0 auto; padding: 48px 20px;">
-    
+
     <header style="margin-bottom: 48px;">
         <h1 class="h-display" style="font-size: clamp(40px, 5vw, 64px); margin-bottom: 16px;">
-            Política de <em>Privacidade</em>
+            {% blocktrans %}Política de <em>Privacidade</em>{% endblocktrans %}
         </h1>
         <p class="text-sm muted">
-            <strong>Data de entrada em vigor:</strong> 17 de junho de 2026
+            <strong>{% trans "Data de entrada em vigor:" %}</strong> {% trans "17 de junho de 2026" %}
         </p>
     </header>
 
     <section style="display: flex; flex-direction: column; gap: 40px;">
-        
+
         <div>
             <p class="text-sm" style="line-height: 1.6;">
-                Bem-vindo ao <strong>Optio</strong>. A sua privacidade e a segurança dos seus dados pessoais são fundamentais para nós. Esta Política de Privacidade descreve como recolhemos, utilizamos, protegemos e gerimos as suas informações quando utiliza a nossa plataforma de pesquisa de cursos de pós-graduação gratuitos, em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD).
+                {% blocktrans %}Bem-vindo ao <strong>Optio</strong>. A sua privacidade e a segurança dos seus dados pessoais são fundamentais para nós. Esta Política de Privacidade descreve como recolhemos, utilizamos, protegemos e gerimos as suas informações quando utiliza a nossa plataforma de pesquisa de cursos de pós-graduação gratuitos, em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD).{% endblocktrans %}
             </p>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">1. Que dados recolhemos?</h2>
-            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">Para garantir o funcionamento pleno da plataforma, recolhemos apenas os dados estritamente necessários:</p>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "1. Que dados recolhemos?" %}</h2>
+            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">{% trans "Para garantir o funcionamento pleno da plataforma, recolhemos apenas os dados estritamente necessários:" %}</p>
             <ul class="text-sm" style="padding-left: 24px; display: flex; flex-direction: column; gap: 12px; line-height: 1.6;">
-                <li><strong>Dados de Registo:</strong> Nome completo e endereço de correio eletrónico (fornecidos no momento da criação da conta).</li>
-                <li><strong>Dados de Utilização e Preferências:</strong> O seu histórico de pesquisas, os parâmetros que define (áreas de interesse e modalidades) e os cursos que guarda nos seus favoritos.</li>
-                <li><strong>Dados de Sessão:</strong> Informações técnicas essenciais para manter a sua conta segura, como <em>cookies</em> de sessão e de proteção contra falsificação de pedidos (CSRF).</li>
+                <li>{% blocktrans %}<strong>Dados de Registo:</strong> Nome completo e endereço de correio eletrónico (fornecidos no momento da criação da conta).{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Dados de Utilização e Preferências:</strong> O seu histórico de pesquisas, os parâmetros que define (áreas de interesse e modalidades) e os cursos que guarda nos seus favoritos.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Dados de Sessão:</strong> Informações técnicas essenciais para manter a sua conta segura, como <em>cookies</em> de sessão e de proteção contra falsificação de pedidos (CSRF).{% endblocktrans %}</li>
             </ul>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">2. Como utilizamos os seus dados?</h2>
-            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço do Optio:</p>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "2. Como utilizamos os seus dados?" %}</h2>
+            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">{% trans "A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço do Optio:" %}</p>
             <ul class="text-sm" style="padding-left: 24px; display: flex; flex-direction: column; gap: 12px; line-height: 1.6;">
-                <li><strong>Processamento de Pesquisas:</strong> Utilizar os seus parâmetros para orquestrar a recolha de dados públicos sobre cursos nas instituições de ensino.</li>
-                <li><strong>Notificações:</strong> Enviar os resultados das suas pesquisas e alertas de novos cursos diretamente para o seu correio eletrónico.</li>
-                <li><strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard) atualizado com as suas métricas e o seu histórico individual.</li>
+                <li>{% blocktrans %}<strong>Processamento de Pesquisas:</strong> Utilizar os seus parâmetros para orquestrar a recolha de dados públicos sobre cursos nas instituições de ensino.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Notificações:</strong> Enviar os resultados das suas pesquisas e alertas de novos cursos diretamente para o seu correio eletrónico.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard) atualizado com as suas métricas e o seu histórico individual.{% endblocktrans %}</li>
             </ul>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">3. Tratamento por Inteligência Artificial e Terceiros</h2>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "3. Tratamento por Inteligência Artificial e Terceiros" %}</h2>
             <p class="text-sm" style="line-height: 1.6;">
-                O Optio utiliza ferramentas automatizadas e modelos de Inteligência Artificial para processar o texto das páginas web públicas encontradas. <strong>A sua identidade, o seu correio eletrónico e os seus dados pessoais nunca são enviados para estes modelos de IA.</strong> A IA é utilizada estritamente como uma ferramenta de extração de dados sobre os cursos, garantindo o anonimato da sua pesquisa. Não vendemos nem partilhamos o seu perfil com terceiros.
+                {% blocktrans %}O Optio utiliza ferramentas automatizadas e modelos de Inteligência Artificial para processar o texto das páginas web públicas encontradas. <strong>A sua identidade, o seu correio eletrónico e os seus dados pessoais nunca são enviados para estes modelos de IA.</strong> A IA é utilizada estritamente como uma ferramenta de extração de dados sobre os cursos, garantindo o anonimato da sua pesquisa. Não vendemos nem partilhamos o seu perfil com terceiros.{% endblocktrans %}
             </p>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">4. Segurança e Proteção (Security by Design)</h2>
-            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">Implementamos controlos de segurança rigorosos na nossa arquitetura de <em>software</em> para garantir a proteção das suas informações:</p>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "4. Segurança e Proteção (Security by Design)" %}</h2>
+            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">{% blocktrans %}Implementamos controlos de segurança rigorosos na nossa arquitetura de <em>software</em> para garantir a proteção das suas informações:{% endblocktrans %}</p>
             <ul class="text-sm" style="padding-left: 24px; display: flex; flex-direction: column; gap: 12px; line-height: 1.6;">
-                <li><strong>Isolamento de Dados (Tenant Isolation):</strong> A nossa infraestrutura assegura que os seus dados de pesquisa e os seus favoritos são estritamente privados e inacessíveis a outros utilizadores.</li>
-                <li><strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) impossíveis de reverter.</li>
-                <li><strong>Comunicações Seguras:</strong> Todo o tráfego entre o seu navegador e os nossos servidores é forçado a utilizar protocolos seguros (HTTPS com HSTS).</li>
+                <li>{% blocktrans %}<strong>Isolamento de Dados (Tenant Isolation):</strong> A nossa infraestrutura assegura que os seus dados de pesquisa e os seus favoritos são estritamente privados e inacessíveis a outros utilizadores.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) impossíveis de reverter.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Comunicações Seguras:</strong> Todo o tráfego entre o seu navegador e os nossos servidores é forçado a utilizar protocolos seguros (HTTPS com HSTS).{% endblocktrans %}</li>
             </ul>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">5. Os Seus Direitos (LGPD)</h2>
-            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">O utilizador tem controlo total sobre os seus dados. A qualquer momento, através da plataforma, pode:</p>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "5. Os Seus Direitos (LGPD)" %}</h2>
+            <p class="text-sm" style="margin-bottom: 12px; line-height: 1.6;">{% trans "O utilizador tem controlo total sobre os seus dados. A qualquer momento, através da plataforma, pode:" %}</p>
             <ul class="text-sm" style="padding-left: 24px; display: flex; flex-direction: column; gap: 12px; line-height: 1.6;">
-                <li><strong>Aceder e Retificar:</strong> Visualizar e alterar as suas preferências de notificação e os seus dados de perfil.</li>
-                <li><strong>Apagar o Histórico:</strong> Eliminar de forma permanente pesquisas específicas ou todo o seu histórico de utilização.</li>
-                <li><strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da sua conta e de todos os dados associados aos nossos servidores.</li>
+                <li>{% blocktrans %}<strong>Aceder e Retificar:</strong> Visualizar e alterar as suas preferências de notificação e os seus dados de perfil.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Apagar o Histórico:</strong> Eliminar de forma permanente pesquisas específicas ou todo o seu histórico de utilização.{% endblocktrans %}</li>
+                <li>{% blocktrans %}<strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da sua conta e de todos os dados associados aos nossos servidores.{% endblocktrans %}</li>
             </ul>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">6. Alterações a esta Política</h2>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "6. Alterações a esta Política" %}</h2>
             <p class="text-sm" style="line-height: 1.6;">
-                Podemos atualizar esta Política de Privacidade periodicamente para refletir melhorias no sistema ou alterações legais. Notificaremos os utilizadores através do correio eletrónico registado sempre que ocorrerem mudanças significativas.
+                {% blocktrans %}Podemos atualizar esta Política de Privacidade periodicamente para refletir melhorias no sistema ou alterações legais. Notificaremos os utilizadores através do correio eletrónico registado sempre que ocorrerem mudanças significativas.{% endblocktrans %}
             </p>
         </div>
 
         <div>
-            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">7. Contacto</h2>
+            <h2 style="font-family: 'Instrument Serif', serif; font-size: 32px; margin-bottom: 16px; font-weight: normal;">{% trans "7. Contacto" %}</h2>
             <p class="text-sm" style="line-height: 1.6;">
-                Se tiver dúvidas sobre esta política ou pretender exercer os seus direitos de privacidade que não estejam disponíveis de forma automatizada no painel, contacte-nos através do endereço: <a href="mailto:privacidade@optio.com" class="btn-link">privacidade@optio.com</a>.
+                {% blocktrans %}Se tiver dúvidas sobre esta política ou pretender exercer os seus direitos de privacidade que não estejam disponíveis de forma automatizada no painel, contacte-nos através do endereço: <a href="mailto:privacidade@optio.com" class="btn-link">privacidade@optio.com</a>.{% endblocktrans %}
             </p>
         </div>
 
         <div style="margin-top: 32px;">
             <a href="{% url 'core:cadastro' %}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;" class="text-sm muted">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12l-4-4 4-4"/></svg>
-                Voltar à página anterior
+                {% trans "Voltar à página anterior" %}
             </a>
         </div>
-        
+
     </section>
 </div>
 {% endblock content %}

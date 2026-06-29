@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}Painel  Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Painel" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <span class="crumb-cur">Painel</span>
+    <span class="crumb-cur">{% trans "Painel" %}</span>
   </div>
   <div class="topbar-actions">
-    <span class="btn btn-secondary btn-sm" style="opacity:.5; cursor:not-allowed;" title="Em breve">
+    <span class="btn btn-secondary btn-sm" style="opacity:.5; cursor:not-allowed;" title="{% trans 'Em breve' %}">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
         <path d="M6 13.5a2 2 0 004 0"/>
       </svg>
-      Alertas
+      {% trans "Alertas" %}
     </span>
   </div>
 </div>
@@ -26,11 +27,11 @@
     <div>
       <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
         {% now "H" as hour %}
-        {% if hour < "12" %}Bom dia{% elif hour < "18" %}Boa tarde{% else %}Boa noite{% endif %}
+        {% if hour < "12" %}{% trans "Bom dia" %}{% elif hour < "18" %}{% trans "Boa tarde" %}{% else %}{% trans "Boa noite" %}{% endif %}
         · {% now "d \d\e N \d\e Y" %}
       </div>
       <h1 class="h-display" style="font-size:clamp(40px,4.4vw,60px);">
-        Oi, {{ user.first_name|default:user.email }}. <em>O que</em> você quer descobrir hoje?
+        {% blocktrans with name=user.first_name|default:user.email %}Oi, {{ name }}. <em>O que</em> você quer descobrir hoje?{% endblocktrans %}
       </h1>
     </div>
 
@@ -43,9 +44,9 @@
       </span>
       <span style="flex:1;">
         <span class="serif" style="display:block;font-size:22px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px;">
-          Começar uma <em style="color:var(--primary);">nova busca</em>
+          {% blocktrans %}Começar uma <em style="color:var(--primary);">nova busca</em>{% endblocktrans %}
         </span>
-        <span class="text-xs muted" style="display:block;">Filtre por área, modalidade e estado</span>
+        <span class="text-xs muted" style="display:block;">{% trans "Filtre por área, modalidade e estado" %}</span>
       </span>
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--ink-mute);flex-shrink:0;"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
     </a>
@@ -54,24 +55,24 @@
   {# ── Stats ── #}
   <div class="stats-grid" style="margin-bottom:var(--d-7);">
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Buscas concluídas</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Buscas concluídas" %}</div>
       <div class="serif stat-value">{{ stats.completed }}</div>
-      <div class="text-xs muted">Últimos 30 dias</div>
+      <div class="text-xs muted">{% trans "Últimos 30 dias" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Resultados encontrados</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Resultados encontrados" %}</div>
       <div class="serif stat-value">{{ stats.total_results }}</div>
-      <div class="text-xs muted">Cursos no histórico</div>
+      <div class="text-xs muted">{% trans "Cursos no histórico" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Em andamento</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Em andamento" %}</div>
       <div class="serif stat-value {% if stats.processing %}accent{% endif %}">{{ stats.processing }}</div>
-      <div class="text-xs muted">Processando agora</div>
+      <div class="text-xs muted">{% trans "Processando agora" %}</div>
     </div>
     <div class="card stat-card">
-      <div class="label-eyebrow stat-eyebrow">Total de buscas</div>
+      <div class="label-eyebrow stat-eyebrow">{% trans "Total de buscas" %}</div>
       <div class="serif stat-value">{{ stats.total }}</div>
-      <div class="text-xs muted">Histórico completo</div>
+      <div class="text-xs muted">{% trans "Histórico completo" %}</div>
     </div>
   </div>
 
@@ -81,9 +82,9 @@
     {# Coluna esquerda — buscas recentes #}
     <section>
       <div class="spread" style="margin-bottom:var(--d-4);">
-        <h2 class="h-2">Suas buscas recentes</h2>
+        <h2 class="h-2">{% trans "Suas buscas recentes" %}</h2>
         <a href="{% url 'search:request_list' %}" class="btn btn-ghost btn-sm">
-          Ver histórico completo
+          {% trans "Ver histórico completo" %}
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
         </a>
       </div>
@@ -100,7 +101,7 @@
             </div>
             <div class="row" style="gap:var(--d-3);">
               {% if search.status == 'completed' %}
-              <span class="text-xs muted">{{ search.results_count }} resultado{{ search.results_count|pluralize:"s" }}</span>
+              <span class="text-xs muted">{% blocktrans count counter=search.results_count %}{{ counter }} resultado{% plural %}{{ counter }} resultados{% endblocktrans %}</span>
               {% elif search.status == 'processing' or search.status == 'pending' %}
               <span class="pulse-dot text-xs" style="color:var(--info);"></span>
               {% endif %}
@@ -125,9 +126,9 @@
       {% else %}
       <div class="empty">
         <div class="em-mark">∅</div>
-        <h3 class="h-3" style="margin-bottom:8px;">Nenhuma busca ainda</h3>
-        <p class="text-sm" style="margin-bottom:var(--d-4);">Comece criando sua primeira pesquisa de cursos.</p>
-        <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+        <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhuma busca ainda" %}</h3>
+        <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Comece criando sua primeira pesquisa de cursos." %}</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
       </div>
       {% endif %}
     </section>
@@ -138,18 +139,18 @@
       {# Card: Seus alertas #}
       <section class="card" style="padding:var(--d-5);">
         <div class="spread" style="margin-bottom:var(--d-4);">
-          <h3 class="h-3">Seus alertas</h3>
-          <span class="text-xs" style="color:var(--ink-mute);">Em breve</span>
+          <h3 class="h-3">{% trans "Seus alertas" %}</h3>
+          <span class="text-xs" style="color:var(--ink-mute);">{% trans "Em breve" %}</span>
         </div>
 
         <div style="padding:var(--d-4) 0; text-align:center; border-top:1px solid var(--line-soft);">
           <div style="font-family:var(--serif);font-style:italic;font-size:40px;color:var(--ink-mute);line-height:1;margin-bottom:var(--d-3);">∅</div>
           <p class="text-xs muted" style="margin:0 0 var(--d-3);">
-            Nenhum alerta configurado ainda.
+            {% trans "Nenhum alerta configurado ainda." %}
           </p>
           <span class="btn btn-secondary btn-sm" style="opacity:.5;cursor:not-allowed;">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v4M4 5v4M8 2v12M2 8h12"/></svg>
-            Criar alerta
+            {% trans "Criar alerta" %}
           </span>
         </div>
       </section>
@@ -161,10 +162,10 @@
           <svg width="14" height="14" viewBox="0 0 14 14" style="color:var(--primary);flex-shrink:0;" fill="currentColor">
             <path d="M7 0C7 3.87 3.87 7 0 7c3.87 0 7 3.13 7 7 0-3.87 3.13-7 7-7-3.87 0-7-3.13-7-7z"/>
           </svg>
-          <span class="label-eyebrow" style="color:var(--primary);">Dica do Optio</span>
+          <span class="label-eyebrow" style="color:var(--primary);">{% trans "Dica do Optio" %}</span>
         </div>
         <p class="text-sm" style="margin:0;line-height:1.55;color:var(--ink-2);">
-          Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.
+          {% blocktrans %}Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.{% endblocktrans %}
         </p>
       </section>
 

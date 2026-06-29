@@ -1,21 +1,22 @@
 {% extends 'base.html' %}
-{% block title %}Minhas buscas — Optio{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Minhas buscas" %} — Optio{% endblock %}
 
 {% block content %}
 
 {# Topbar #}
 <div class="topbar">
   <div class="crumbs">
-    <a href="{% url 'core:dashboard' %}">Painel</a>
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
     </span>
-    <span class="crumb-cur">Minhas buscas</span>
+    <span class="crumb-cur">{% trans "Minhas buscas" %}</span>
   </div>
   <div class="topbar-actions">
     <a href="{% url 'search:request_create' %}" class="btn btn-primary btn-sm">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
-      Nova busca
+      {% trans "Nova busca" %}
     </a>
   </div>
 </div>
@@ -25,11 +26,11 @@
   <header class="page-header-editorial">
     <div>
       <div class="label-eyebrow" style="margin-bottom: var(--d-3);">
-        {{ counts.all }} busca{{ counts.all|pluralize:"s" }} registrada{{ counts.all|pluralize:"s" }}
+        {% blocktrans count counter=counts.all %}{{ counter }} busca registrada{% plural %}{{ counter }} buscas registradas{% endblocktrans %}
       </div>
-      <h1 class="h-1">Histórico de <em>buscas</em></h1>
+      <h1 class="h-1">{% blocktrans %}Histórico de <em>buscas</em>{% endblocktrans %}</h1>
       <p class="lede" style="margin-top: var(--d-3);">
-        Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou transforme em alerta salvo.
+        {% trans "Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou transforme em alerta salvo." %}
       </p>
     </div>
   </header>
@@ -48,7 +49,7 @@
         </svg>
         <input class="input" style="padding-left:38px;" name="q"
                value="{{ filters.q|default:'' }}"
-               placeholder="Filtrar por palavras-chave…">
+               placeholder="{% trans 'Filtrar por palavras-chave…' %}">
       </div>
     </form>
 
@@ -56,19 +57,19 @@
     <nav class="segment">
       <a href="?{% if filters.q %}q={{ filters.q }}{% endif %}"
          class="segment-btn {% if not filters.status %}active{% endif %}">
-        Todas · {{ counts.all }}
+        {% trans "Todas" %} · {{ counts.all }}
       </a>
       <a href="?status=completed{% if filters.q %}&q={{ filters.q }}{% endif %}"
          class="segment-btn {% if filters.status == 'completed' %}active{% endif %}">
-        Concluídas · {{ counts.completed }}
+        {% trans "Concluídas" %} · {{ counts.completed }}
       </a>
       <a href="?status=processing{% if filters.q %}&q={{ filters.q }}{% endif %}"
          class="segment-btn {% if filters.status == 'processing' %}active{% endif %}">
-        Em andamento · {{ counts.processing }}
+        {% trans "Em andamento" %} · {{ counts.processing }}
       </a>
       <a href="?status=no_results{% if filters.q %}&q={{ filters.q }}{% endif %}"
          class="segment-btn {% if filters.status == 'no_results' %}active{% endif %}">
-        Sem resultados · {{ counts.no_results }}
+        {% trans "Sem resultados" %} · {{ counts.no_results }}
       </a>
     </nav>
 
@@ -118,23 +119,23 @@
         {% if search.status == 'completed' %}
         <div style="text-align:right;">
           <div class="serif" style="font-size:26px;line-height:1;letter-spacing:-0.02em;">{{ search.results_count }}</div>
-          <div class="text-xs muted" style="margin-top:2px;">resultado{{ search.results_count|pluralize:"s" }}</div>
+          <div class="text-xs muted" style="margin-top:2px;">{% blocktrans count counter=search.results_count %}resultado{% plural %}resultados{% endblocktrans %}</div>
         </div>
         {% elif search.status == 'processing' or search.status == 'pending' %}
         <span class="pulse-dot text-xs" style="color:var(--info);">
-          <span style="margin-left:6px;">processando</span>
+          <span style="margin-left:6px;">{% trans "processando" %}</span>
         </span>
         {% endif %}
 
         {# Ações — stopPropagation para não acionar o onclick da row #}
         <div class="row" style="gap:var(--d-1);" onclick="event.stopPropagation()">
           {% if search.status == 'completed' or search.status == 'no_results' %}
-          <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary btn-sm">Ver</a>
+          <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary btn-sm">{% trans "Ver" %}</a>
           {% endif %}
 
           <form action="{% url 'search:search_repeat' search.pk %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-ghost btn-sm" title="Repetir busca">
+            <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Repetir busca' %}">
               {# Ícone redo — seta curvada no sentido horário #}
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M13 1v4h-4"/>
@@ -143,10 +144,11 @@
             </button>
           </form>
 
+          {% trans "Remover esta busca do histórico?" as confirm_remove_search %}
           <form action="{% url 'search:search_delete' search.pk %}" method="post"
-                onsubmit="return confirm('Remover esta busca do histórico?')">
+                onsubmit="return confirm('{{ confirm_remove_search|escapejs }}')">
             {% csrf_token %}
-            <button type="submit" class="btn btn-ghost btn-sm" title="Excluir" style="color:var(--err);">
+            <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Excluir' %}" style="color:var(--err);">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3.5 4l.5 7.5h6L11 4"/>
               </svg>
@@ -169,7 +171,7 @@
   <nav class="pagination">
     {% if page_obj.has_previous %}
     <a href="?page={{ page_obj.previous_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
-       class="btn btn-secondary btn-sm">← Anterior</a>
+       class="btn btn-secondary btn-sm">{% trans "← Anterior" %}</a>
     {% endif %}
 
     {% for num in page_obj.paginator.page_range %}
@@ -183,12 +185,12 @@
 
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
-       class="btn btn-secondary btn-sm">Próxima →</a>
+       class="btn btn-secondary btn-sm">{% trans "Próxima →" %}</a>
     {% endif %}
   </nav>
   <p class="pagination-info">
-    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-    · {{ page_obj.paginator.count }} busca{{ page_obj.paginator.count|pluralize:"s" }} no total
+    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Página {{ current }} de {{ total }}{% endblocktrans %}
+    · {% blocktrans count counter=page_obj.paginator.count %}{{ counter }} busca no total{% plural %}{{ counter }} buscas no total{% endblocktrans %}
   </p>
   {% endif %}
 
@@ -196,13 +198,13 @@
   {# Estado vazio — ∅ em Instrument Serif #}
   <div class="empty">
     <div class="em-mark">∅</div>
-    <h3 class="h-3" style="margin-bottom:8px;">Nenhuma busca encontrada</h3>
+    <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhuma busca encontrada" %}</h3>
     {% if filters.status or filters.q %}
-    <p class="text-sm" style="margin-bottom:var(--d-4);">Tente outro filtro ou limpe a busca.</p>
-    <a href="{% url 'search:request_list' %}" class="btn btn-secondary">Ver todas</a>
+    <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Tente outro filtro ou limpe a busca." %}</p>
+    <a href="{% url 'search:request_list' %}" class="btn btn-secondary">{% trans "Ver todas" %}</a>
     {% else %}
-    <p class="text-sm" style="margin-bottom:var(--d-4);">Comece criando sua primeira pesquisa de cursos.</p>
-    <a href="{% url 'search:request_create' %}" class="btn btn-primary">Nova busca</a>
+    <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Comece criando sua primeira pesquisa de cursos." %}</p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
     {% endif %}
   </div>
   {% endif %}

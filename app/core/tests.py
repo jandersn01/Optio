@@ -119,3 +119,24 @@ class NotificationPreferenceTests(TestCase):
         self.client.logout()
         response = self.client.get(self.url)
         self.assertRedirects(response, f'/login/?next={self.url}')
+
+
+class I18nTests(TestCase):
+    """Comutação de idioma via header Accept-Language."""
+
+    def test_login_em_ingles_via_accept_language(self):
+        response = self.client.get('/login/', HTTP_ACCEPT_LANGUAGE='en')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sign in')
+        self.assertContains(response, 'Sign in to Optio')
+
+    def test_login_em_pt_br_por_default(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Entrar')
+        self.assertContains(response, 'Entrar no Optio')
+
+    def test_login_em_pt_br_via_accept_language_explicito(self):
+        response = self.client.get('/login/', HTTP_ACCEPT_LANGUAGE='pt-br')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Entrar')
