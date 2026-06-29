@@ -10,12 +10,21 @@ from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_http_methods, require_POST
 
-from search.models import Course, Favorite, SearchRequest
+from search.models import Course, Favorite, SavedAlert, SearchRequest
 
 from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
 from .publisher import QueuePublishError, publish_search_request
-from .services import delete_search, get_search_history, repeat_search
+from .services import (
+    MAX_ACTIVE_ALERTS_PER_USER,
+    create_alert_from_search,
+    delete_alert,
+    delete_search,
+    get_saved_alerts,
+    get_search_history,
+    repeat_search,
+    toggle_alert,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -41,6 +50,23 @@ def search_request_create(request):
 
         if form.is_valid():
             data = form.cleaned_data
+
+            if request.POST.get("save_as_alert"):
+                alert, reason = create_alert_from_search(request.user, data)
+                if reason == "created":
+                    messages.success(
+                        request,
+                        f'Alerta "{alert.name}" salvo. Avisaremos quando surgirem cursos novos.',
+                    )
+                elif reason == "duplicate":
+                    messages.info(request, "Você já tem um alerta ativo com esses critérios.")
+                elif reason == "limit":
+                    messages.warning(
+                        request,
+                        f"Limite de {MAX_ACTIVE_ALERTS_PER_USER} alertas ativos atingido. "
+                        "A busca segue normalmente, mas o alerta não foi salvo.",
+                    )
+
             cached = SearchRequest.objects.filter(
                 user=request.user,
                 keywords=data["keywords"],
@@ -128,7 +154,7 @@ def search_results(request, pk):
     if search_request.status == SearchStatus.PROCESSING:
         limite_tempo = search_request.created_at + timedelta(minutes=5)
 
-        if timezone.now > limite_tempo:
+        if timezone.now() > limite_tempo:
             search_request.status = SearchStatus.FAILED
             search_request.save(update_fields=['status'])
             
@@ -202,3 +228,47 @@ def favorite_remove(request, pk):
     favorite.delete()
     messages.success(request, f'"{course_name}" removido dos favoritos.')
     return redirect(_safe_next(request))
+
+
+@login_required
+def alerts_list(request):
+    alerts = get_saved_alerts(request.user)
+    active_count = sum(1 for a in alerts if a.active)
+    return render(request, "search/alerts_list.html", {
+        "alerts": alerts,
+        "active_count": active_count,
+        "max_alerts": MAX_ACTIVE_ALERTS_PER_USER,
+    })
+
+
+@login_required
+@require_POST
+def alert_toggle(request, pk):
+    try:
+        alert, toggled = toggle_alert(request.user, pk)
+    except SavedAlert.DoesNotExist:
+        messages.error(request, "Alerta não encontrado.")
+        return redirect("search:alerts_list")
+
+    if not toggled:
+        messages.warning(
+            request,
+            f"Você já tem {MAX_ACTIVE_ALERTS_PER_USER} alertas ativos. "
+            "Pause um antes de ativar outro.",
+        )
+    elif alert.active:
+        messages.success(request, "Alerta ativado.")
+    else:
+        messages.success(request, "Alerta pausado.")
+    return redirect(_safe_next(request, fallback="search:alerts_list"))
+
+
+@login_required
+@require_POST
+def alert_delete(request, pk):
+    try:
+        delete_alert(request.user, pk)
+        messages.success(request, "Alerta apagado.")
+    except SavedAlert.DoesNotExist:
+        messages.error(request, "Alerta não encontrado.")
+    return redirect("search:alerts_list")
