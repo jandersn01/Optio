@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.utils.translation import gettext
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ def send_new_courses_email(user_email: str, courses: list[dict]) -> None:
     if not courses:
         return
     send_html_email(
-        subject='Novos cursos para você no Optio',
+        subject=gettext('Novos cursos para você no Optio'),
         template='core/emails/new_courses_email.html',
         context={'courses': courses},
         to_email=user_email,
@@ -59,7 +60,7 @@ def send_alerts_digest_email(user_email: str, sections: list[dict]) -> None:
         return
     total = sum(len(section['courses']) for section in sections)
     send_html_email(
-        subject='Novidades nos seus alertas — Optio',
+        subject=gettext('Novidades nos seus alertas — Optio'),
         template='core/emails/alerts_digest_email.html',
         context={'sections': sections, 'total': total},
         to_email=user_email,

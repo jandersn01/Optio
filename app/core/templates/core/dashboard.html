@@ -149,7 +149,7 @@
             </span>
             <span class="grow" style="min-width:0;">
               <span class="text-sm" style="display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ alert.name }}</span>
-              <span class="text-xs muted">Semanal</span>
+              <span class="text-xs muted">{% trans "Semanal" %}</span>
             </span>
           </a>
           {% endfor %}
@@ -186,8 +186,8 @@
   {# ── Novos programas para você (vindos do scraping das preferências) ── #}
   {% if new_programs %}
   <section style="margin-top:var(--d-7);">
-    <div class="label-eyebrow" style="margin-bottom:var(--d-3);">Adicionados esta semana</div>
-    <h2 class="h-2" style="margin-bottom:var(--d-4);">Novos programas para você</h2>
+    <div class="label-eyebrow" style="margin-bottom:var(--d-3);">{% trans "Adicionados esta semana" %}</div>
+    <h2 class="h-2" style="margin-bottom:var(--d-4);">{% trans "Novos programas para você" %}</h2>
     <div class="course-grid stagger">
       {% for program in new_programs %}
       <article class="card" style="padding:var(--d-5);display:flex;flex-direction:column;gap:var(--d-3);">
@@ -196,12 +196,12 @@
           {{ program.course_name }}
         </h3>
         <div class="meta-row" style="margin-top:auto;">
-          <span>Adicionado {{ program.sent_at|timesince }} atrás</span>
+          <span>{% blocktrans with when=program.sent_at|timesince %}Adicionado {{ when }} atrás{% endblocktrans %}</span>
         </div>
         {% if program.course_link %}
         <div style="padding-top:var(--d-3);border-top:1px solid var(--line-soft);">
           <a href="{{ program.course_link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
-            Acessar curso
+            {% trans "Acessar curso" %}
             {% include "_icon.html" with name="external" size=12 %}
           </a>
         </div>

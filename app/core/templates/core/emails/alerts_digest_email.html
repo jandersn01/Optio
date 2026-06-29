@@ -1,17 +1,16 @@
-<!DOCTYPE html>
+{% load i18n %}<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Novidades nos seus alertas</title>
+    <title>{% trans "Novidades nos seus alertas" %}</title>
 </head>
 <body>
-    <h1>Novidades nos seus alertas</h1>
+    <h1>{% trans "Novidades nos seus alertas" %}</h1>
 
-    <p>Olá!</p>
+    <p>{% trans "Olá!" %}</p>
 
     <p>
-        Encontramos {{ total }} curso{{ total|pluralize:"s" }} novo{{ total|pluralize:"s" }}
-        nos seus alertas salvos. Veja abaixo, organizados por alerta.
+        {% blocktrans count counter=total %}Encontramos {{ counter }} curso novo nos seus alertas salvos. Veja abaixo, organizados por alerta.{% plural %}Encontramos {{ counter }} cursos novos nos seus alertas salvos. Veja abaixo, organizados por alerta.{% endblocktrans %}
     </p>
 
     {% for section in sections %}
@@ -20,11 +19,11 @@
         {% for course in section.courses %}
         <li>
             <strong>{{ course.name }}</strong><br>
-            Instituição: {{ course.institution }}<br>
-            Modalidade: {{ course.modality }}<br>
-            Estado: {{ course.state }}<br>
+            {% trans "Instituição" %}: {{ course.institution }}<br>
+            {% trans "Modalidade" %}: {{ course.modality }}<br>
+            {% trans "Estado" %}: {{ course.state }}<br>
             {% if course.link %}
-                <a href="{{ course.link }}">Ver curso</a>
+                <a href="{{ course.link }}">{% trans "Ver curso" %}</a>
             {% endif %}
         </li>
         {% endfor %}
@@ -34,8 +33,7 @@
     <hr>
 
     <p>
-        Você recebe este e-mail porque salvou buscas como alertas no Optio.
-        Para pausar ou apagar um alerta, acesse a seção “Alertas” no painel.
+        {% trans "Você recebe este e-mail porque salvou buscas como alertas no Optio. Para pausar ou apagar um alerta, acesse a seção “Alertas” no painel." %}
     </p>
 </body>
 </html>

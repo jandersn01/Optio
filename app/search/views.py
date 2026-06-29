@@ -58,15 +58,21 @@ def search_request_create(request):
                 if reason == "created":
                     messages.success(
                         request,
-                        f'Alerta "{alert.name}" salvo. Avisaremos quando surgirem cursos novos.',
+                        gettext('Alerta "%(name)s" salvo. Avisaremos quando surgirem cursos novos.')
+                        % {"name": alert.name},
                     )
                 elif reason == "duplicate":
-                    messages.info(request, "Você já tem um alerta ativo com esses critérios.")
+                    messages.info(
+                        request,
+                        gettext("Você já tem um alerta ativo com esses critérios."),
+                    )
                 elif reason == "limit":
                     messages.warning(
                         request,
-                        f"Limite de {MAX_ACTIVE_ALERTS_PER_USER} alertas ativos atingido. "
-                        "A busca segue normalmente, mas o alerta não foi salvo.",
+                        gettext(
+                            "Limite de %(max)s alertas ativos atingido. "
+                            "A busca segue normalmente, mas o alerta não foi salvo."
+                        ) % {"max": MAX_ACTIVE_ALERTS_PER_USER},
                     )
 
             cached = SearchRequest.objects.filter(
@@ -249,19 +255,20 @@ def alert_toggle(request, pk):
     try:
         alert, toggled = toggle_alert(request.user, pk)
     except SavedAlert.DoesNotExist:
-        messages.error(request, "Alerta não encontrado.")
+        messages.error(request, gettext("Alerta não encontrado."))
         return redirect("search:alerts_list")
 
     if not toggled:
         messages.warning(
             request,
-            f"Você já tem {MAX_ACTIVE_ALERTS_PER_USER} alertas ativos. "
-            "Pause um antes de ativar outro.",
+            gettext(
+                "Você já tem %(max)s alertas ativos. Pause um antes de ativar outro."
+            ) % {"max": MAX_ACTIVE_ALERTS_PER_USER},
         )
     elif alert.active:
-        messages.success(request, "Alerta ativado.")
+        messages.success(request, gettext("Alerta ativado."))
     else:
-        messages.success(request, "Alerta pausado.")
+        messages.success(request, gettext("Alerta pausado."))
     return redirect(_safe_next(request, fallback="search:alerts_list"))
 
 
@@ -270,7 +277,7 @@ def alert_toggle(request, pk):
 def alert_delete(request, pk):
     try:
         delete_alert(request.user, pk)
-        messages.success(request, "Alerta apagado.")
+        messages.success(request, gettext("Alerta apagado."))
     except SavedAlert.DoesNotExist:
-        messages.error(request, "Alerta não encontrado.")
+        messages.error(request, gettext("Alerta não encontrado."))
     return redirect("search:alerts_list")
