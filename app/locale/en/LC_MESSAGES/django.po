@@ -1,11 +1,12 @@
 # English translation for Optio.
 # Copyright (C) 2026 Optio
 # This file is distributed under the same license as the Optio package.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Optio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-28 22:42-0300\n"
 "PO-Revision-Date: 2026-06-27 00:00+0000\n"
 "Last-Translator: Optio team\n"
 "Language-Team: English\n"
@@ -15,791 +16,1550 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# ============================================================
-# choices.py — SearchModality
-# ============================================================
-msgid "EAD"
-msgstr "Distance learning"
-
-msgid "Presencial"
-msgstr "In-person"
-
-msgid "Híbrido"
-msgstr "Hybrid"
-
-msgid "Todos"
-msgstr "All"
-
-# ============================================================
-# choices.py — SearchStatus
-# ============================================================
-msgid "Pendente"
-msgstr "Pending"
-
-msgid "Processando"
-msgstr "Processing"
-
-msgid "Concluída"
-msgstr "Completed"
-
-msgid "Falhou"
-msgstr "Failed"
-
-msgid "Sem resultados"
-msgstr "No results"
-
-# ============================================================
-# choices.py — SearchArea
-# ============================================================
-msgid "Administração"
-msgstr "Business Administration"
-
-msgid "Ciências Agrárias"
-msgstr "Agricultural Sciences"
-
-msgid "Ciências Biológicas"
-msgstr "Biological Sciences"
-
-msgid "Ciências da Saúde"
-msgstr "Health Sciences"
-
-msgid "Ciências Exatas e da Terra"
-msgstr "Exact and Earth Sciences"
-
-msgid "Ciências Humanas"
-msgstr "Humanities"
-
-msgid "Ciências Sociais Aplicadas"
-msgstr "Applied Social Sciences"
-
-msgid "Engenharias"
-msgstr "Engineering"
-
-msgid "Linguística, Letras e Artes"
-msgstr "Linguistics, Literature and Arts"
-
-msgid "Multidisciplinar"
-msgstr "Multidisciplinary"
-
-# ============================================================
-# choices.py — Brazilian states
-# ============================================================
-msgid "Acre"
-msgstr "Acre"
-
-msgid "Alagoas"
-msgstr "Alagoas"
-
-msgid "Amapá"
-msgstr "Amapá"
-
-msgid "Amazonas"
-msgstr "Amazonas"
-
-msgid "Bahia"
-msgstr "Bahia"
-
-msgid "Ceará"
-msgstr "Ceará"
-
-msgid "Distrito Federal"
-msgstr "Federal District"
-
-msgid "Espírito Santo"
-msgstr "Espírito Santo"
-
-msgid "Goiás"
-msgstr "Goiás"
-
-msgid "Maranhão"
-msgstr "Maranhão"
-
-msgid "Mato Grosso"
-msgstr "Mato Grosso"
-
-msgid "Mato Grosso do Sul"
-msgstr "Mato Grosso do Sul"
-
-msgid "Minas Gerais"
-msgstr "Minas Gerais"
-
-msgid "Pará"
-msgstr "Pará"
-
-msgid "Paraíba"
-msgstr "Paraíba"
-
-msgid "Paraná"
-msgstr "Paraná"
-
-msgid "Pernambuco"
-msgstr "Pernambuco"
-
-msgid "Piauí"
-msgstr "Piauí"
-
-msgid "Rio de Janeiro"
-msgstr "Rio de Janeiro"
-
-msgid "Rio Grande do Norte"
-msgstr "Rio Grande do Norte"
-
-msgid "Rio Grande do Sul"
-msgstr "Rio Grande do Sul"
-
-msgid "Rondônia"
-msgstr "Rondônia"
-
-msgid "Roraima"
-msgstr "Roraima"
-
-msgid "Santa Catarina"
-msgstr "Santa Catarina"
-
-msgid "São Paulo"
-msgstr "São Paulo"
-
-msgid "Sergipe"
-msgstr "Sergipe"
-
-msgid "Tocantins"
-msgstr "Tocantins"
-
-# ============================================================
-# models — common
-# ============================================================
-msgid "E-mail"
-msgstr "Email"
-
-msgid "Usuário"
-msgstr "User"
-
-msgid "Usuários"
-msgstr "Users"
-
-msgid "Aceitou a política de Privacidade"
-msgstr "Accepted the Privacy Policy"
-
-msgid "Indica se o usuário aceitou a política de privacidade no momento do cadastro"
-msgstr "Indicates whether the user accepted the privacy policy at registration"
-
-msgid "Áreas de interesse"
-msgstr "Areas of interest"
-
-msgid "Valores separados por vírgula"
-msgstr "Comma-separated values"
-
-msgid "Modalidade preferida"
-msgstr "Preferred modality"
-
-msgid "Notificações ativas"
-msgstr "Notifications active"
-
-msgid "Preferência de notificação"
-msgstr "Notification preference"
-
-msgid "Preferências de notificação"
-msgstr "Notification preferences"
-
-msgid "E-mail para notificação"
-msgstr "Notification email"
-
-msgid "Palavras-chave"
-msgstr "Keywords"
-
-msgid "Área do conhecimento"
-msgstr "Field of study"
-
-msgid "Modalidade"
-msgstr "Modality"
-
-msgid "Estado"
-msgstr "State"
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Quantidade de resultados"
-msgstr "Number of results"
-
-msgid "Excluído"
-msgstr "Deleted"
-
-msgid "Excluído em"
-msgstr "Deleted at"
-
-msgid "Criado em"
-msgstr "Created at"
-
-msgid "Atualizado em"
-msgstr "Updated at"
-
-msgid "Requisição de busca"
-msgstr "Search request"
-
-msgid "Requisições de busca"
-msgstr "Search requests"
-
-msgid "Nome do curso"
-msgstr "Course name"
-
-msgid "Instituição"
-msgstr "Institution"
-
-msgid "Link"
-msgstr "Link"
-
-msgid "Curso"
-msgstr "Course"
-
-msgid "Cursos"
-msgstr "Courses"
-
-msgid "Adicionado em"
-msgstr "Added at"
-
-msgid "Favorito"
-msgstr "Favorite"
-
-msgid "Favoritos"
-msgstr "Favorites"
+#: core/emails.py:50
+msgid "Novos cursos para você no Optio"
+msgstr ""
+
+#: core/emails.py:63
+msgid "Novidades nos seus alertas — Optio"
+msgstr ""
 
 # ============================================================
 # forms.py
 # ============================================================
+#: core/forms.py:13
 msgid "Nome completo"
 msgstr "Full name"
 
+#: core/forms.py:17
 msgid "Seu nome completo"
 msgstr "Your full name"
 
+#: core/forms.py:24
 msgid "Você precisa aceitar a Política de Privacidade para criar uma conta."
 msgstr "You must accept the Privacy Policy to create an account."
 
+#: core/forms.py:35
 msgid "seu@email.com"
 msgstr "you@email.com"
 
+# ============================================================
+# models — common
+# ============================================================
+#: core/forms.py:37 core/forms.py:80 core/models.py:37
+#: core/templates/core/preferences.html:74
+#: core/templates/registration/login.html:84
+msgid "E-mail"
+msgstr "Email"
+
+#: core/forms.py:41
 msgid "Mínimo 8 caracteres"
 msgstr "At least 8 characters"
 
+#: core/forms.py:43 core/templates/registration/login.html:91
 msgid "Senha"
 msgstr "Password"
 
+#: core/forms.py:46
 msgid "Repita a senha"
 msgstr "Repeat the password"
 
+#: core/forms.py:48
 msgid "Confirmação de senha"
 msgstr "Password confirmation"
 
+#: core/forms.py:53
 msgid "Li e aceito a"
 msgstr "I have read and accept the"
 
+#: core/forms.py:55 core/templates/core/privacy.html:4
 msgid "Política de Privacidade"
 msgstr "Privacy Policy"
 
+#: core/forms.py:63
 msgid "Este e-mail já está cadastrado."
 msgstr "This email is already registered."
 
+#: core/forms.py:80 core/templates/core/preferences.html:66
 msgid "Nome"
 msgstr "Name"
 
+#: core/forms.py:91
 msgid "Este e-mail já está em uso."
 msgstr "This email is already in use."
 
-# ============================================================
-# views.py — messages
-# ============================================================
-msgid "Você saiu da sua conta."
-msgstr "You have been logged out."
+#: core/forms.py:99 core/models.py:68 core/templates/core/preferences.html:96
+msgid "Áreas de interesse"
+msgstr "Areas of interest"
 
-msgid "Preferências salvas com sucesso."
-msgstr "Preferences saved successfully."
+#: core/forms.py:103 core/templates/core/preferences.html:117
+#: search/templates/search/search_list.html:57
+msgid "Todas"
+msgstr "All"
 
-msgid "Histórico de buscas apagado."
-msgstr "Search history deleted."
+#: core/forms.py:105 core/models.py:74 core/templates/core/preferences.html:112
+msgid "Modalidade preferida"
+msgstr "Preferred modality"
 
-msgid "Conta criada com sucesso! Faça login para continuar."
-msgstr "Account created successfully! Sign in to continue."
+#: core/models.py:41
+msgid "Aceitou a política de Privacidade"
+msgstr "Accepted the Privacy Policy"
 
-msgid "Encontramos uma busca recente com os mesmos critérios. Exibindo resultados anteriores."
-msgstr "We found a recent search with the same criteria. Showing previous results."
+#: core/models.py:42
+msgid ""
+"Indica se o usuário aceitou a política de privacidade no momento do cadastro"
+msgstr "Indicates whether the user accepted the privacy policy at registration"
 
-msgid "Não foi possível enviar sua busca para processamento. Tente novamente em alguns instantes."
-msgstr "We couldn't submit your search for processing. Please try again shortly."
+#: core/models.py:51 core/models.py:63 search/models.py:31 search/models.py:186
+#: search/models.py:221
+msgid "Usuário"
+msgstr "User"
 
-msgid "Busca recebida com sucesso. Os resultados serão processados em segundo plano."
-msgstr "Search received successfully. Results will be processed in the background."
+#: core/models.py:52
+msgid "Usuários"
+msgstr "Users"
 
-msgid "Busca removida do histórico."
-msgstr "Search removed from history."
+#: core/models.py:69
+msgid "Valores separados por vírgula"
+msgstr "Comma-separated values"
 
-msgid "Busca não encontrada."
-msgstr "Search not found."
+#: core/models.py:78
+msgid "Notificações ativas"
+msgstr "Notifications active"
 
-msgid "Busca repetida com sucesso."
-msgstr "Search repeated successfully."
+#: core/models.py:84
+msgid "Preferência de notificação"
+msgstr "Notification preference"
 
-msgid "\"%(name)s\" salvo nos favoritos."
-msgstr "\"%(name)s\" saved to favorites."
-
-msgid "Curso já está nos seus favoritos."
-msgstr "Course is already in your favorites."
-
-msgid "\"%(name)s\" removido dos favoritos."
-msgstr "\"%(name)s\" removed from favorites."
+#: core/models.py:85
+msgid "Preferências de notificação"
+msgstr "Notification preferences"
 
 # ============================================================
 # templates — base.html
 # ============================================================
+#: core/templates/base.html:28
 msgid "Trabalho"
 msgstr "Work"
 
+#: core/templates/base.html:33 core/templates/core/dashboard.html:3
+#: core/templates/core/dashboard.html:10
+#: core/templates/core/preferences.html:10
+#: search/templates/search/alerts_list.html:10
+#: search/templates/search/favorites_list.html:10
+#: search/templates/search/search_list.html:10
+#: search/templates/search/search_request_form.html:10
+#: search/templates/search/search_results.html:10
 msgid "Painel"
 msgstr "Dashboard"
 
-msgid "Nova busca"
-msgstr "New search"
-
+#: core/templates/base.html:39 search/templates/search/search_list.html:3
+#: search/templates/search/search_list.html:14
+#: search/templates/search/search_results.html:14
 msgid "Minhas buscas"
 msgstr "My searches"
 
-msgid "Conta"
-msgstr "Account"
+#: core/templates/base.html:48 search/models.py:201
+#: search/templates/search/favorites_list.html:3
+#: search/templates/search/favorites_list.html:14
+msgid "Favoritos"
+msgstr "Favorites"
 
-msgid "Preferências"
-msgstr "Preferences"
-
-msgid "Sair"
-msgstr "Sign out"
-
-# ============================================================
-# templates — dashboard.html
-# ============================================================
-msgid "Em breve"
-msgstr "Coming soon"
-
+#: core/templates/base.html:57 core/templates/core/dashboard.html:15
 msgid "Alertas"
 msgstr "Alerts"
 
+#: core/templates/base.html:60
+msgid "Conta"
+msgstr "Account"
+
+#: core/templates/base.html:65 core/templates/core/preferences.html:3
+#: core/templates/core/preferences.html:14
+msgid "Preferências"
+msgstr "Preferences"
+
+#: core/templates/base.html:72
+msgid "Sair"
+msgstr "Sign out"
+
+#: core/templates/core/dashboard.html:27
 msgid "Bom dia"
 msgstr "Good morning"
 
+#: core/templates/core/dashboard.html:27
 msgid "Boa tarde"
 msgstr "Good afternoon"
 
+#: core/templates/core/dashboard.html:27
 msgid "Boa noite"
 msgstr "Good evening"
 
+#: core/templates/core/dashboard.html:31
+#, python-format
 msgid "Oi, %(name)s. <em>O que</em> você quer descobrir hoje?"
 msgstr "Hi, %(name)s. <em>What</em> do you want to discover today?"
 
+#: core/templates/core/dashboard.html:44
 msgid "Começar uma <em style=\"color:var(--primary);\">nova busca</em>"
 msgstr "Start a <em style=\"color:var(--primary);\">new search</em>"
 
+#: core/templates/core/dashboard.html:46
 msgid "Filtre por área, modalidade e estado"
 msgstr "Filter by field, modality and state"
 
+#: core/templates/core/dashboard.html:55
 msgid "Buscas concluídas"
 msgstr "Searches completed"
 
+#: core/templates/core/dashboard.html:57
 msgid "Últimos 30 dias"
 msgstr "Last 30 days"
 
+#: core/templates/core/dashboard.html:60
 msgid "Resultados encontrados"
 msgstr "Results found"
 
+#: core/templates/core/dashboard.html:62
 msgid "Cursos no histórico"
 msgstr "Courses in history"
 
+#: core/templates/core/dashboard.html:65
+#: search/templates/search/search_list.html:65
 msgid "Em andamento"
 msgstr "In progress"
 
+#: core/templates/core/dashboard.html:67
 msgid "Processando agora"
 msgstr "Processing now"
 
+#: core/templates/core/dashboard.html:70
 msgid "Total de buscas"
 msgstr "Total searches"
 
+#: core/templates/core/dashboard.html:72
 msgid "Histórico completo"
 msgstr "Complete history"
 
+#: core/templates/core/dashboard.html:82
 msgid "Suas buscas recentes"
 msgstr "Your recent searches"
 
+#: core/templates/core/dashboard.html:84
 msgid "Ver histórico completo"
 msgstr "View complete history"
 
+#: core/templates/core/dashboard.html:101
+#, python-format
 msgid "%(counter)s resultado"
 msgid_plural "%(counter)s resultados"
 msgstr[0] "%(counter)s result"
 msgstr[1] "%(counter)s results"
 
+#: core/templates/core/dashboard.html:126
 msgid "Nenhuma busca ainda"
 msgstr "No searches yet"
 
+#: core/templates/core/dashboard.html:127
+#: search/templates/search/search_list.html:191
 msgid "Comece criando sua primeira pesquisa de cursos."
 msgstr "Start by creating your first course search."
 
+#: core/templates/core/dashboard.html:128
+#: search/templates/search/favorites_list.html:19
+#: search/templates/search/search_list.html:19
+#: search/templates/search/search_list.html:192
+#: search/templates/search/search_request_form.html:3
+#: search/templates/search/search_request_form.html:14
+#: search/templates/search/search_results.html:103
+#: search/templates/search/search_results.html:113
+msgid "Nova busca"
+msgstr "New search"
+
+#: core/templates/core/dashboard.html:139
 msgid "Seus alertas"
 msgstr "Your alerts"
 
-msgid "Nenhum alerta configurado ainda."
+#: core/templates/core/dashboard.html:140
+#, fuzzy
+#| msgid "Presencial"
+msgid "Gerenciar"
+msgstr "In-person"
+
+#: core/templates/core/dashboard.html:152
+msgid "Semanal"
+msgstr ""
+
+#: core/templates/core/dashboard.html:161
+#, fuzzy
+#| msgid "Nenhum alerta configurado ainda."
+msgid "Nenhum alerta ativo ainda."
 msgstr "No alerts configured yet."
 
+#: core/templates/core/dashboard.html:165
 msgid "Criar alerta"
 msgstr "Create alert"
 
+#: core/templates/core/dashboard.html:176
 msgid "Dica do Optio"
 msgstr "Optio tip"
 
-msgid "Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer."
-msgstr "Save searches you would repeat every week as <strong>alerts</strong>. We check official sources and notify you only when something new appears."
+#: core/templates/core/dashboard.html:179
+msgid ""
+"Salve buscas que você refaria toda semana como <strong>alertas</strong>. A "
+"gente verifica fontes oficiais e te avisa só quando algo novo aparecer."
+msgstr ""
+"Save searches you would repeat every week as <strong>alerts</strong>. We "
+"check official sources and notify you only when something new appears."
+
+#: core/templates/core/dashboard.html:189
+#, fuzzy
+#| msgid "Adicionado em"
+msgid "Adicionados esta semana"
+msgstr "Added at"
+
+#: core/templates/core/dashboard.html:190
+msgid "Novos programas para você"
+msgstr ""
+
+#: core/templates/core/dashboard.html:199
+#, fuzzy, python-format
+#| msgid "Salvo %(when)s atrás"
+msgid "Adicionado %(when)s atrás"
+msgstr "Saved %(when)s ago"
+
+#: core/templates/core/dashboard.html:204
+#: search/templates/search/favorites_list.html:78
+#: search/templates/search/search_results.html:85
+msgid "Acessar curso"
+msgstr "Access course"
+
+#: core/templates/core/emails/alerts_digest_email.html:5
+#: core/templates/core/emails/alerts_digest_email.html:8
+msgid "Novidades nos seus alertas"
+msgstr ""
+
+#: core/templates/core/emails/alerts_digest_email.html:10
+#: search/templates/search/emails/no_results_email.html:12
+#: search/templates/search/emails/results_email.html:12
+msgid "Olá!"
+msgstr "Hello!"
+
+#: core/templates/core/emails/alerts_digest_email.html:13
+#, python-format
+msgid ""
+"Encontramos %(counter)s curso novo nos seus alertas salvos. Veja abaixo, "
+"organizados por alerta."
+msgid_plural ""
+"Encontramos %(counter)s cursos novos nos seus alertas salvos. Veja abaixo, "
+"organizados por alerta."
+msgstr[0] ""
+msgstr[1] ""
+
+#: core/templates/core/emails/alerts_digest_email.html:22 search/models.py:158
+#: search/templates/search/emails/results_email.html:25
+msgid "Instituição"
+msgstr "Institution"
+
+#: core/templates/core/emails/alerts_digest_email.html:23 search/models.py:54
+#: search/models.py:163 search/models.py:235
+#: search/templates/search/emails/results_email.html:26
+#: search/templates/search/search_request_form.html:108
+msgid "Modalidade"
+msgstr "Modality"
+
+#: core/templates/core/emails/alerts_digest_email.html:24 search/models.py:61
+#: search/models.py:169 search/models.py:241
+#: search/templates/search/emails/results_email.html:27
+#: search/templates/search/search_request_form.html:96
+msgid "Estado"
+msgstr "State"
+
+#: core/templates/core/emails/alerts_digest_email.html:26
+#: search/templates/search/emails/results_email.html:30
+msgid "Ver curso"
+msgstr "View course"
+
+#: core/templates/core/emails/alerts_digest_email.html:36
+msgid ""
+"Você recebe este e-mail porque salvou buscas como alertas no Optio. Para "
+"pausar ou apagar um alerta, acesse a seção “Alertas” no painel."
+msgstr ""
 
 # ============================================================
 # templates — preferences.html
 # ============================================================
+#: core/templates/core/preferences.html:18
 msgid "Salvar alterações"
 msgstr "Save changes"
 
+#: core/templates/core/preferences.html:28
+#, python-format
 msgid "Conta criada em %(date)s"
 msgstr "Account created on %(date)s"
 
+#: core/templates/core/preferences.html:30
 msgid "Suas <em>preferências</em>"
 msgstr "Your <em>preferences</em>"
 
-msgid "Tudo que define como você usa o Optio: informações pessoais, perfil acadêmico e quando queremos te avisar."
-msgstr "Everything that defines how you use Optio: personal information, academic profile, and when we should notify you."
+#: core/templates/core/preferences.html:32
+msgid ""
+"Tudo que define como você usa o Optio: informações pessoais, perfil "
+"acadêmico e quando queremos te avisar."
+msgstr ""
+"Everything that defines how you use Optio: personal information, academic "
+"profile, and when we should notify you."
 
+#: core/templates/core/preferences.html:43
 msgid "Corrija os erros antes de salvar."
 msgstr "Fix the errors before saving."
 
+#: core/templates/core/preferences.html:50
 msgid "Identidade"
 msgstr "Identity"
 
+#: core/templates/core/preferences.html:51
 msgid "Como o Optio te conhece."
 msgstr "How Optio knows you."
 
+#: core/templates/core/preferences.html:89
 msgid "Perfil acadêmico"
 msgstr "Academic profile"
 
+#: core/templates/core/preferences.html:90
 msgid "Influencia a relevância dos resultados e das notificações."
 msgstr "Influences the relevance of results and notifications."
 
+#: core/templates/core/preferences.html:108
 msgid "Selecione uma ou mais áreas. Clique novamente para desmarcar."
 msgstr "Select one or more areas. Click again to deselect."
 
+#: core/templates/core/preferences.html:131
 msgid "Notificações"
 msgstr "Notifications"
 
+#: core/templates/core/preferences.html:132
 msgid "Como você quer que a gente te avise."
 msgstr "How you would like us to notify you."
 
+#: core/templates/core/preferences.html:138
 msgid "Resultados de busca por e-mail"
 msgstr "Search results by email"
 
+#: core/templates/core/preferences.html:139
 msgid "Recebe assim que a busca termina."
 msgstr "Receive as soon as the search finishes."
 
+#: core/templates/core/preferences.html:157
 msgid "Dados e privacidade"
 msgstr "Data and privacy"
 
+#: core/templates/core/preferences.html:158
 msgid "Conformidade LGPD."
 msgstr "LGPD compliance."
 
+#: core/templates/core/preferences.html:164
 msgid "Apagar histórico de buscas"
 msgstr "Delete search history"
 
+#: core/templates/core/preferences.html:165
 msgid "Mantém sua conta. Remove todas as buscas do histórico."
 msgstr "Keeps your account. Removes all searches from history."
 
+#: core/templates/core/preferences.html:167
 msgid "Apagar todo o histórico de buscas? Esta ação não pode ser desfeita."
 msgstr "Delete all search history? This action cannot be undone."
 
+#: core/templates/core/preferences.html:171
 msgid "Apagar histórico"
 msgstr "Delete history"
 
+#: core/templates/core/preferences.html:177
+#: core/templates/core/preferences.html:181
 msgid "Excluir conta"
 msgstr "Delete account"
 
+#: core/templates/core/preferences.html:178
 msgid "Remove todos os seus dados em até 30 dias."
 msgstr "Removes all your data within 30 days."
 
 # ============================================================
+# templates — dashboard.html
+# ============================================================
+#: core/templates/core/preferences.html:180
+msgid "Em breve"
+msgstr "Coming soon"
+
+# ============================================================
 # templates — privacy.html
 # ============================================================
+#: core/templates/core/privacy.html:11
 msgid "Política de <em>Privacidade</em>"
 msgstr "<em>Privacy</em> Policy"
 
+#: core/templates/core/privacy.html:14
 msgid "Data de entrada em vigor:"
 msgstr "Effective date:"
 
+#: core/templates/core/privacy.html:14
 msgid "17 de junho de 2026"
 msgstr "June 17, 2026"
 
-msgid "Bem-vindo ao <strong>Optio</strong>. A sua privacidade e a segurança dos seus dados pessoais são fundamentais para nós. Esta Política de Privacidade descreve como recolhemos, utilizamos, protegemos e gerimos as suas informações quando utiliza a nossa plataforma de pesquisa de cursos de pós-graduação gratuitos, em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD)."
-msgstr "Welcome to <strong>Optio</strong>. Your privacy and the security of your personal data are fundamental to us. This Privacy Policy describes how we collect, use, protect, and manage your information when using our platform for searching free graduate courses, in strict compliance with the Brazilian General Data Protection Law (LGPD)."
+#: core/templates/core/privacy.html:22
+msgid ""
+"Bem-vindo ao <strong>Optio</strong>. A sua privacidade e a segurança dos "
+"seus dados pessoais são fundamentais para nós. Esta Política de Privacidade "
+"descreve como recolhemos, utilizamos, protegemos e gerimos as suas "
+"informações quando utiliza a nossa plataforma de pesquisa de cursos de pós-"
+"graduação gratuitos, em estrita conformidade com a Lei Geral de Proteção de "
+"Dados (LGPD)."
+msgstr ""
+"Welcome to <strong>Optio</strong>. Your privacy and the security of your "
+"personal data are fundamental to us. This Privacy Policy describes how we "
+"collect, use, protect, and manage your information when using our platform "
+"for searching free graduate courses, in strict compliance with the Brazilian "
+"General Data Protection Law (LGPD)."
 
+#: core/templates/core/privacy.html:27
 msgid "1. Que dados recolhemos?"
 msgstr "1. What data do we collect?"
 
-msgid "Para garantir o funcionamento pleno da plataforma, recolhemos apenas os dados estritamente necessários:"
-msgstr "To ensure the platform works properly, we collect only strictly necessary data:"
+#: core/templates/core/privacy.html:28
+msgid ""
+"Para garantir o funcionamento pleno da plataforma, recolhemos apenas os "
+"dados estritamente necessários:"
+msgstr ""
+"To ensure the platform works properly, we collect only strictly necessary "
+"data:"
 
-msgid "<strong>Dados de Registo:</strong> Nome completo e endereço de correio eletrónico (fornecidos no momento da criação da conta)."
-msgstr "<strong>Registration data:</strong> Full name and email address (provided when the account is created)."
+#: core/templates/core/privacy.html:30
+msgid ""
+"<strong>Dados de Registo:</strong> Nome completo e endereço de correio "
+"eletrónico (fornecidos no momento da criação da conta)."
+msgstr ""
+"<strong>Registration data:</strong> Full name and email address (provided "
+"when the account is created)."
 
-msgid "<strong>Dados de Utilização e Preferências:</strong> O seu histórico de pesquisas, os parâmetros que define (áreas de interesse e modalidades) e os cursos que guarda nos seus favoritos."
-msgstr "<strong>Usage and Preferences data:</strong> Your search history, the parameters you set (areas of interest and modalities), and the courses you save to favorites."
+#: core/templates/core/privacy.html:31
+msgid ""
+"<strong>Dados de Utilização e Preferências:</strong> O seu histórico de "
+"pesquisas, os parâmetros que define (áreas de interesse e modalidades) e os "
+"cursos que guarda nos seus favoritos."
+msgstr ""
+"<strong>Usage and Preferences data:</strong> Your search history, the "
+"parameters you set (areas of interest and modalities), and the courses you "
+"save to favorites."
 
-msgid "<strong>Dados de Sessão:</strong> Informações técnicas essenciais para manter a sua conta segura, como <em>cookies</em> de sessão e de proteção contra falsificação de pedidos (CSRF)."
-msgstr "<strong>Session data:</strong> Technical information essential to keep your account secure, such as session <em>cookies</em> and CSRF protection cookies."
+#: core/templates/core/privacy.html:32
+msgid ""
+"<strong>Dados de Sessão:</strong> Informações técnicas essenciais para "
+"manter a sua conta segura, como <em>cookies</em> de sessão e de proteção "
+"contra falsificação de pedidos (CSRF)."
+msgstr ""
+"<strong>Session data:</strong> Technical information essential to keep your "
+"account secure, such as session <em>cookies</em> and CSRF protection cookies."
 
+#: core/templates/core/privacy.html:37
 msgid "2. Como utilizamos os seus dados?"
 msgstr "2. How do we use your data?"
 
-msgid "A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço do Optio:"
-msgstr "The sole purpose of processing your data is to deliver the Optio service:"
+#: core/templates/core/privacy.html:38
+msgid ""
+"A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço "
+"do Optio:"
+msgstr ""
+"The sole purpose of processing your data is to deliver the Optio service:"
 
-msgid "<strong>Processamento de Pesquisas:</strong> Utilizar os seus parâmetros para orquestrar a recolha de dados públicos sobre cursos nas instituições de ensino."
-msgstr "<strong>Search processing:</strong> Use your parameters to orchestrate the collection of public data about courses at educational institutions."
+#: core/templates/core/privacy.html:40
+msgid ""
+"<strong>Processamento de Pesquisas:</strong> Utilizar os seus parâmetros "
+"para orquestrar a recolha de dados públicos sobre cursos nas instituições de "
+"ensino."
+msgstr ""
+"<strong>Search processing:</strong> Use your parameters to orchestrate the "
+"collection of public data about courses at educational institutions."
 
-msgid "<strong>Notificações:</strong> Enviar os resultados das suas pesquisas e alertas de novos cursos diretamente para o seu correio eletrónico."
-msgstr "<strong>Notifications:</strong> Send your search results and new-course alerts directly to your email address."
+#: core/templates/core/privacy.html:41
+msgid ""
+"<strong>Notificações:</strong> Enviar os resultados das suas pesquisas e "
+"alertas de novos cursos diretamente para o seu correio eletrónico."
+msgstr ""
+"<strong>Notifications:</strong> Send your search results and new-course "
+"alerts directly to your email address."
 
-msgid "<strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard) atualizado com as suas métricas e o seu histórico individual."
-msgstr "<strong>Personalization:</strong> Keep your dashboard updated with your individual metrics and history."
+#: core/templates/core/privacy.html:42
+msgid ""
+"<strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard) "
+"atualizado com as suas métricas e o seu histórico individual."
+msgstr ""
+"<strong>Personalization:</strong> Keep your dashboard updated with your "
+"individual metrics and history."
 
+#: core/templates/core/privacy.html:47
 msgid "3. Tratamento por Inteligência Artificial e Terceiros"
 msgstr "3. Processing by Artificial Intelligence and Third Parties"
 
-msgid "O Optio utiliza ferramentas automatizadas e modelos de Inteligência Artificial para processar o texto das páginas web públicas encontradas. <strong>A sua identidade, o seu correio eletrónico e os seus dados pessoais nunca são enviados para estes modelos de IA.</strong> A IA é utilizada estritamente como uma ferramenta de extração de dados sobre os cursos, garantindo o anonimato da sua pesquisa. Não vendemos nem partilhamos o seu perfil com terceiros."
-msgstr "Optio uses automated tools and Artificial Intelligence models to process the text of public web pages it finds. <strong>Your identity, email, and personal data are never sent to these AI models.</strong> AI is used strictly as a tool to extract data about courses, keeping your search anonymous. We do not sell or share your profile with third parties."
+#: core/templates/core/privacy.html:49
+msgid ""
+"O Optio utiliza ferramentas automatizadas e modelos de Inteligência "
+"Artificial para processar o texto das páginas web públicas encontradas. "
+"<strong>A sua identidade, o seu correio eletrónico e os seus dados pessoais "
+"nunca são enviados para estes modelos de IA.</strong> A IA é utilizada "
+"estritamente como uma ferramenta de extração de dados sobre os cursos, "
+"garantindo o anonimato da sua pesquisa. Não vendemos nem partilhamos o seu "
+"perfil com terceiros."
+msgstr ""
+"Optio uses automated tools and Artificial Intelligence models to process the "
+"text of public web pages it finds. <strong>Your identity, email, and "
+"personal data are never sent to these AI models.</strong> AI is used "
+"strictly as a tool to extract data about courses, keeping your search "
+"anonymous. We do not sell or share your profile with third parties."
 
+#: core/templates/core/privacy.html:54
 msgid "4. Segurança e Proteção (Security by Design)"
 msgstr "4. Security and Protection (Security by Design)"
 
-msgid "Implementamos controlos de segurança rigorosos na nossa arquitetura de <em>software</em> para garantir a proteção das suas informações:"
-msgstr "We implement strict security controls in our <em>software</em> architecture to protect your information:"
+#: core/templates/core/privacy.html:55
+msgid ""
+"Implementamos controlos de segurança rigorosos na nossa arquitetura de "
+"<em>software</em> para garantir a proteção das suas informações:"
+msgstr ""
+"We implement strict security controls in our <em>software</em> architecture "
+"to protect your information:"
 
-msgid "<strong>Isolamento de Dados (Tenant Isolation):</strong> A nossa infraestrutura assegura que os seus dados de pesquisa e os seus favoritos são estritamente privados e inacessíveis a outros utilizadores."
-msgstr "<strong>Data Isolation (Tenant Isolation):</strong> Our infrastructure ensures that your search data and favorites are strictly private and inaccessible to other users."
+#: core/templates/core/privacy.html:57
+msgid ""
+"<strong>Isolamento de Dados (Tenant Isolation):</strong> A nossa "
+"infraestrutura assegura que os seus dados de pesquisa e os seus favoritos "
+"são estritamente privados e inacessíveis a outros utilizadores."
+msgstr ""
+"<strong>Data Isolation (Tenant Isolation):</strong> Our infrastructure "
+"ensures that your search data and favorites are strictly private and "
+"inaccessible to other users."
 
-msgid "<strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) impossíveis de reverter."
-msgstr "<strong>Encryption:</strong> Your password is not stored in plain text. We use <em>hashing</em> algorithms (PBKDF2 with SHA256) that cannot be reversed."
+#: core/templates/core/privacy.html:58
+msgid ""
+"<strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto "
+"limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) "
+"impossíveis de reverter."
+msgstr ""
+"<strong>Encryption:</strong> Your password is not stored in plain text. We "
+"use <em>hashing</em> algorithms (PBKDF2 with SHA256) that cannot be reversed."
 
-msgid "<strong>Comunicações Seguras:</strong> Todo o tráfego entre o seu navegador e os nossos servidores é forçado a utilizar protocolos seguros (HTTPS com HSTS)."
-msgstr "<strong>Secure Communications:</strong> All traffic between your browser and our servers is forced to use secure protocols (HTTPS with HSTS)."
+#: core/templates/core/privacy.html:59
+msgid ""
+"<strong>Comunicações Seguras:</strong> Todo o tráfego entre o seu navegador "
+"e os nossos servidores é forçado a utilizar protocolos seguros (HTTPS com "
+"HSTS)."
+msgstr ""
+"<strong>Secure Communications:</strong> All traffic between your browser and "
+"our servers is forced to use secure protocols (HTTPS with HSTS)."
 
+#: core/templates/core/privacy.html:64
 msgid "5. Os Seus Direitos (LGPD)"
 msgstr "5. Your Rights (LGPD)"
 
-msgid "O utilizador tem controlo total sobre os seus dados. A qualquer momento, através da plataforma, pode:"
-msgstr "Users have full control over their data. At any time, through the platform, you can:"
+#: core/templates/core/privacy.html:65
+msgid ""
+"O utilizador tem controlo total sobre os seus dados. A qualquer momento, "
+"através da plataforma, pode:"
+msgstr ""
+"Users have full control over their data. At any time, through the platform, "
+"you can:"
 
-msgid "<strong>Aceder e Retificar:</strong> Visualizar e alterar as suas preferências de notificação e os seus dados de perfil."
-msgstr "<strong>Access and Rectify:</strong> View and change your notification preferences and profile data."
+#: core/templates/core/privacy.html:67
+msgid ""
+"<strong>Aceder e Retificar:</strong> Visualizar e alterar as suas "
+"preferências de notificação e os seus dados de perfil."
+msgstr ""
+"<strong>Access and Rectify:</strong> View and change your notification "
+"preferences and profile data."
 
-msgid "<strong>Apagar o Histórico:</strong> Eliminar de forma permanente pesquisas específicas ou todo o seu histórico de utilização."
-msgstr "<strong>Delete History:</strong> Permanently delete specific searches or your entire usage history."
+#: core/templates/core/privacy.html:68
+msgid ""
+"<strong>Apagar o Histórico:</strong> Eliminar de forma permanente pesquisas "
+"específicas ou todo o seu histórico de utilização."
+msgstr ""
+"<strong>Delete History:</strong> Permanently delete specific searches or "
+"your entire usage history."
 
-msgid "<strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da sua conta e de todos os dados associados aos nossos servidores."
-msgstr "<strong>Revoke Consent:</strong> Request complete deletion of your account and all data associated with it on our servers."
+#: core/templates/core/privacy.html:69
+msgid ""
+"<strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da "
+"sua conta e de todos os dados associados aos nossos servidores."
+msgstr ""
+"<strong>Revoke Consent:</strong> Request complete deletion of your account "
+"and all data associated with it on our servers."
 
+#: core/templates/core/privacy.html:74
 msgid "6. Alterações a esta Política"
 msgstr "6. Changes to this Policy"
 
-msgid "Podemos atualizar esta Política de Privacidade periodicamente para refletir melhorias no sistema ou alterações legais. Notificaremos os utilizadores através do correio eletrónico registado sempre que ocorrerem mudanças significativas."
-msgstr "We may update this Privacy Policy periodically to reflect system improvements or legal changes. We will notify users through the registered email address whenever significant changes occur."
+#: core/templates/core/privacy.html:76
+msgid ""
+"Podemos atualizar esta Política de Privacidade periodicamente para refletir "
+"melhorias no sistema ou alterações legais. Notificaremos os utilizadores "
+"através do correio eletrónico registado sempre que ocorrerem mudanças "
+"significativas."
+msgstr ""
+"We may update this Privacy Policy periodically to reflect system "
+"improvements or legal changes. We will notify users through the registered "
+"email address whenever significant changes occur."
 
+#: core/templates/core/privacy.html:81
 msgid "7. Contacto"
 msgstr "7. Contact"
 
-msgid "Se tiver dúvidas sobre esta política ou pretender exercer os seus direitos de privacidade que não estejam disponíveis de forma automatizada no painel, contacte-nos através do endereço: <a href=\"mailto:privacidade@optio.com\" class=\"btn-link\">privacidade@optio.com</a>."
-msgstr "If you have questions about this policy or want to exercise privacy rights not available automatically on the dashboard, contact us at: <a href=\"mailto:privacidade@optio.com\" class=\"btn-link\">privacidade@optio.com</a>."
+#: core/templates/core/privacy.html:83
+msgid ""
+"Se tiver dúvidas sobre esta política ou pretender exercer os seus direitos "
+"de privacidade que não estejam disponíveis de forma automatizada no painel, "
+"contacte-nos através do endereço: <a href=\"mailto:privacidade@optio.com\" "
+"class=\"btn-link\">privacidade@optio.com</a>."
+msgstr ""
+"If you have questions about this policy or want to exercise privacy rights "
+"not available automatically on the dashboard, contact us at: <a "
+"href=\"mailto:privacidade@optio.com\" class=\"btn-"
+"link\">privacidade@optio.com</a>."
 
+#: core/templates/core/privacy.html:90
 msgid "Voltar à página anterior"
 msgstr "Back to the previous page"
 
 # ============================================================
 # templates — login.html
 # ============================================================
+#: core/templates/registration/login.html:8
+#: core/templates/registration/login.html:98
 msgid "Entrar"
 msgstr "Sign in"
 
+#: core/templates/registration/login.html:26
 msgid "Bem&#8209;vinda<br>de volta."
 msgstr "Welcome<br>back."
 
+#: core/templates/registration/login.html:29
 msgid "Suas buscas, resultados e alertas estão esperando por você."
 msgstr "Your searches, results, and alerts are waiting for you."
 
-msgid "100% gratuito · sem cartão de crédito"
+#: core/templates/registration/login.html:35
+#: core/templates/registration/register.html:35
+#, fuzzy, python-format
+#| msgid "100% gratuito · sem cartão de crédito"
+msgid "100%% gratuito · sem cartão de crédito"
 msgstr "100% free · no credit card"
 
+#: core/templates/registration/login.html:39
 msgid "Resultados entregues por e-mail"
 msgstr "Results delivered by email"
 
+#: core/templates/registration/login.html:43
+#: core/templates/registration/register.html:43
 msgid "Conformidade com LGPD"
 msgstr "LGPD compliant"
 
+#: core/templates/registration/login.html:53
+#: core/templates/registration/register.html:53
+#: search/templates/search/search_results.html:42
 msgid "Voltar"
 msgstr "Back"
 
+#: core/templates/registration/login.html:57
 msgid "Conexão segura"
 msgstr "Secure connection"
 
+#: core/templates/registration/login.html:62
 msgid "Entrar no Optio"
 msgstr "Sign in to Optio"
 
+#: core/templates/registration/login.html:63
 msgid "Use seu e-mail e senha cadastrados."
 msgstr "Use your registered email and password."
 
+#: core/templates/registration/login.html:75
 msgid "E-mail ou senha incorretos."
 msgstr "Incorrect email or password."
 
+#: core/templates/registration/login.html:86
 msgid "voce@email.com"
 msgstr "you@email.com"
 
+#: core/templates/registration/login.html:94
 msgid "Sua senha"
 msgstr "Your password"
 
-msgid "Não tem conta? <a href=\"%(cadastro_url)s\" class=\"btn-link\">Criar conta gratuita</a>"
-msgstr "Don't have an account? <a href=\"%(cadastro_url)s\" class=\"btn-link\">Create a free account</a>"
+#: core/templates/registration/login.html:105
+#, python-format
+msgid ""
+"Não tem conta? <a href=\"%(cadastro_url)s\" class=\"btn-link\">Criar conta "
+"gratuita</a>"
+msgstr ""
+"Don't have an account? <a href=\"%(cadastro_url)s\" class=\"btn-"
+"link\">Create a free account</a>"
 
+#: core/templates/registration/login.html:110
+#: core/templates/registration/register.html:119
 msgid "© 2026 Optio · Cursos de pós-graduação gratuitos"
 msgstr "© 2026 Optio · Free graduate courses"
 
 # ============================================================
 # templates — register.html
 # ============================================================
+#: core/templates/registration/register.html:8
+#: core/templates/registration/register.html:58
 msgid "Criar conta"
 msgstr "Create account"
 
+#: core/templates/registration/register.html:26
 msgid "Comece <em>onde</em><br>você está."
 msgstr "Start <em>where</em><br>you are."
 
+#: core/templates/registration/register.html:29
 msgid "3 minutos para criar a conta. Zero custo, sempre."
 msgstr "3 minutes to create the account. Zero cost, always."
 
+#: core/templates/registration/register.html:39
 msgid "Você decide quando receber notificações"
 msgstr "You decide when to receive notifications"
 
+#: core/templates/registration/register.html:60
 msgid "Para que possamos enviar seus resultados e alertas."
 msgstr "So we can send you your results and alerts."
 
+#: core/templates/registration/register.html:107
 msgid "Criar conta gratuita"
 msgstr "Create free account"
 
+#: core/templates/registration/register.html:114
+#, python-format
 msgid "Já tem conta? <a href=\"%(login_url)s\" class=\"btn-link\">Entrar</a>"
-msgstr "Already have an account? <a href=\"%(login_url)s\" class=\"btn-link\">Sign in</a>"
+msgstr ""
+"Already have an account? <a href=\"%(login_url)s\" class=\"btn-link\">Sign "
+"in</a>"
 
 # ============================================================
-# templates — search_list.html
+# views.py — messages
 # ============================================================
-msgid "Filtrar por palavras-chave…"
-msgstr "Filter by keywords…"
+#: core/views.py:52
+msgid "Você saiu da sua conta."
+msgstr "You have been logged out."
 
+#: core/views.py:66
+msgid "Preferências salvas com sucesso."
+msgstr "Preferences saved successfully."
+
+#: core/views.py:88
+msgid "Histórico de buscas apagado."
+msgstr "Search history deleted."
+
+#: core/views.py:98
+msgid "Conta criada com sucesso! Faça login para continuar."
+msgstr "Account created successfully! Sign in to continue."
+
+# ============================================================
+# choices.py — SearchModality
+# ============================================================
+#: search/choices.py:6
+msgid "EAD"
+msgstr "Distance learning"
+
+#: search/choices.py:7
+msgid "Presencial"
+msgstr "In-person"
+
+#: search/choices.py:8
+msgid "Híbrido"
+msgstr "Hybrid"
+
+# ============================================================
+# choices.py — SearchStatus
+# ============================================================
+#: search/choices.py:13
+msgid "Pendente"
+msgstr "Pending"
+
+#: search/choices.py:14
+msgid "Processando"
+msgstr "Processing"
+
+#: search/choices.py:15
+msgid "Concluída"
+msgstr "Completed"
+
+#: search/choices.py:16
+msgid "Falhou"
+msgstr "Failed"
+
+#: search/choices.py:17 search/templates/search/search_list.html:69
+msgid "Sem resultados"
+msgstr "No results"
+
+# ============================================================
+# choices.py — SearchArea
+# ============================================================
+#: search/choices.py:20
+msgid "Administração"
+msgstr "Business Administration"
+
+#: search/choices.py:21
+msgid "Ciências Agrárias"
+msgstr "Agricultural Sciences"
+
+#: search/choices.py:22
+msgid "Ciências Biológicas"
+msgstr "Biological Sciences"
+
+#: search/choices.py:23
+msgid "Ciências da Saúde"
+msgstr "Health Sciences"
+
+#: search/choices.py:24
+msgid "Ciências Exatas e da Terra"
+msgstr "Exact and Earth Sciences"
+
+#: search/choices.py:25
+msgid "Ciências Humanas"
+msgstr "Humanities"
+
+#: search/choices.py:26
+msgid "Ciências Sociais Aplicadas"
+msgstr "Applied Social Sciences"
+
+#: search/choices.py:27
+msgid "Engenharias"
+msgstr "Engineering"
+
+#: search/choices.py:28
+msgid "Linguística, Letras e Artes"
+msgstr "Linguistics, Literature and Arts"
+
+#: search/choices.py:29
+msgid "Multidisciplinar"
+msgstr "Multidisciplinary"
+
+# ============================================================
+# choices.py — Brazilian states
+# ============================================================
+#: search/choices.py:32
+msgid "Acre"
+msgstr "Acre"
+
+#: search/choices.py:33
+msgid "Alagoas"
+msgstr "Alagoas"
+
+#: search/choices.py:34
+msgid "Amapá"
+msgstr "Amapá"
+
+#: search/choices.py:35
+msgid "Amazonas"
+msgstr "Amazonas"
+
+#: search/choices.py:36
+msgid "Bahia"
+msgstr "Bahia"
+
+#: search/choices.py:37
+msgid "Ceará"
+msgstr "Ceará"
+
+#: search/choices.py:38
+msgid "Distrito Federal"
+msgstr "Federal District"
+
+#: search/choices.py:39
+msgid "Espírito Santo"
+msgstr "Espírito Santo"
+
+#: search/choices.py:40
+msgid "Goiás"
+msgstr "Goiás"
+
+#: search/choices.py:41
+msgid "Maranhão"
+msgstr "Maranhão"
+
+#: search/choices.py:42
+msgid "Mato Grosso"
+msgstr "Mato Grosso"
+
+#: search/choices.py:43
+msgid "Mato Grosso do Sul"
+msgstr "Mato Grosso do Sul"
+
+#: search/choices.py:44
+msgid "Minas Gerais"
+msgstr "Minas Gerais"
+
+#: search/choices.py:45
+msgid "Pará"
+msgstr "Pará"
+
+#: search/choices.py:46
+msgid "Paraíba"
+msgstr "Paraíba"
+
+#: search/choices.py:47
+msgid "Paraná"
+msgstr "Paraná"
+
+#: search/choices.py:48
+msgid "Pernambuco"
+msgstr "Pernambuco"
+
+#: search/choices.py:49
+msgid "Piauí"
+msgstr "Piauí"
+
+#: search/choices.py:50
+msgid "Rio de Janeiro"
+msgstr "Rio de Janeiro"
+
+#: search/choices.py:51
+msgid "Rio Grande do Norte"
+msgstr "Rio Grande do Norte"
+
+#: search/choices.py:52
+msgid "Rio Grande do Sul"
+msgstr "Rio Grande do Sul"
+
+#: search/choices.py:53
+msgid "Rondônia"
+msgstr "Rondônia"
+
+#: search/choices.py:54
+msgid "Roraima"
+msgstr "Roraima"
+
+#: search/choices.py:55
+msgid "Santa Catarina"
+msgstr "Santa Catarina"
+
+#: search/choices.py:56
+msgid "São Paulo"
+msgstr "São Paulo"
+
+#: search/choices.py:57
+msgid "Sergipe"
+msgstr "Sergipe"
+
+#: search/choices.py:58
+msgid "Tocantins"
+msgstr "Tocantins"
+
+#: search/models.py:35
+msgid "E-mail para notificação"
+msgstr "Notification email"
+
+#: search/models.py:40 search/models.py:224
+msgid "Palavras-chave"
+msgstr "Keywords"
+
+#: search/models.py:47 search/models.py:229
+#: search/templates/search/search_request_form.html:85
+msgid "Área do conhecimento"
+msgstr "Field of study"
+
+#: search/models.py:68
+msgid "Status"
+msgstr "Status"
+
+#: search/models.py:73
+msgid "Quantidade de resultados"
+msgstr "Number of results"
+
+#: search/models.py:78
+msgid "Excluído"
+msgstr "Deleted"
+
+#: search/models.py:84
+msgid "Excluído em"
+msgstr "Deleted at"
+
+#: search/models.py:89 search/models.py:247
+msgid "Criado em"
+msgstr "Created at"
+
+#: search/models.py:94 search/models.py:248
+msgid "Atualizado em"
+msgstr "Updated at"
+
+#: search/models.py:101 search/models.py:155
+msgid "Requisição de busca"
+msgstr "Search request"
+
+#: search/models.py:102
+msgid "Requisições de busca"
+msgstr "Search requests"
+
+#: search/models.py:157
+msgid "Nome do curso"
+msgstr "Course name"
+
+#: search/models.py:171
+msgid "Link"
+msgstr "Link"
+
+#: search/models.py:174 search/models.py:192
+msgid "Curso"
+msgstr "Course"
+
+#: search/models.py:175
+msgid "Cursos"
+msgstr "Courses"
+
+#: search/models.py:196
+msgid "Adicionado em"
+msgstr "Added at"
+
+#: search/models.py:200
+msgid "Favorito"
+msgstr "Favorite"
+
+#: search/models.py:223
+#, fuzzy
+#| msgid "Nome do curso"
+msgid "Nome do alerta"
+msgstr "Course name"
+
+#: search/models.py:243
+msgid "Ativo"
+msgstr ""
+
+#: search/models.py:245
+#, fuzzy
+#| msgid "E-mail para notificação"
+msgid "Última verificação"
+msgstr "Notification email"
+
+#: search/models.py:251
+#, fuzzy
+#| msgid "Alertas"
+msgid "Alerta salvo"
+msgstr "Alerts"
+
+#: search/models.py:252 search/templates/search/alerts_list.html:3
+#: search/templates/search/alerts_list.html:14
+#, fuzzy
+#| msgid "Alertas"
+msgid "Alertas salvos"
+msgstr "Alerts"
+
+#: search/templates/search/alerts_list.html:19
+#, fuzzy
+#| msgid "Salvar como alerta"
+msgid "Novo alerta"
+msgstr "Save as alert"
+
+#: search/templates/search/alerts_list.html:29
+#, python-format
+msgid "%(counter)s ativo de %(max_alerts)s"
+msgid_plural "%(counter)s ativos de %(max_alerts)s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: search/templates/search/alerts_list.html:31
+msgid "Te avisamos quando <em>aparecer</em>"
+msgstr ""
+
+#: search/templates/search/alerts_list.html:33
+msgid ""
+"Salve uma busca como alerta e o Optio verifica fontes oficiais "
+"periodicamente. Só notificamos quando algo realmente novo casar com seus "
+"critérios."
+msgstr ""
+
+#: search/templates/search/alerts_list.html:53
+msgid "pausado"
+msgstr ""
+
+#: search/templates/search/alerts_list.html:58
+#: search/templates/search/search_request_form.html:88
+msgid "Todas as áreas"
+msgstr "All fields"
+
+#: search/templates/search/alerts_list.html:60
+#, fuzzy
+#| msgid "Todas as áreas"
+msgid "Todas as modalidades"
+msgstr "All fields"
+
+#: search/templates/search/alerts_list.html:62
+#, fuzzy
+#| msgid "Todo o Brasil"
+msgid "Brasil"
+msgstr "All of Brazil"
+
+#: search/templates/search/alerts_list.html:68
+#, fuzzy
+#| msgid "Criar alerta"
+msgid "Pausar alerta"
+msgstr "Create alert"
+
+#: search/templates/search/alerts_list.html:68
+#, fuzzy
+#| msgid "Criar alerta"
+msgid "Ativar alerta"
+msgstr "Create alert"
+
+#: search/templates/search/alerts_list.html:78
+#, fuzzy
+#| msgid "Apagar todo o histórico de buscas? Esta ação não pode ser desfeita."
+msgid "Apagar este alerta? Esta ação não pode ser desfeita."
+msgstr "Delete all search history? This action cannot be undone."
+
+#: search/templates/search/alerts_list.html:81
+#, fuzzy
+#| msgid "Criar alerta"
+msgid "Apagar alerta"
+msgstr "Create alert"
+
+#: search/templates/search/alerts_list.html:94
+#, fuzzy
+#| msgid "Seus alertas"
+msgid "Nenhum alerta salvo"
+msgstr "Your alerts"
+
+#: search/templates/search/alerts_list.html:96
+msgid ""
+"Faça uma busca e marque “Salvar como alerta” para que o Optio te avise "
+"quando surgirem cursos novos aderentes aos seus critérios."
+msgstr ""
+
+#: search/templates/search/alerts_list.html:100
+#: search/templates/search/favorites_list.html:125
+msgid "Começar uma busca"
+msgstr "Start a search"
+
+# ============================================================
+# templates — emails/no_results_email.html
+# ============================================================
+#: search/templates/search/emails/no_results_email.html:7
+#: search/templates/search/emails/no_results_email.html:10
+msgid "Sua busca foi concluída"
+msgstr "Your search is complete"
+
+#: search/templates/search/emails/no_results_email.html:16
+#, python-format
+msgid ""
+"Processamos sua busca por <strong>\"%(keywords)s\"</strong>, mas "
+"infelizmente não encontramos cursos de pós-graduação gratuitos que "
+"correspondam aos critérios informados."
+msgstr ""
+"We processed your search for <strong>\"%(keywords)s\"</strong>, but "
+"unfortunately we did not find free graduate courses matching the criteria "
+"provided."
+
+#: search/templates/search/emails/no_results_email.html:18
+msgid ""
+"Processamos sua busca, mas infelizmente não encontramos cursos de pós-"
+"graduação gratuitos que correspondam aos critérios informados."
+msgstr ""
+"We processed your search, but unfortunately we did not find free graduate "
+"courses matching the criteria provided."
+
+#: search/templates/search/emails/no_results_email.html:22
+msgid "Sugestões para ampliar sua busca"
+msgstr "Suggestions to broaden your search"
+
+#: search/templates/search/emails/no_results_email.html:25
+msgid "Tente usar palavras-chave mais genéricas"
+msgstr "Try using more generic keywords"
+
+#: search/templates/search/emails/no_results_email.html:26
+msgid "Remova filtros de estado ou modalidade"
+msgstr "Remove state or modality filters"
+
+#: search/templates/search/emails/no_results_email.html:27
+msgid "Experimente áreas de conhecimento relacionadas"
+msgstr "Try related fields of knowledge"
+
+#: search/templates/search/emails/no_results_email.html:28
+msgid "Verifique se há variações no termo buscado"
+msgstr "Check for variations of the search term"
+
+#: search/templates/search/emails/no_results_email.html:33
+msgid "Fazer uma nova busca"
+msgstr "Make a new search"
+
+#: search/templates/search/emails/no_results_email.html:40
+#: search/templates/search/emails/results_email.html:48
+msgid "Este e-mail foi enviado automaticamente pelo Optio."
+msgstr "This email was sent automatically by Optio."
+
+# ============================================================
+# templates — emails/results_email.html
+# ============================================================
+#: search/templates/search/emails/results_email.html:7
+msgid "Resultados da sua busca"
+msgstr "Your search results"
+
+#: search/templates/search/emails/results_email.html:10
+msgid "Resultados da sua busca no Optio"
+msgstr "Your search results on Optio"
+
+#: search/templates/search/emails/results_email.html:15
+msgid "Encontramos alguns resultados relacionados à sua solicitação de busca."
+msgstr "We found some results related to your search request."
+
+#: search/templates/search/emails/results_email.html:18
+msgid "Cursos encontrados"
+msgstr "Courses found"
+
+#: search/templates/search/emails/results_email.html:36
+msgid "Nenhum curso foi encontrado para os critérios informados."
+msgstr "No courses were found for the criteria provided."
+
+#: search/templates/search/emails/results_email.html:41
+msgid "Ver resultados no Optio"
+msgstr "View results on Optio"
+
+# ============================================================
+# templates — favorites_list.html
+# ============================================================
+#: search/templates/search/favorites_list.html:29
+#, python-format
+msgid "%(counter)s programa salvo"
+msgid_plural "%(counter)s programas salvos"
+msgstr[0] "%(counter)s program saved"
+msgstr[1] "%(counter)s programs saved"
+
+#: search/templates/search/favorites_list.html:31
+msgid "Cursos que <em>importam</em> para você"
+msgstr "Courses that <em>matter</em> to you"
+
+#: search/templates/search/favorites_list.html:33
+msgid ""
+"Sua coleção pessoal de cursos de pós-graduação. Acesse quando quiser e "
+"remova os que não interessam mais."
+msgstr ""
+"Your personal collection of graduate courses. Access them anytime and remove "
+"the ones that no longer interest you."
+
+#: search/templates/search/favorites_list.html:49
+#: search/templates/search/search_results.html:61
+msgid "Remover dos favoritos"
+msgstr "Remove from favorites"
+
+#: search/templates/search/favorites_list.html:71
+#, python-format
+msgid "Salvo %(when)s atrás"
+msgstr "Saved %(when)s ago"
+
+#: search/templates/search/favorites_list.html:119
+msgid "Nada salvo ainda"
+msgstr "Nothing saved yet"
+
+#: search/templates/search/favorites_list.html:121
+msgid ""
+"Quando encontrar um curso interessante nos resultados de busca, clique no "
+"marcador de favoritos e ele aparece aqui."
+msgstr ""
+"When you find an interesting course in search results, click the favorite "
+"marker and it appears here."
+
+#: search/templates/search/search_list.html:29
+#, python-format
 msgid "%(counter)s busca registrada"
 msgid_plural "%(counter)s buscas registradas"
 msgstr[0] "%(counter)s search recorded"
 msgstr[1] "%(counter)s searches recorded"
 
+#: search/templates/search/search_list.html:31
 msgid "Histórico de <em>buscas</em>"
 msgstr "<em>Search</em> history"
 
-msgid "Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou transforme em alerta salvo."
-msgstr "Everything you've searched. Reopen results, repeat an old search, or turn it into a saved alert."
+#: search/templates/search/search_list.html:33
+msgid ""
+"Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou "
+"transforme em alerta salvo."
+msgstr ""
+"Everything you've searched. Reopen results, repeat an old search, or turn it "
+"into a saved alert."
 
-msgid "Todas"
-msgstr "All"
+# ============================================================
+# templates — search_list.html
+# ============================================================
+#: search/templates/search/search_list.html:49
+msgid "Filtrar por palavras-chave…"
+msgstr "Filter by keywords…"
 
+#: search/templates/search/search_list.html:61
 msgid "Concluídas"
 msgstr "Completed"
 
+#: search/templates/search/search_list.html:119
 msgid "resultado"
 msgid_plural "resultados"
 msgstr[0] "result"
 msgstr[1] "results"
 
+#: search/templates/search/search_list.html:123
 msgid "processando"
 msgstr "processing"
 
-msgid "Ver"
-msgstr "View"
-
+#: search/templates/search/search_list.html:131
 msgid "Repetir busca"
 msgstr "Repeat search"
 
+#: search/templates/search/search_list.html:136
 msgid "Remover esta busca do histórico?"
 msgstr "Remove this search from history?"
 
+#: search/templates/search/search_list.html:140
 msgid "Excluir"
 msgstr "Delete"
 
+#: search/templates/search/search_list.html:159
 msgid "← Anterior"
 msgstr "← Previous"
 
+#: search/templates/search/search_list.html:173
 msgid "Próxima →"
 msgstr "Next →"
 
+#: search/templates/search/search_list.html:177
+#, python-format
 msgid "Página %(current)s de %(total)s"
 msgstr "Page %(current)s of %(total)s"
 
+#: search/templates/search/search_list.html:178
+#, python-format
 msgid "%(counter)s busca no total"
 msgid_plural "%(counter)s buscas no total"
 msgstr[0] "%(counter)s search in total"
 msgstr[1] "%(counter)s searches in total"
 
+#: search/templates/search/search_list.html:186
 msgid "Nenhuma busca encontrada"
 msgstr "No search found"
 
+#: search/templates/search/search_list.html:188
 msgid "Tente outro filtro ou limpe a busca."
 msgstr "Try another filter or clear the search."
 
+#: search/templates/search/search_list.html:189
 msgid "Ver todas"
 msgstr "View all"
 
 # ============================================================
+# templates — search_request_form.html
+# ============================================================
+#: search/templates/search/search_request_form.html:17
+#: search/templates/search/search_request_form.html:166
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: search/templates/search/search_request_form.html:25
+msgid "Configure uma nova busca"
+msgstr "Set up a new search"
+
+#: search/templates/search/search_request_form.html:26
+msgid "O que <em>você</em> quer estudar?"
+msgstr "What do <em>you</em> want to study?"
+
+#: search/templates/search/search_request_form.html:28
+msgid ""
+"Descreva em texto livre e refine com os filtros. A confirmação chega em até "
+"4 segundos. Os resultados, por e‑mail logo em seguida."
+msgstr ""
+"Describe in free text and refine with filters. Confirmation arrives within 4 "
+"seconds. Results follow by email shortly after."
+
+#: search/templates/search/search_request_form.html:44
+msgid "Palavras-chave *"
+msgstr "Keywords *"
+
+#: search/templates/search/search_request_form.html:52
+msgid "Ex.: mestrado profissional em ciência de dados"
+msgstr "E.g.: professional master in data science"
+
+#: search/templates/search/search_request_form.html:65
+msgid "Exemplos:"
+msgstr "Examples:"
+
+#: search/templates/search/search_request_form.html:81
+msgid "Refinar resultados"
+msgstr "Refine results"
+
+#: search/templates/search/search_request_form.html:99
+msgid "Todo o Brasil"
+msgstr "All of Brazil"
+
+#: search/templates/search/search_request_form.html:132
+msgid "Entrega e acompanhamento"
+msgstr "Delivery and tracking"
+
+#: search/templates/search/search_request_form.html:135
+msgid "Enviar resultados para"
+msgstr "Send results to"
+
+#: search/templates/search/search_request_form.html:141
+msgid "Você também verá os resultados aqui no painel."
+msgstr "You will also see the results here on the dashboard."
+
+#: search/templates/search/search_request_form.html:153
+msgid "Salvar como alerta"
+msgstr "Save as alert"
+
+#: search/templates/search/search_request_form.html:156
+msgid "Quando novos cursos aderentes aparecerem, te avisamos por e‑mail."
+msgstr "When new matching courses appear, we will notify you by email."
+
+#: search/templates/search/search_request_form.html:169
+msgid "Iniciar busca"
+msgstr "Start search"
+
+# ============================================================
 # templates — search_results.html
 # ============================================================
+#: search/templates/search/search_results.html:3
+#, python-format
 msgid "Resultados — %(keywords)s"
 msgstr "Results — %(keywords)s"
 
+#: search/templates/search/search_results.html:18
 msgid "Resultados"
 msgstr "Results"
 
+#: search/templates/search/search_results.html:30
+#, python-format
 msgid "%(counter)s resultado encontrado"
 msgid_plural "%(counter)s resultados encontrados"
 msgstr[0] "%(counter)s result found"
 msgstr[1] "%(counter)s results found"
 
-msgid "Remover dos favoritos"
-msgstr "Remove from favorites"
-
+#: search/templates/search/search_results.html:70
 msgid "Salvar nos favoritos"
 msgstr "Save to favorites"
 
-msgid "Acessar curso"
-msgstr "Access course"
-
+#: search/templates/search/search_results.html:98
 msgid "Nenhum curso encontrado"
 msgstr "No courses found"
 
+#: search/templates/search/search_results.html:100
 msgid ""
-"Não encontramos cursos de pós-graduação gratuitos para os critérios informados.<br>\n"
-"      Tente palavras-chave mais genéricas ou remova filtros de estado e modalidade."
+"Não encontramos cursos de pós-graduação gratuitos para os critérios "
+"informados.<br>\n"
+"      Tente palavras-chave mais genéricas ou remova filtros de estado e "
+"modalidade."
 msgstr ""
 "We could not find free graduate courses for the criteria provided.<br>\n"
 "      Try more generic keywords or remove state and modality filters."
 
+#: search/templates/search/search_results.html:109
 msgid "Erro ao processar busca"
 msgstr "Error processing search"
 
+#: search/templates/search/search_results.html:111
 msgid "Ocorreu um erro durante o processamento. Por favor, tente novamente."
 msgstr "An error occurred during processing. Please try again."
 
+#: search/templates/search/search_results.html:120
 msgid "Processando sua busca…"
 msgstr "Processing your search…"
 
+#: search/templates/search/search_results.html:124
 msgid ""
 "Os resultados aparecerão aqui assim que o processamento for concluído.<br>\n"
 "      Você também receberá um e-mail quando estiverem prontos."
@@ -807,142 +1567,98 @@ msgstr ""
 "Results will appear here as soon as processing is complete.<br>\n"
 "      You will also receive an email when they are ready."
 
-# ============================================================
-# templates — search_request_form.html
-# ============================================================
-msgid "Cancelar"
-msgstr "Cancel"
+#: search/views.py:61
+#, python-format
+msgid "Alerta \"%(name)s\" salvo. Avisaremos quando surgirem cursos novos."
+msgstr ""
 
-msgid "Configure uma nova busca"
-msgstr "Set up a new search"
+#: search/views.py:67
+msgid "Você já tem um alerta ativo com esses critérios."
+msgstr ""
 
-msgid "O que <em>você</em> quer estudar?"
-msgstr "What do <em>you</em> want to study?"
+#: search/views.py:73
+#, python-format
+msgid ""
+"Limite de %(max)s alertas ativos atingido. A busca segue normalmente, mas o "
+"alerta não foi salvo."
+msgstr ""
 
-msgid "Descreva em texto livre e refine com os filtros. A confirmação chega em até 4 segundos. Os resultados, por e‑mail logo em seguida."
-msgstr "Describe in free text and refine with filters. Confirmation arrives within 4 seconds. Results follow by email shortly after."
+#: search/views.py:91
+msgid ""
+"Encontramos uma busca recente com os mesmos critérios. Exibindo resultados "
+"anteriores."
+msgstr ""
+"We found a recent search with the same criteria. Showing previous results."
 
-msgid "Palavras-chave *"
-msgstr "Keywords *"
+#: search/views.py:109 search/views.py:204
+msgid ""
+"Não foi possível enviar sua busca para processamento. Tente novamente em "
+"alguns instantes."
+msgstr ""
+"We couldn't submit your search for processing. Please try again shortly."
 
-msgid "Ex.: mestrado profissional em ciência de dados"
-msgstr "E.g.: professional master in data science"
+#: search/views.py:115
+msgid ""
+"Busca recebida com sucesso. Os resultados serão processados em segundo plano."
+msgstr ""
+"Search received successfully. Results will be processed in the background."
 
-msgid "Exemplos:"
-msgstr "Examples:"
+#: search/views.py:186
+msgid "Busca removida do histórico."
+msgstr "Search removed from history."
 
-msgid "Refinar resultados"
-msgstr "Refine results"
+#: search/views.py:188 search/views.py:198
+msgid "Busca não encontrada."
+msgstr "Search not found."
 
-msgid "Todas as áreas"
-msgstr "All fields"
+#: search/views.py:208
+msgid "Busca repetida com sucesso."
+msgstr "Search repeated successfully."
 
-msgid "Todo o Brasil"
-msgstr "All of Brazil"
+#: search/views.py:224
+#, python-format
+msgid "\"%(name)s\" salvo nos favoritos."
+msgstr "\"%(name)s\" saved to favorites."
 
-msgid "Entrega e acompanhamento"
-msgstr "Delivery and tracking"
+#: search/views.py:226
+msgid "Curso já está nos seus favoritos."
+msgstr "Course is already in your favorites."
 
-msgid "Enviar resultados para"
-msgstr "Send results to"
+#: search/views.py:237
+#, python-format
+msgid "\"%(name)s\" removido dos favoritos."
+msgstr "\"%(name)s\" removed from favorites."
 
-msgid "Você também verá os resultados aqui no painel."
-msgstr "You will also see the results here on the dashboard."
+#: search/views.py:258 search/views.py:282
+#, fuzzy
+#| msgid "Busca não encontrada."
+msgid "Alerta não encontrado."
+msgstr "Search not found."
 
-msgid "Em breve — feature de alertas em desenvolvimento"
-msgstr "Coming soon — alerts feature in development"
+#: search/views.py:265
+#, python-format
+msgid "Você já tem %(max)s alertas ativos. Pause um antes de ativar outro."
+msgstr ""
 
-msgid "Salvar como alerta"
-msgstr "Save as alert"
+#: search/views.py:269
+msgid "Alerta ativado."
+msgstr ""
 
-msgid "Quando novos cursos aderentes aparecerem, te avisamos por e‑mail."
-msgstr "When new matching courses appear, we will notify you by email."
+#: search/views.py:271
+#, fuzzy
+#| msgid "Alertas"
+msgid "Alerta pausado."
+msgstr "Alerts"
 
-msgid "Iniciar busca"
-msgstr "Start search"
+#: search/views.py:280
+msgid "Alerta apagado."
+msgstr ""
 
-# ============================================================
-# templates — favorites_list.html
-# ============================================================
-msgid "%(counter)s programa salvo"
-msgid_plural "%(counter)s programas salvos"
-msgstr[0] "%(counter)s program saved"
-msgstr[1] "%(counter)s programs saved"
+#~ msgid "Todos"
+#~ msgstr "All"
 
-msgid "Cursos que <em>importam</em> para você"
-msgstr "Courses that <em>matter</em> to you"
+#~ msgid "Ver"
+#~ msgstr "View"
 
-msgid "Sua coleção pessoal de cursos de pós-graduação. Acesse quando quiser e remova os que não interessam mais."
-msgstr "Your personal collection of graduate courses. Access them anytime and remove the ones that no longer interest you."
-
-msgid "Salvo %(when)s atrás"
-msgstr "Saved %(when)s ago"
-
-msgid "Nada salvo ainda"
-msgstr "Nothing saved yet"
-
-msgid "Quando encontrar um curso interessante nos resultados de busca, clique no marcador de favoritos e ele aparece aqui."
-msgstr "When you find an interesting course in search results, click the favorite marker and it appears here."
-
-msgid "Começar uma busca"
-msgstr "Start a search"
-
-# ============================================================
-# templates — emails/results_email.html
-# ============================================================
-msgid "Resultados da sua busca"
-msgstr "Your search results"
-
-msgid "Resultados da sua busca no Optio"
-msgstr "Your search results on Optio"
-
-msgid "Olá!"
-msgstr "Hello!"
-
-msgid "Encontramos alguns resultados relacionados à sua solicitação de busca."
-msgstr "We found some results related to your search request."
-
-msgid "Cursos encontrados"
-msgstr "Courses found"
-
-msgid "Ver curso"
-msgstr "View course"
-
-msgid "Nenhum curso foi encontrado para os critérios informados."
-msgstr "No courses were found for the criteria provided."
-
-msgid "Ver resultados no Optio"
-msgstr "View results on Optio"
-
-msgid "Este e-mail foi enviado automaticamente pelo Optio."
-msgstr "This email was sent automatically by Optio."
-
-# ============================================================
-# templates — emails/no_results_email.html
-# ============================================================
-msgid "Sua busca foi concluída"
-msgstr "Your search is complete"
-
-msgid "Processamos sua busca por <strong>\"%(keywords)s\"</strong>, mas infelizmente não encontramos cursos de pós-graduação gratuitos que correspondam aos critérios informados."
-msgstr "We processed your search for <strong>\"%(keywords)s\"</strong>, but unfortunately we did not find free graduate courses matching the criteria provided."
-
-msgid "Processamos sua busca, mas infelizmente não encontramos cursos de pós-graduação gratuitos que correspondam aos critérios informados."
-msgstr "We processed your search, but unfortunately we did not find free graduate courses matching the criteria provided."
-
-msgid "Sugestões para ampliar sua busca"
-msgstr "Suggestions to broaden your search"
-
-msgid "Tente usar palavras-chave mais genéricas"
-msgstr "Try using more generic keywords"
-
-msgid "Remova filtros de estado ou modalidade"
-msgstr "Remove state or modality filters"
-
-msgid "Experimente áreas de conhecimento relacionadas"
-msgstr "Try related fields of knowledge"
-
-msgid "Verifique se há variações no termo buscado"
-msgstr "Check for variations of the search term"
-
-msgid "Fazer uma nova busca"
-msgstr "Make a new search"
+#~ msgid "Em breve — feature de alertas em desenvolvimento"
+#~ msgstr "Coming soon — alerts feature in development"

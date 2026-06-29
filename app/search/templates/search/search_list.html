@@ -9,13 +9,13 @@
   <div class="crumbs">
     <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
     <span class="crumb-cur">{% trans "Minhas buscas" %}</span>
   </div>
   <div class="topbar-actions">
     <a href="{% url 'search:request_create' %}" class="btn btn-primary btn-sm">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+      {% include "_icon.html" with name="plus" size=14 %}
       {% trans "Nova busca" %}
     </a>
   </div>
@@ -43,10 +43,7 @@
           style="position:relative; flex:1; min-width:240px; display:flex; gap:var(--d-2);">
       {% if filters.status %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
       <div style="position:relative; flex:1;">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-             style="position:absolute;left:12px;top:14px;color:var(--ink-mute);">
-          <circle cx="7" cy="7" r="4"/><path d="M10.5 10.5L14 14"/>
-        </svg>
+        {% include "_icon.html" with name="search" size=16 style="position:absolute;left:12px;top:14px;color:var(--ink-mute);" %}
         <input class="input" style="padding-left:38px;" name="q"
                value="{{ filters.q|default:'' }}"
                placeholder="{% trans 'Filtrar por palavras-chave…' %}">
@@ -129,18 +126,10 @@
 
         {# Ações — stopPropagation para não acionar o onclick da row #}
         <div class="row" style="gap:var(--d-1);" onclick="event.stopPropagation()">
-          {% if search.status == 'completed' or search.status == 'no_results' %}
-          <a href="{% url 'search:search_results' search.pk %}" class="btn btn-secondary btn-sm">{% trans "Ver" %}</a>
-          {% endif %}
-
           <form action="{% url 'search:search_repeat' search.pk %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Repetir busca' %}">
-              {# Ícone redo — seta curvada no sentido horário #}
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M13 1v4h-4"/>
-                <path d="M13 5A6 6 0 101 7"/>
-              </svg>
+              {% include "_icon.html" with name="refresh" size=14 %}
             </button>
           </form>
 
@@ -149,17 +138,13 @@
                 onsubmit="return confirm('{{ confirm_remove_search|escapejs }}')">
             {% csrf_token %}
             <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Excluir' %}" style="color:var(--err);">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3.5 4l.5 7.5h6L11 4"/>
-              </svg>
+              {% include "_icon.html" with name="trash" size=14 %}
             </button>
           </form>
         </div>
 
         {# Chevron indicando navegação #}
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-mute); flex-shrink:0;">
-          <path d="M6 4l4 4-4 4"/>
-        </svg>
+        {% include "_icon.html" with name="chevron-right" size=16 style="color:var(--ink-mute);flex-shrink:0;" %}
 
       </div>
     </div>

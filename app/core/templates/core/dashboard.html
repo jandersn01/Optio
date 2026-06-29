@@ -10,13 +10,10 @@
     <span class="crumb-cur">{% trans "Painel" %}</span>
   </div>
   <div class="topbar-actions">
-    <span class="btn btn-secondary btn-sm" style="opacity:.5; cursor:not-allowed;" title="{% trans 'Em breve' %}">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
-        <path d="M6 13.5a2 2 0 004 0"/>
-      </svg>
+    <a href="{% url 'search:alerts_list' %}" class="btn btn-secondary btn-sm">
+      {% include "_icon.html" with name="bell" size=14 %}
       {% trans "Alertas" %}
-    </span>
+    </a>
   </div>
 </div>
 
@@ -40,7 +37,7 @@
        onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='var(--sh-2)'"
        onmouseout="this.style.borderColor='var(--line)';this.style.boxShadow='var(--sh-1)'">
       <span style="width:44px;height:44px;flex-shrink:0;border-radius:var(--r-2);background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>
+        {% include "_icon.html" with name="plus" size=20 %}
       </span>
       <span style="flex:1;">
         <span class="serif" style="display:block;font-size:22px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px;">
@@ -48,7 +45,7 @@
         </span>
         <span class="text-xs muted" style="display:block;">{% trans "Filtre por área, modalidade e estado" %}</span>
       </span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--ink-mute);flex-shrink:0;"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="arrow" size=16 style="color:var(--ink-mute);flex-shrink:0;" %}
     </a>
   </div>
 
@@ -85,7 +82,7 @@
         <h2 class="h-2">{% trans "Suas buscas recentes" %}</h2>
         <a href="{% url 'search:request_list' %}" class="btn btn-ghost btn-sm">
           {% trans "Ver histórico completo" %}
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
+          {% include "_icon.html" with name="arrow" size=14 %}
         </a>
       </div>
 
@@ -105,7 +102,7 @@
               {% elif search.status == 'processing' or search.status == 'pending' %}
               <span class="pulse-dot text-xs" style="color:var(--info);"></span>
               {% endif %}
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--ink-mute);"><path d="M3 7h8M7 3l4 4-4 4"/></svg>
+              {% include "_icon.html" with name="arrow" size=14 style="color:var(--ink-mute);" %}
             </div>
           </div>
 
@@ -140,28 +137,42 @@
       <section class="card" style="padding:var(--d-5);">
         <div class="spread" style="margin-bottom:var(--d-4);">
           <h3 class="h-3">{% trans "Seus alertas" %}</h3>
-          <span class="text-xs" style="color:var(--ink-mute);">{% trans "Em breve" %}</span>
+          <a href="{% url 'search:alerts_list' %}" class="btn-link text-xs">{% trans "Gerenciar" %}</a>
         </div>
 
+        {% if alerts %}
+        <div class="col" style="gap:var(--d-3);">
+          {% for alert in alerts %}
+          <a href="{% url 'search:alerts_list' %}" class="row" style="gap:var(--d-3);padding:var(--d-3) 0;border-top:1px solid var(--line-soft);text-align:left;">
+            <span style="width:32px;height:32px;flex-shrink:0;border-radius:var(--r-2);background:var(--paper-2);color:var(--ink-mute);display:grid;place-items:center;">
+              {% include "_icon.html" with name="bell" size=14 %}
+            </span>
+            <span class="grow" style="min-width:0;">
+              <span class="text-sm" style="display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ alert.name }}</span>
+              <span class="text-xs muted">{% trans "Semanal" %}</span>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
         <div style="padding:var(--d-4) 0; text-align:center; border-top:1px solid var(--line-soft);">
           <div style="font-family:var(--serif);font-style:italic;font-size:40px;color:var(--ink-mute);line-height:1;margin-bottom:var(--d-3);">∅</div>
           <p class="text-xs muted" style="margin:0 0 var(--d-3);">
-            {% trans "Nenhum alerta configurado ainda." %}
+            {% trans "Nenhum alerta ativo ainda." %}
           </p>
-          <span class="btn btn-secondary btn-sm" style="opacity:.5;cursor:not-allowed;">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v4M4 5v4M8 2v12M2 8h12"/></svg>
+          <a href="{% url 'search:request_create' %}" class="btn btn-secondary btn-sm">
+            {% include "_icon.html" with name="plus" size=12 %}
             {% trans "Criar alerta" %}
-          </span>
+          </a>
         </div>
+        {% endif %}
       </section>
 
       {# Card: Dica do Optio #}
       <section style="padding:var(--d-5);border:1px dashed var(--line);border-radius:var(--r-3);">
         <div class="row" style="gap:8px;margin-bottom:var(--d-3);">
-          {# Ícone sparkle (estrela de 4 pontas) #}
-          <svg width="14" height="14" viewBox="0 0 14 14" style="color:var(--primary);flex-shrink:0;" fill="currentColor">
-            <path d="M7 0C7 3.87 3.87 7 0 7c3.87 0 7 3.13 7 7 0-3.87 3.13-7 7-7-3.87 0-7-3.13-7-7z"/>
-          </svg>
+          {# Ícone sparkle #}
+          {% include "_icon.html" with name="sparkles" size=14 style="color:var(--primary);flex-shrink:0;" %}
           <span class="label-eyebrow" style="color:var(--primary);">{% trans "Dica do Optio" %}</span>
         </div>
         <p class="text-sm" style="margin:0;line-height:1.55;color:var(--ink-2);">
@@ -171,6 +182,35 @@
 
     </aside>
   </div>
+
+  {# ── Novos programas para você (vindos do scraping das preferências) ── #}
+  {% if new_programs %}
+  <section style="margin-top:var(--d-7);">
+    <div class="label-eyebrow" style="margin-bottom:var(--d-3);">{% trans "Adicionados esta semana" %}</div>
+    <h2 class="h-2" style="margin-bottom:var(--d-4);">{% trans "Novos programas para você" %}</h2>
+    <div class="course-grid stagger">
+      {% for program in new_programs %}
+      <article class="card" style="padding:var(--d-5);display:flex;flex-direction:column;gap:var(--d-3);">
+        <span class="label-eyebrow">{{ program.course_institution }}</span>
+        <h3 class="serif" style="font-size:20px;line-height:1.2;letter-spacing:-0.01em;">
+          {{ program.course_name }}
+        </h3>
+        <div class="meta-row" style="margin-top:auto;">
+          <span>{% blocktrans with when=program.sent_at|timesince %}Adicionado {{ when }} atrás{% endblocktrans %}</span>
+        </div>
+        {% if program.course_link %}
+        <div style="padding-top:var(--d-3);border-top:1px solid var(--line-soft);">
+          <a href="{{ program.course_link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            {% trans "Acessar curso" %}
+            {% include "_icon.html" with name="external" size=12 %}
+          </a>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 
 </div>
 {% endblock %}

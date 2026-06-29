@@ -1,0 +1,39 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Novidades nos seus alertas" %}</title>
+</head>
+<body>
+    <h1>{% trans "Novidades nos seus alertas" %}</h1>
+
+    <p>{% trans "Olá!" %}</p>
+
+    <p>
+        {% blocktrans count counter=total %}Encontramos {{ counter }} curso novo nos seus alertas salvos. Veja abaixo, organizados por alerta.{% plural %}Encontramos {{ counter }} cursos novos nos seus alertas salvos. Veja abaixo, organizados por alerta.{% endblocktrans %}
+    </p>
+
+    {% for section in sections %}
+    <h2>{{ section.name }}</h2>
+    <ul>
+        {% for course in section.courses %}
+        <li>
+            <strong>{{ course.name }}</strong><br>
+            {% trans "Instituição" %}: {{ course.institution }}<br>
+            {% trans "Modalidade" %}: {{ course.modality }}<br>
+            {% trans "Estado" %}: {{ course.state }}<br>
+            {% if course.link %}
+                <a href="{{ course.link }}">{% trans "Ver curso" %}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+
+    <hr>
+
+    <p>
+        {% trans "Você recebe este e-mail porque salvou buscas como alertas no Optio. Para pausar ou apagar um alerta, acesse a seção “Alertas” no painel." %}
+    </p>
+</body>
+</html>

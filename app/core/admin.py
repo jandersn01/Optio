@@ -1,6 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, NotificationSent
+
+
+@admin.register(NotificationSent)
+class NotificationSentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course_name', 'course_institution', 'sent_at')
+    search_fields = ('user__email', 'course_name', 'course_institution')
+    list_filter = ('sent_at',)
+    readonly_fields = ('sent_at',)
 
 
 @admin.register(CustomUser)

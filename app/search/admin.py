@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Course, SearchRequest
+from .models import Course, SavedAlert, SearchRequest
+
+
+@admin.register(SavedAlert)
+class SavedAlertAdmin(admin.ModelAdmin):
+    list_display = ['name', 'user', 'keywords', 'active', 'last_checked_at', 'created_at']
+    list_filter = ['active', 'area', 'modality', 'created_at']
+    search_fields = ['name', 'keywords', 'user__email']
+    readonly_fields = ['created_at', 'updated_at', 'last_checked_at']
 
 
 @admin.register(SearchRequest)

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -6,10 +8,10 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import gettext
 from django.views.decorators.http import require_POST
-from search.models import SearchRequest
+from search.models import SearchRequest, SavedAlert
 from search.choices import SearchArea, SearchModality, SearchStatus
 from .forms import CadastroForm, NotificationPreferenceForm, UserIdentityForm
-from .models import NotificationPreference
+from .models import NotificationPreference, NotificationSent
 
 
 @login_required
@@ -27,10 +29,21 @@ def dashboard(request):
         'total_results': all_searches.aggregate(s=Sum('results_count'))['s'] or 0,
     }
 
+    week_ago = timezone.now() - timedelta(days=7)
+    new_programs = (
+        NotificationSent.objects
+        .filter(user=user, sent_at__gte=week_ago)
+        .order_by('-sent_at')[:6]
+    )
+
+    alerts = list(SavedAlert.objects.filter(user=user, active=True)[:3])
+
     return render(request, 'core/dashboard.html', {
         'recent_searches': all_searches[:5],
         'stats': stats,
         'total_searches': stats['total'],
+        'new_programs': new_programs,
+        'alerts': alerts,
     })
 
 

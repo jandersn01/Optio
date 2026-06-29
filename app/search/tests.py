@@ -132,7 +132,7 @@ class SearchResultsViewStatesTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Erro ao processar busca")
-        self.assertContains(response, "Nova Pesquisa")
+        self.assertContains(response, "Nova busca")
 
     def test_completed_with_courses_shows_results(self):
         """Verifica que status COMPLETED com cursos exibe os resultados."""
@@ -174,7 +174,7 @@ class ResultsEmailUrlTestCase(TestCase):
             status=SearchStatus.COMPLETED,
         )
 
-    @patch("search.emails.EmailMultiAlternatives")
+    @patch("core.emails.EmailMultiAlternatives")
     def test_results_email_contains_correct_url(self, mock_email_class):
         """Verifica que o e-mail de resultados aponta para a pagina correta."""
         mock_email = MagicMock()
@@ -287,7 +287,7 @@ class NoResultsEmailTestCase(TestCase):
             status=SearchStatus.NO_RESULTS,
         )
 
-    @patch("search.emails.EmailMultiAlternatives")
+    @patch("core.emails.EmailMultiAlternatives")
     def test_send_no_results_email_success(self, mock_email_class):
         """Verifica que e-mail de 'sem resultados' e enviado corretamente."""
         mock_email = MagicMock()
@@ -303,7 +303,7 @@ class NoResultsEmailTestCase(TestCase):
         mock_email.attach_alternative.assert_called_once()
         mock_email.send.assert_called_once_with(fail_silently=False)
 
-    @patch("search.emails.EmailMultiAlternatives")
+    @patch("core.emails.EmailMultiAlternatives")
     def test_send_no_results_email_subject(self, mock_email_class):
         """Verifica assunto do e-mail de 'sem resultados'."""
         mock_email = MagicMock()
@@ -346,7 +346,7 @@ class SearchResultsViewNoResultsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Nenhum curso encontrado")
-        self.assertContains(response, "Sugestões para ampliar sua busca")
+        self.assertContains(response, "Não encontramos cursos")
 
     def test_results_page_shows_suggestions(self):
         """Verifica que a pagina exibe sugestoes para ampliar a busca."""
@@ -357,7 +357,7 @@ class SearchResultsViewNoResultsTestCase(TestCase):
         )
 
         self.assertContains(response, "palavras-chave mais genéricas")
-        self.assertContains(response, "Nova Pesquisa")
+        self.assertContains(response, "Nova busca")
 
 
 class SearchListNoResultsFilterTestCase(TestCase):
@@ -404,7 +404,7 @@ class SearchListNoResultsFilterTestCase(TestCase):
         response = self.client.get(reverse("search:request_list"))
 
         self.assertContains(response, "status=no_results")
-        self.assertContains(response, "Sem Resultados")
+        self.assertContains(response, "Sem resultados")
 
 
 class CompletedFlowStillWorksTestCase(TestCase):
@@ -453,9 +453,13 @@ class CompletedFlowStillWorksTestCase(TestCase):
 
         response = self.client.get(reverse("search:request_list"))
 
-        self.assertContains(response, "Ver resultados")
+        # A linha inteira é clicável e navega para a página de resultados.
+        self.assertContains(
+            response,
+            reverse("search:search_results", kwargs={"pk": self.search_request.pk}),
+        )
 
-    @patch("search.emails.EmailMultiAlternatives")
+    @patch("core.emails.EmailMultiAlternatives")
     def test_send_results_email_still_works(self, mock_email_class):
         """Verifica que e-mail de resultados ainda funciona."""
         mock_email = MagicMock()
@@ -626,14 +630,14 @@ class FavoritesEmptyStateTestCase(TestCase):
         self.client.login(email="test@example.com", password="testpass123")
         response = self.client.get(reverse("search:favorites_list"))
 
-        self.assertContains(response, "Você ainda não tem favoritos")
+        self.assertContains(response, "Nada salvo ainda")
 
     def test_empty_favorites_shows_search_link(self):
         """Verifica que lista vazia exibe link para pesquisa."""
         self.client.login(email="test@example.com", password="testpass123")
         response = self.client.get(reverse("search:favorites_list"))
 
-        self.assertContains(response, "Fazer uma pesquisa")
+        self.assertContains(response, "Começar uma busca")
         self.assertContains(response, reverse("search:request_create"))
 
 
@@ -668,7 +672,7 @@ class FavoriteRemoveTestCase(TestCase):
         self.client.login(email="test@example.com", password="testpass123")
 
         response = self.client.post(
-            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+            reverse("search:favorite_remove", kwargs={"pk": self.course.pk})
         )
 
         self.assertEqual(response.status_code, 302)
@@ -681,7 +685,7 @@ class FavoriteRemoveTestCase(TestCase):
         self.assertEqual(Favorite.objects.filter(user=self.user).count(), 1)
 
         self.client.post(
-            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+            reverse("search:favorite_remove", kwargs={"pk": self.course.pk})
         )
 
         self.assertEqual(Favorite.objects.filter(user=self.user).count(), 0)
@@ -691,7 +695,7 @@ class FavoriteRemoveTestCase(TestCase):
         self.client.login(email="other@example.com", password="otherpass123")
 
         response = self.client.post(
-            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+            reverse("search:favorite_remove", kwargs={"pk": self.course.pk})
         )
 
         self.assertEqual(response.status_code, 404)
@@ -701,7 +705,7 @@ class FavoriteRemoveTestCase(TestCase):
     def test_unauthenticated_cannot_remove_favorite(self):
         """Verifica que usuario nao autenticado nao pode remover favorito."""
         response = self.client.post(
-            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+            reverse("search:favorite_remove", kwargs={"pk": self.course.pk})
         )
 
         self.assertEqual(response.status_code, 302)
@@ -724,7 +728,7 @@ class FavoriteRemoveTestCase(TestCase):
         self.client.login(email="test@example.com", password="testpass123")
 
         response = self.client.get(
-            reverse("search:favorite_remove", kwargs={"pk": self.favorite.pk})
+            reverse("search:favorite_remove", kwargs={"pk": self.course.pk})
         )
 
         self.assertEqual(response.status_code, 405)
@@ -771,4 +775,4 @@ class FavoriteModelTestCase(TestCase):
         """Verifica representacao string do favorito."""
         favorite = Favorite.objects.create(user=self.user, course=self.course)
 
-        self.assertEqual(str(favorite), "test@example.com - Curso Modelo")
+        self.assertEqual(str(favorite), "test@example.com — Curso Modelo")

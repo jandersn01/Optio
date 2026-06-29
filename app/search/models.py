@@ -209,3 +209,48 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.email} — {self.course.name}"
+
+
+class SavedAlert(models.Model):
+    """Uma busca que o usuário salvou como alerta. O job de notificação verifica
+    periodicamente, por usuário, se surgiram cursos novos aderentes aos critérios."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="saved_alerts",
+        verbose_name=_("Usuário"),
+    )
+    name = models.CharField(max_length=120, verbose_name=_("Nome do alerta"))
+    keywords = models.CharField(max_length=255, verbose_name=_("Palavras-chave"))
+    area = models.CharField(
+        max_length=100,
+        choices=SearchArea.choices,
+        blank=True,
+        verbose_name=_("Área do conhecimento"),
+    )
+    modality = models.CharField(
+        max_length=20,
+        choices=SearchModality.choices,
+        blank=True,
+        verbose_name=_("Modalidade"),
+    )
+    state = models.CharField(
+        max_length=2,
+        choices=SearchStates_Br.choices,
+        blank=True,
+        verbose_name=_("Estado"),
+    )
+    active = models.BooleanField(default=True, verbose_name=_("Ativo"))
+    last_checked_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Última verificação")
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Criado em"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Atualizado em"))
+
+    class Meta:
+        verbose_name = _("Alerta salvo")
+        verbose_name_plural = _("Alertas salvos")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Alerta de {self.user.email}: {self.name}"

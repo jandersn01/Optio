@@ -9,13 +9,13 @@
   <div class="crumbs">
     <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
     <span class="crumb-cur">{% trans "Favoritos" %}</span>
   </div>
   <div class="topbar-actions">
     <a href="{% url 'search:request_create' %}" class="btn btn-secondary btn-sm">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+      {% include "_icon.html" with name="plus" size=14 %}
       {% trans "Nova busca" %}
     </a>
   </div>
@@ -50,9 +50,7 @@
                   style="width:28px;height:28px;border-radius:var(--r-1);color:var(--primary);background:var(--primary-soft);display:grid;place-items:center;cursor:pointer;transition:background var(--t-fast) var(--ease);"
                   onmouseover="this.style.background='var(--primary-line)'"
                   onmouseout="this.style.background='var(--primary-soft)'">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" stroke="none">
-              <path d="M2 1.5h10a.5.5 0 01.5.5v10.5l-5.5-3.2L2 12.5V2a.5.5 0 01.5-.5z"/>
-            </svg>
+            {% include "_icon.html" with name="bookmark" size=14 fill="currentColor" %}
           </button>
         </form>
       </div>
@@ -78,7 +76,7 @@
         <a href="{{ favorite.course.link }}" target="_blank" rel="noopener"
            class="btn btn-primary btn-sm">
           {% trans "Acessar curso" %}
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2H10v5M10 2L4 8M2 5v5h5"/></svg>
+          {% include "_icon.html" with name="external" size=12 %}
         </a>
       </div>
       {% endif %}
@@ -123,7 +121,7 @@
       {% trans "Quando encontrar um curso interessante nos resultados de busca, clique no marcador de favoritos e ele aparece aqui." %}
     </p>
     <a href="{% url 'search:request_create' %}" class="btn btn-primary">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="6" r="4"/><path d="M9.5 9.5L13 13"/></svg>
+      {% include "_icon.html" with name="search" size=14 %}
       {% trans "Começar uma busca" %}
     </a>
   </div>

@@ -13,4 +13,7 @@ urlpatterns = [
     path("favoritos/", views.favorites_list, name="favorites_list"),
     path("favorito/<int:pk>/adicionar/", views.favorite_add, name="favorite_add"),
     path("favorito/<int:pk>/remover/", views.favorite_remove, name="favorite_remove"),
+    path("alertas/", views.alerts_list, name="alerts_list"),
+    path("alerta/<int:pk>/toggle/", views.alert_toggle, name="alert_toggle"),
+    path("alerta/<int:pk>/apagar/", views.alert_delete, name="alert_delete"),
 ]

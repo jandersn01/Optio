@@ -30,6 +30,23 @@ services:
       - db
     restart: always
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/worker/Dockerfile
+    command: python scheduler.py
+    environment:
+      - PYTHONPATH=/app
+      - DJANGO_SETTINGS_MODULE=optio.settings
+    volumes:
+      - ./worker:/worker
+      - ./app:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+
   db:
     image: postgres:15
     volumes:

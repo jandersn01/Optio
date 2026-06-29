@@ -9,7 +9,7 @@
   <div class="crumbs">
     <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
     <span class="crumb-cur">{% trans "Nova busca" %}</span>
   </div>
@@ -43,10 +43,7 @@
     <div class="field">
       <label class="field-label" for="id_keywords">{% trans "Palavras-chave *" %}</label>
       <div style="position:relative;">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-             style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
-          <circle cx="8" cy="8" r="5"/><path d="M12 12L17 17"/>
-        </svg>
+        {% include "_icon.html" with name="search" size=18 style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;" %}
         <input
           id="id_keywords"
           name="{{ form.keywords.html_name }}"
@@ -110,8 +107,10 @@
         <div class="field" style="grid-column:1/-1;">
           <label class="field-label">{% trans "Modalidade" %}</label>
           <input type="hidden" id="modality-value" name="{{ form.modality.html_name }}"
-                 value="{{ form.modality.value|default:'all' }}">
+                 value="{{ form.modality.value|default:'' }}">
           <div class="row" style="gap:6px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-sm modality-btn" data-value=""
+                    onclick="selectModality('')">Todas</button>
             {% for value, label in form.modality.field.choices %}{% if value %}
             <button type="button"
                     class="btn btn-sm modality-btn"
@@ -135,10 +134,7 @@
       <div class="field" style="margin-bottom:var(--d-3);">
         <label class="field-label">{% trans "Enviar resultados para" %}</label>
         <div style="position:relative;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-               style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;">
-            <rect x="2" y="4" width="12" height="9" rx="1"/><path d="M2 4l6 5 6-5"/>
-          </svg>
+          {% include "_icon.html" with name="mail" size=16 style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-mute);pointer-events:none;" %}
           <input class="input" type="email" value="{{ user.email }}"
                  style="padding-left:38px;" disabled>
         </div>
@@ -147,20 +143,14 @@
 
       {# Salvar como alerta — microinteração via JS #}
       <label id="alert-card"
-             style="display:flex;align-items:flex-start;gap:var(--d-3);padding:var(--d-3) var(--d-4);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--r-2);cursor:pointer;transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);opacity:.55;"
-             title="{% trans 'Em breve — feature de alertas em desenvolvimento' %}">
-        <input type="checkbox" name="save_as_alert" disabled
+             style="display:flex;align-items:flex-start;gap:var(--d-3);padding:var(--d-3) var(--d-4);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:var(--r-2);cursor:pointer;transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);">
+        <input type="checkbox" name="save_as_alert" value="1"
                style="margin-top:3px;flex-shrink:0;"
                onchange="toggleAlertCard(this)">
         <div style="flex:1;">
           <div class="row" style="gap:8px;margin-bottom:2px;">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                 style="color:var(--ink-mute);flex-shrink:0;">
-              <path d="M8 2a5.5 5.5 0 015.5 5.5c0 2.6-.7 4.2-1.5 5H4c-.8-.8-1.5-2.4-1.5-5A5.5 5.5 0 018 2z"/>
-              <path d="M6 13.5a2 2 0 004 0"/>
-            </svg>
+            {% include "_icon.html" with name="bell" size=14 style="color:var(--ink-mute);flex-shrink:0;" %}
             <strong class="text-sm">{% trans "Salvar como alerta" %}</strong>
-            <span class="badge" style="font-size:10px;">{% trans "Em breve" %}</span>
           </div>
           <span class="text-xs muted">
             {% trans "Quando novos cursos aderentes aparecerem, te avisamos por e‑mail." %}
@@ -175,9 +165,7 @@
     <div class="row" style="gap:var(--d-3);justify-content:flex-end;">
       <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">{% trans "Cancelar" %}</a>
       <button type="submit" class="btn btn-primary btn-lg">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="7" cy="7" r="4.5"/><path d="M11 11L15 15"/>
-        </svg>
+        {% include "_icon.html" with name="search" size=16 %}
         {% trans "Iniciar busca" %}
       </button>
     </div>
@@ -206,7 +194,7 @@ function selectModality(val) {
 
 // Inicializa estado dos botões ao carregar
 (function() {
-  var current = document.getElementById('modality-value').value || 'all';
+  var current = document.getElementById('modality-value').value || '';
   selectModality(current);
 })();
 

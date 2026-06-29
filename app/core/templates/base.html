@@ -29,26 +29,13 @@
 
       <a href="{% url 'core:dashboard' %}"
          class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z"/><path d="M6 15V9h4v6"/>
-        </svg>
+        {% include "_icon.html" with name="home" %}
         {% trans "Painel" %}
-      </a>
-
-      <a href="{% url 'search:request_create' %}"
-         class="nav-item {% if request.resolver_match.url_name == 'request_create' %}active{% endif %}"
-         style="color: var(--primary); font-weight: 600;">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <path d="M8 2v12M2 8h12"/>
-        </svg>
-        {% trans "Nova busca" %}
       </a>
 
       <a href="{% url 'search:request_list' %}"
          class="nav-item {% if request.resolver_match.url_name in 'request_list search_delete search_repeat' %}active{% endif %}">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <path d="M2 4h12M2 8h12M2 12h12"/>
-        </svg>
+        {% include "_icon.html" with name="list" %}
         {% trans "Minhas buscas" %}
         {% if total_searches %}
         <span class="nav-count">{{ total_searches }}</span>
@@ -57,32 +44,31 @@
 
       <a href="{% url 'search:favorites_list' %}"
          class="nav-item {% if request.resolver_match.url_name == 'favorites_list' %}active{% endif %}">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 2h10a1 1 0 011 1v11l-5.5-3L3 14V3a1 1 0 011-1z"/>
-        </svg>
+        {% include "_icon.html" with name="bookmark" %}
         {% trans "Favoritos" %}
         {% if total_favorites %}
         <span class="nav-count">{{ total_favorites }}</span>
         {% endif %}
       </a>
 
+      <a href="{% url 'search:alerts_list' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'alerts_list' %}active{% endif %}">
+        {% include "_icon.html" with name="bell" %}
+        {% trans "Alertas" %}
+      </a>
+
       <span class="nav-group-label" style="margin-top: auto;">{% trans "Conta" %}</span>
 
       <a href="{% url 'core:preferences' %}"
          class="nav-item {% if request.resolver_match.url_name == 'preferences' %}active{% endif %}">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="8" r="2"/>
-          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>
-        </svg>
+        {% include "_icon.html" with name="settings" %}
         {% trans "Preferências" %}
       </a>
 
       <form method="post" action="{% url 'core:logout' %}" style="display: contents;">
         {% csrf_token %}
         <button type="submit" class="nav-item">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 2h3a1 1 0 011 1v10a1 1 0 01-1 1h-3M7 11l3-3-3-3M10 8H2"/>
-          </svg>
+          {% include "_icon.html" with name="logout" %}
           {% trans "Sair" %}
         </button>
       </form>

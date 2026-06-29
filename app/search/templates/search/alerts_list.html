@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Alertas salvos" %} — Optio{% endblock %}
+
+{% block content %}
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <span class="crumb-cur">{% trans "Alertas salvos" %}</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary btn-sm">
+      {% include "_icon.html" with name="plus" size=14 %}
+      {% trans "Novo alerta" %}
+    </a>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
+        {% blocktrans count counter=active_count %}{{ counter }} ativo de {{ max_alerts }}{% plural %}{{ counter }} ativos de {{ max_alerts }}{% endblocktrans %}
+      </div>
+      <h1 class="h-1">{% blocktrans %}Te avisamos quando <em>aparecer</em>{% endblocktrans %}</h1>
+      <p class="lede" style="margin-top:var(--d-3);">
+        {% trans "Salve uma busca como alerta e o Optio verifica fontes oficiais periodicamente. Só notificamos quando algo realmente novo casar com seus critérios." %}
+      </p>
+    </div>
+  </header>
+
+  {% if alerts %}
+  <div class="col stagger" style="gap:var(--d-3);">
+    {% for alert in alerts %}
+    <article class="card" style="padding:var(--d-4) var(--d-5);display:grid;grid-template-columns:auto 1fr auto;gap:var(--d-4);align-items:center;">
+
+      {# Ícone de sino #}
+      <div style="width:40px;height:40px;border-radius:var(--r-2);display:grid;place-items:center;
+                  {% if alert.active %}background:var(--primary-soft);color:var(--primary);{% else %}border:1px dashed var(--line);color:var(--ink-mute);{% endif %}">
+        {% include "_icon.html" with name="bell" size=16 fill=alert.active|yesno:"currentColor,none" %}
+      </div>
+
+      {# Nome + critérios #}
+      <div style="min-width:0;">
+        <div class="row" style="gap:var(--d-2);margin-bottom:4px;flex-wrap:wrap;">
+          <h3 class="serif" style="font-size:19px;letter-spacing:-0.005em;">{{ alert.name }}</h3>
+          {% if not alert.active %}<span class="badge">{% trans "pausado" %}</span>{% endif %}
+        </div>
+        <div class="meta-row">
+          <span>“{{ alert.keywords }}”</span>
+          <span class="sep">·</span>
+          <span>{% if alert.area %}{{ alert.get_area_display }}{% else %}{% trans "Todas as áreas" %}{% endif %}</span>
+          <span class="sep">·</span>
+          <span>{% if alert.modality %}{{ alert.get_modality_display }}{% else %}{% trans "Todas as modalidades" %}{% endif %}</span>
+          <span class="sep">·</span>
+          <span>{% if alert.state %}{{ alert.get_state_display }}{% else %}{% trans "Brasil" %}{% endif %}</span>
+        </div>
+      </div>
+
+      {# Ações: pausar/ativar + apagar #}
+      <div class="row" style="gap:var(--d-3);">
+        <form action="{% url 'search:alert_toggle' alert.pk %}" method="post" title="{% if alert.active %}{% trans 'Pausar alerta' %}{% else %}{% trans 'Ativar alerta' %}{% endif %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'search:alerts_list' %}">
+          <button type="submit" aria-pressed="{{ alert.active|yesno:'true,false' }}"
+                  style="width:36px;height:20px;border-radius:999px;position:relative;cursor:pointer;flex-shrink:0;transition:background var(--t-fast) var(--ease);
+                         background:{% if alert.active %}var(--primary){% else %}var(--paper-3){% endif %};
+                         border:1px solid {% if alert.active %}var(--primary){% else %}var(--line){% endif %};">
+            <span style="position:absolute;top:1px;left:{% if alert.active %}17px{% else %}1px{% endif %};width:16px;height:16px;border-radius:50%;background:var(--paper);box-shadow:0 1px 2px rgba(0,0,0,0.15);transition:left var(--t-fast) var(--ease);"></span>
+          </button>
+        </form>
+        {% trans "Apagar este alerta? Esta ação não pode ser desfeita." as confirm_delete_alert %}
+        <form action="{% url 'search:alert_delete' alert.pk %}" method="post" onsubmit="return confirm('{{ confirm_delete_alert|escapejs }}');">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--err);" title="{% trans 'Apagar alerta' %}">
+            {% include "_icon.html" with name="trash" size=14 %}
+          </button>
+        </form>
+      </div>
+
+    </article>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty">
+    <div class="em-mark">🔔</div>
+    <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhum alerta salvo" %}</h3>
+    <p class="text-sm" style="max-width:420px;margin:0 auto var(--d-4);">
+      {% trans "Faça uma busca e marque “Salvar como alerta” para que o Optio te avise quando surgirem cursos novos aderentes aos seus critérios." %}
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">
+      {% include "_icon.html" with name="search" size=14 %}
+      {% trans "Começar uma busca" %}
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -9,11 +9,11 @@
   <div class="crumbs">
     <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
     <span class="crumb-sep">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
     <a href="{% url 'search:request_list' %}">{% trans "Minhas buscas" %}</a>
     <span class="crumb-sep">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+      {% include "_icon.html" with name="chevron-right" size=12 %}
     </span>
     <span class="crumb-cur">{% trans "Resultados" %}</span>
   </div>
@@ -38,7 +38,7 @@
       </div>
     </div>
     <a href="{% url 'search:request_list' %}" class="btn btn-secondary btn-sm">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11L5 7l4-4"/></svg>
+      {% include "_icon.html" with name="arrow-left" size=14 %}
       {% trans "Voltar" %}
     </a>
   </header>
@@ -60,9 +60,7 @@
               <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
               <button type="submit" title="{% trans 'Remover dos favoritos' %}"
                       style="width:28px;height:28px;border-radius:var(--r-1);color:var(--primary);background:var(--primary-soft);display:grid;place-items:center;cursor:pointer;border:none;">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" stroke="none">
-                  <path d="M2 1.5h10a.5.5 0 01.5.5v10.5l-5.5-3.2L2 12.5V2a.5.5 0 01.5-.5z"/>
-                </svg>
+                {% include "_icon.html" with name="bookmark" size=14 fill="currentColor" %}
               </button>
             </form>
             {% else %}
@@ -71,9 +69,7 @@
               <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
               <button type="submit" title="{% trans 'Salvar nos favoritos' %}"
                       style="width:28px;height:28px;border-radius:var(--r-1);color:var(--ink-mute);background:var(--paper-2);border:1px solid var(--line-soft);display:grid;place-items:center;cursor:pointer;">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 1.5h10a.5.5 0 01.5.5v10.5l-5.5-3.2L2 12.5V2a.5.5 0 01.5-.5z"/>
-                </svg>
+                {% include "_icon.html" with name="bookmark" size=14 %}
               </button>
             </form>
             {% endif %}
@@ -87,7 +83,7 @@
         <div style="margin-top: var(--d-4); padding-top: var(--d-3); border-top: 1px solid var(--line-soft);">
           <a href="{{ course.link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
             {% trans "Acessar curso" %}
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2H10v5M10 2L4 8M2 5v5h5"/></svg>
+            {% include "_icon.html" with name="external" size=12 %}
           </a>
         </div>
         {% endif %}
