@@ -4,7 +4,7 @@ import os
 
 from openai import OpenAI
 
-from prompts import SYSTEM_PROMPT
+from providers.prompts import SYSTEM_PROMPT
 
 logger = logging.getLogger("optio.worker.llm")
 

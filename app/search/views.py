@@ -16,7 +16,7 @@ from search.models import Course, Favorite, SearchRequest
 from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
 from .publisher import QueuePublishError, publish_search_request
-from .services import delete_search, get_search_history, repeat_search
+from .services import delete_search, get_favorites, get_search_history, repeat_search
 
 
 logger = logging.getLogger(__name__)
@@ -125,6 +125,14 @@ def search_list(request):
 @login_required
 def search_results(request, pk):
     search_request = get_object_or_404(SearchRequest, pk=pk, user=request.user)
+    
+    if search_request.status == SearchStatus.PROCESSING:
+        limite_tempo = search_request.created_at + timedelta(minutes=5)
+
+        if timezone.now > limite_tempo:
+            search_request.status = SearchStatus.FAILED
+            search_request.save(update_fields=['status'])
+            
     courses = Course.objects.filter(search_request=search_request)
     favorite_map = {
         f.course_id: f.pk
@@ -170,8 +178,8 @@ def search_repeat(request, pk):
 
 @login_required
 def favorites_list(request):
-    favorites = Favorite.objects.filter(user=request.user).select_related("course")
-    return render(request, "search/favorites_list.html", {"favorites": favorites})
+    page_obj = get_favorites(request.user, request.GET.get("page", 1))
+    return render(request, "search/favorites_list.html", {"page_obj": page_obj})
 
 
 @login_required
