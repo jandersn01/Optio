@@ -69,4 +69,37 @@ class RabbitMQConsumer:
         channel.basic_consume(queue=self.queue, on_message_callback=callback, auto_ack=False)
         channel.start_consuming()
 
+class RabbitMQPublisher:
+    def __init__(self, host: str, queue: str):
+        self.host = host
+        self.queue = queue
 
+    def publish_results(self, search_id: int, status: str, courses: list = None, keywords: str = None):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
+        channel = connection.channel()
+        channel.queue_declare(queue=self.queue, durable=True)
+
+        payload = {
+            "search_request_id": search_id,
+            "status": status,
+            "keywords": keywords,
+            "notification_email": email,
+            "courses": [
+                {
+                    "name": c.name, 
+                    "institution": c.institution, 
+                    "modality": c.modality, 
+                    "state": c.state, 
+                    "link": c.link
+                } for c in (courses or [])
+            ]
+        }
+
+        channel.basic_publish(
+            exchange="",
+            routing_key=self.queue,
+            body=json.dumps(payload),
+            properties=pika.BasicProperties(delivery_mode=2)
+        )
+        connection.close()
+        logger.info(f"Resultado publicado para search_id={search_id} na fila {self.queue}")
