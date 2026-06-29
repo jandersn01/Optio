@@ -4,7 +4,8 @@ class SearchModality(models.TextChoices):
     EAD = "ead", "EAD"
     PRESENCIAL = "presencial", "Presencial"
     HIBRIDO = "hibrido", "Híbrido"
-    ALL = "all", "Todos"
+    # "Todas as modalidades" é representado por "" (string vazia) na persistência;
+    # o rótulo "Todas" é tratado apenas na camada de formulário.
 
 class SearchStatus(models.TextChoices):
     PENDING = "pending", "Pendente"

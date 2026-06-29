@@ -11,6 +11,7 @@ class CadastroTests(TestCase):
             'email': 'joao@example.com',
             'password1': 'SenhaForte123!',
             'password2': 'SenhaForte123!',
+            'policy_accepted': True,
         }
 
     def test_get_exibe_formulario(self):
