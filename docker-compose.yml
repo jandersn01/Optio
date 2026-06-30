@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn optio.wsgi:application --workers 3 --threads 4 --bind 0.0.0.0:8000
     volumes:
       - ./app:/app
     ports:
@@ -13,38 +13,44 @@ services:
     depends_on:
       - db
 
-  worker:
-    build:
+  web_consumer:
+    build: 
       context: .
-      dockerfile: docker/worker/Dockerfile
-    environment:
-      - PYTHONPATH=/app
-      - DJANGO_SETTINGS_MODULE=optio.settings
+      dockerfile: docker/web/Dockerfile
+    command: python manage.py consume_search_results
     volumes:
-      - ./worker:/worker
       - ./app:/app
     env_file:
       - .env
     depends_on:
-      - rabbitmq
       - db
+      - rabbitmq
+    restart: always
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker/Dockerfile
+    volumes:
+      - ./worker:/worker
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
     restart: always
 
   scheduler:
     build:
       context: .
-      dockerfile: docker/worker/Dockerfile
-    command: python scheduler.py
-    environment:
-      - PYTHONPATH=/app
-      - DJANGO_SETTINGS_MODULE=optio.settings
+      dockerfile: docker/web/Dockerfile
+    command: python manage.py run_scheduler
     volumes:
-      - ./worker:/worker
       - ./app:/app
     env_file:
       - .env
     depends_on:
       - db
+      - rabbitmq
     restart: always
 
   db:

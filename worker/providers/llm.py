@@ -5,7 +5,7 @@ import os
 from openai import OpenAI
 
 from providers.prompts import SYSTEM_PROMPT
-from search.choices import SearchModality, SearchStates_Br
+from domain.choices import SearchModality,SearchStates_Br
 
 logger = logging.getLogger("optio.worker.llm")
 
