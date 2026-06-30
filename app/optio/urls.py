@@ -17,4 +17,5 @@ urlpatterns = [
     # App Core (dashboard, pesquisas e logout)
     path("core/", include("core.urls")),
     path("search/", include("search.urls")),
+    path('api/v1/', include('api.urls'))
 ]
