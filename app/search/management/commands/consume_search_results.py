@@ -5,7 +5,9 @@ import logging
 import time
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-
+import functools
+from concurrent.futures import ThreadPoolExecutor
+from django.db import close_old_connections
 from search.models import SearchRequest, Course, SavedAlert
 from core.models import NotificationSent
 from search.choices import SearchStatus
@@ -21,12 +23,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         rabbitmq_host = os.getenv("RABBITMQ_HOST", "rabbitmq")
         results_queue = os.getenv("RABBITMQ_RESULTS_QUEUE", "search_results")
-        
+        max_workers = 10
+        executor = ThreadPoolExecutor(max_workers=max_workers)
+
+
         connection = None
         while True:
             try:
                 self.stdout.write(f"Tentando conectar ao RabbitMQ em {rabbitmq_host}...")
-                connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host=rabbitmq_host, heartbeat=600, blocked_connection_timeout=300))
                 break
             except pika.exceptions.AMQPConnectionError:
                 self.stdout.write(self.style.WARNING("RabbitMQ ainda não está pronto. Tentando de novo em 5 segundos..."))
@@ -34,31 +40,55 @@ class Command(BaseCommand):
 
         channel = connection.channel()
         channel.queue_declare(queue=results_queue, durable=True)
-        channel.basic_qos(prefetch_count=1)
+        channel.basic_qos(prefetch_count=max_workers)
 
-        def callback(ch, method, properties, body):
+        def ack_message(ch, delivery_tag):
+            if ch.is_open:
+                ch.basic_ack(delivery_tag)
+
+        def process_message_thread(conn, ch, delivery_tag, payload):
             try:
-                payload = json.loads(body.decode("utf-8"))
                 job_type = payload.get("job_type", "manual") 
-                logger.info(f"Recebido resultado do Worker: job_id={payload.get('job_id')} tipo={job_type}")
+                logger.info(f"Processando na Thread: job_id={payload.get('job_id')} tipo={job_type}")
 
                 if job_type == "manual":
                     self._process_manual_search(payload)
                 elif job_type in ["alert_requested", "preference_requested"]:
                     self._process_background_job(payload)
+                    
+            except Exception as e:
+                logger.exception(f"Erro na Thread do consumer_result: {str(e)}")
+            finally:
+                # FECHA A CONEXÃO COM O BANCO AO FINAL DA THREAD PARA EVITAR LEAK
+                close_old_connections()
+                
+                # Manda o comando de ACK de volta para a Main Thread do Pika
+                cb = functools.partial(ack_message, ch, delivery_tag)
+                conn.add_callback_threadsafe(cb)
 
-                ch.basic_ack(delivery_tag=method.delivery_tag)
 
+        def callback(ch, method, properties, body):
+            try:
+                payload = json.loads(body.decode("utf-8"))
+                executor.submit(process_message_thread, connection, ch, method.delivery_tag, payload)
+                
             except json.JSONDecodeError:
                 logger.error("Falha ao decodificar JSON da fila de resultados.")
                 ch.basic_ack(delivery_tag=method.delivery_tag)
+                
             except Exception as e:
                 logger.exception(f"Erro crítico no consumer_result: {str(e)}")
                 ch.basic_ack(delivery_tag=method.delivery_tag)
 
-        self.stdout.write(self.style.SUCCESS(f"Web Consumer iniciado. Aguardando na fila '{results_queue}'..."))
+        self.stdout.write(self.style.SUCCESS(f"Consumer concorrente (Workers: {max_workers}) iniciado na fila '{results_queue}'..."))        
         channel.basic_consume(queue=results_queue, on_message_callback=callback, auto_ack=False)
-        channel.start_consuming()
+        
+        try:
+            channel.start_consuming()
+        except KeyboardInterrupt:
+            channel.stop_consuming()
+            executor.shutdown(wait=True)
+            connection.close()    
 
     def _process_manual_search(self, payload):
             """Lida com as buscas que o usuário clicou ativamente no site."""
