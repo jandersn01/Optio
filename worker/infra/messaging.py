@@ -3,11 +3,8 @@ import time
 import logging
 import pika
 
-from domain.exceptions import InvalidMessageError, SearchNotFoundError
-from domain.contracts import SearchRequestedEvent
-
-from search.emails import EmailDeliveryError
-from search.choices import SearchStatus
+from domain.exceptions import InvalidMessageError
+from domain.contracts import JobRequest
 
 logger = logging.getLogger("optio.worker.messaging")
 
@@ -39,30 +36,39 @@ class RabbitMQConsumer:
 
             try:
                 payload = json.loads(body.decode("utf-8"))
-                event = SearchRequestedEvent.from_payload(payload)
-                self.processor.process(event)
-                ch.basic_ack(delivery_tag=delivery_tag)
-
-
             except json.JSONDecodeError:
-                logger.exception("Corpo da mensagem não é JSON válido.")
+                logger.exception("Corpo da mensagem não é JSON válido. Impossível recuperar job_id.")
                 ch.basic_ack(delivery_tag=delivery_tag)
+                return
+            
+            try:
+                request = JobRequest.from_payload(payload)
+                self.processor.process(request)
+                ch.basic_ack(delivery_tag=delivery_tag)
+
             except InvalidMessageError as error:
                 logger.error("Payload inválido — descartado. error=%s", error)
                 ch.basic_ack(delivery_tag=delivery_tag)
-            except SearchNotFoundError:
-                logger.exception("SearchRequest não encontrada — descartada.")
-                ch.basic_ack(delivery_tag=delivery_tag)
-            except EmailDeliveryError as error:
-                logger.exception("Falha no envio de e-mail. error=%s", error)
-                ch.basic_ack(delivery_tag=delivery_tag)
+
             except Exception as error:
-                logger.exception("Erro inesperado. error=%s", error)
-                if payload and payload.get("search_request_id"):
+                logger.exception("Erro ao processar mensagem. error=%s", error)
+
+                job_id = payload.get("job_id")
+                job_type = payload.get("job_type", "manual")
+                email = payload.get("notification_email", "")
+
+                if job_id:
                     try:
-                        self.processor.repository.mark_search_status(payload.get("search_request_id"), SearchStatus.FAILED.value)
-                    except Exception:
-                        pass
+                        self.processor.publisher.publish_result(
+                            job_id=job_id,
+                            job_type=job_type,
+                            status="FAILED",
+                            email=email,
+                            criteria=payload.get("criteria", {})
+                        )
+                        logger.info("Aviso de FAILED enviado ao Django para job_id=%s", job_id)
+                    except Exception as pub_error:
+                        logger.error("Falha catastrófica ao tentar notificar o Django do erro: %s", pub_error)
                 ch.basic_ack(delivery_tag=delivery_tag)
 
         logger.info("Worker aguardando mensagens. queue=%s", self.queue)
@@ -74,16 +80,17 @@ class RabbitMQPublisher:
         self.host = host
         self.queue = queue
 
-    def publish_results(self, search_id: int, status: str, courses: list = None, keywords: str = None):
+    def publish_result(self, job_id: str, job_type: str, status: str, email: str, criteria: dict, courses: list = None): 
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.host))
         channel = connection.channel()
         channel.queue_declare(queue=self.queue, durable=True)
 
         payload = {
-            "search_request_id": search_id,
+            "job_id": job_id,
+            "job_type": job_type,
             "status": status,
-            "keywords": keywords,
             "notification_email": email,
+            "criteria": criteria,
             "courses": [
                 {
                     "name": c.name, 
@@ -99,7 +106,10 @@ class RabbitMQPublisher:
             exchange="",
             routing_key=self.queue,
             body=json.dumps(payload),
-            properties=pika.BasicProperties(delivery_mode=2)
+            properties=pika.BasicProperties(
+                delivery_mode=2,
+                content_type="aplication/json"
+                )
         )
         connection.close()
-        logger.info(f"Resultado publicado para search_id={search_id} na fila {self.queue}")
+        logger.info(f"Resultado publicado para search_id={job_id} na fila {self.queue}")
