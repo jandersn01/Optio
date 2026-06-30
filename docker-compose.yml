@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn optio.wsgi:application --workers 3 --threads 4 --bind 0.0.0.0:8000
     volumes:
       - ./app:/app
     ports:
