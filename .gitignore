@@ -1,6 +1,7 @@
 CLAUDE.md
 .env
 .claude/
+docs/TESTES.md
 
 # Banco de dados local
 *.sqlite3
