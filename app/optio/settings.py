@@ -22,7 +22,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'search',
+    'rest_framework',
+    'api',
 ]
+
+REST_FRAMEWORK = {
+    # Autenticação por sessão (reaproveita o login do Django)
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    # Equivalente ao @login_required para a API inteira
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    # Paginação global
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
