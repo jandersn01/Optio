@@ -17,13 +17,13 @@ from .choices import SearchArea, SearchModality, SearchStates_Br, SearchStatus
 from .forms import SearchRequestForm
 from .publisher import QueuePublishError, publish_search_request
 from .services import (
-    MAX_ACTIVE_ALERTS_PER_USER,
     create_alert_from_search,
     delete_alert,
     delete_search,
     get_favorites,
     get_saved_alerts,
     get_search_history,
+    max_active_alerts_for,
     repeat_search,
     toggle_alert,
 )
@@ -72,7 +72,7 @@ def search_request_create(request):
                         gettext(
                             "Limite de %(max)s alertas ativos atingido. "
                             "A busca segue normalmente, mas o alerta não foi salvo."
-                        ) % {"max": MAX_ACTIVE_ALERTS_PER_USER},
+                        ) % {"max": max_active_alerts_for(request.user)},
                     )
 
             cached = SearchRequest.objects.filter(
@@ -245,7 +245,7 @@ def alerts_list(request):
     return render(request, "search/alerts_list.html", {
         "alerts": alerts,
         "active_count": active_count,
-        "max_alerts": MAX_ACTIVE_ALERTS_PER_USER,
+        "max_alerts": max_active_alerts_for(request.user),
     })
 
 
@@ -263,7 +263,7 @@ def alert_toggle(request, pk):
             request,
             gettext(
                 "Você já tem %(max)s alertas ativos. Pause um antes de ativar outro."
-            ) % {"max": MAX_ACTIVE_ALERTS_PER_USER},
+            ) % {"max": max_active_alerts_for(request.user)},
         )
     elif alert.active:
         messages.success(request, gettext("Alerta ativado."))
