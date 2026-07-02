@@ -19,10 +19,13 @@
 
   {% if user.is_authenticated %}
   <aside class="sidebar">
-    <a href="{% url 'core:dashboard' %}" class="brand">
-      <span class="brand-mark">Opti<em>o</em></span>
-      <span class="brand-tag">Beta</span>
-    </a>
+    <div class="brand-row">
+      <a href="{% url 'core:dashboard' %}" class="brand">
+        <span class="brand-mark">Opti<em>o</em></span>
+        <span class="brand-tag">Beta</span>
+      </a>
+      {% include "_lang_switcher.html" %}
+    </div>
 
     <nav class="nav">
       <span class="nav-group-label">{% trans "Trabalho" %}</span>

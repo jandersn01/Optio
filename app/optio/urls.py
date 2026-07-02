@@ -10,6 +10,9 @@ urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
 
+    # i18n — expõe a view set_language (troca de idioma via sessão/cookie)
+    path('i18n/', include('django.conf.urls.i18n')),
+
     # Autenticação (usando views built-in do Django)
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('', views.dashboard, name='dashboard'),

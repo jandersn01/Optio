@@ -545,6 +545,24 @@ h1,h2,h3,h4 { margin: 0; font-weight: 500; color: var(--ink); }
 }
 .segment-btn:hover:not(.active) { color: var(--ink-2); }
 
+/* Seletor de idioma — reaproveita .segment/.segment-btn */
+/* Sidebar: compacto, ao lado da marca Optio */
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--d-2);
+  padding: 0 var(--d-3);
+  margin-bottom: var(--d-3);
+}
+.brand-row .brand { padding: 0; margin-bottom: 0; }
+.brand-row .lang-switch { padding: 2px; flex-shrink: 0; }
+.brand-row .lang-switch .segment-btn {
+  padding: 2px 6px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
 /* === Pagination === */
 .pagination {
   display: flex;
