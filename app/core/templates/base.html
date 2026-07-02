@@ -60,6 +60,17 @@
         {% trans "Alertas" %}
       </a>
 
+      {% if is_analyst %}
+      <span class="nav-group-label" style="margin-top: 1.5rem;">{% trans "Administração" %}</span>
+      
+      <a href="{% url 'core:metrics_dashboard' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'metrics_dashboard' %}active{% endif %}">
+        {% include "_icon.html" with name="activity" %} 
+        {% trans "Métricas" %}
+      </a>
+      {% endif %}
+
+
       <span class="nav-group-label" style="margin-top: auto;">{% trans "Conta" %}</span>
 
       <a href="{% url 'core:preferences' %}"
