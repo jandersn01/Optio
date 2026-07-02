@@ -33,6 +33,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    # Grupo (papel) que concede benefícios de plano Premium
+    PREMIUM_GROUP = 'Premium'
+
     username = None
     email = models.EmailField(_('E-mail'), unique=True)
 
@@ -53,6 +56,11 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    @property
+    def is_premium(self) -> bool:
+        """True se o usuário pertence ao grupo Premium."""
+        return self.groups.filter(name=self.PREMIUM_GROUP).exists()
 
 
 class NotificationPreference(models.Model):
