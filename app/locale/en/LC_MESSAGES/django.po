@@ -1,7 +1,7 @@
 # English translation for Optio.
 # Copyright (C) 2026 Optio
 # This file is distributed under the same license as the Optio package.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Optio 1.0\n"
@@ -18,11 +18,11 @@ msgstr ""
 
 #: core/emails.py:50
 msgid "Novos cursos para você no Optio"
-msgstr ""
+msgstr "New courses for you on Optio"
 
 #: core/emails.py:63
 msgid "Novidades nos seus alertas — Optio"
-msgstr ""
+msgstr "Updates on your alerts — Optio"
 
 # ============================================================
 # forms.py
@@ -97,7 +97,8 @@ msgstr "Areas of interest"
 msgid "Todas"
 msgstr "All"
 
-#: core/forms.py:105 core/models.py:74 core/templates/core/preferences.html:112
+#: core/forms.py:105 core/models.py:74
+#: core/templates/core/preferences.html:112
 msgid "Modalidade preferida"
 msgstr "Preferred modality"
 
@@ -108,10 +109,11 @@ msgstr "Accepted the Privacy Policy"
 #: core/models.py:42
 msgid ""
 "Indica se o usuário aceitou a política de privacidade no momento do cadastro"
-msgstr "Indicates whether the user accepted the privacy policy at registration"
+msgstr ""
+"Indicates whether the user accepted the privacy policy at registration"
 
-#: core/models.py:51 core/models.py:63 search/models.py:31 search/models.py:186
-#: search/models.py:221
+#: core/models.py:51 core/models.py:63 search/models.py:31
+#: search/models.py:186 search/models.py:221
 msgid "Usuário"
 msgstr "User"
 
@@ -280,20 +282,16 @@ msgid "Seus alertas"
 msgstr "Your alerts"
 
 #: core/templates/core/dashboard.html:140
-#, fuzzy
-#| msgid "Presencial"
 msgid "Gerenciar"
-msgstr "In-person"
+msgstr "Manage"
 
 #: core/templates/core/dashboard.html:152
 msgid "Semanal"
-msgstr ""
+msgstr "Weekly"
 
 #: core/templates/core/dashboard.html:161
-#, fuzzy
-#| msgid "Nenhum alerta configurado ainda."
 msgid "Nenhum alerta ativo ainda."
-msgstr "No alerts configured yet."
+msgstr "No active alerts yet."
 
 #: core/templates/core/dashboard.html:165
 msgid "Criar alerta"
@@ -312,20 +310,17 @@ msgstr ""
 "check official sources and notify you only when something new appears."
 
 #: core/templates/core/dashboard.html:189
-#, fuzzy
-#| msgid "Adicionado em"
 msgid "Adicionados esta semana"
-msgstr "Added at"
+msgstr "Added this week"
 
 #: core/templates/core/dashboard.html:190
 msgid "Novos programas para você"
-msgstr ""
+msgstr "New programs for you"
 
 #: core/templates/core/dashboard.html:199
-#, fuzzy, python-format
-#| msgid "Salvo %(when)s atrás"
+#, python-format
 msgid "Adicionado %(when)s atrás"
-msgstr "Saved %(when)s ago"
+msgstr "Added %(when)s ago"
 
 #: core/templates/core/dashboard.html:204
 #: search/templates/search/favorites_list.html:78
@@ -336,7 +331,7 @@ msgstr "Access course"
 #: core/templates/core/emails/alerts_digest_email.html:5
 #: core/templates/core/emails/alerts_digest_email.html:8
 msgid "Novidades nos seus alertas"
-msgstr ""
+msgstr "Updates on your alerts"
 
 #: core/templates/core/emails/alerts_digest_email.html:10
 #: search/templates/search/emails/no_results_email.html:12
@@ -353,7 +348,11 @@ msgid_plural ""
 "Encontramos %(counter)s cursos novos nos seus alertas salvos. Veja abaixo, "
 "organizados por alerta."
 msgstr[0] ""
+"We found %(counter)s new course in your saved alerts. See them below, "
+"organized by alert."
 msgstr[1] ""
+"We found %(counter)s new courses in your saved alerts. See them below, "
+"organized by alert."
 
 #: core/templates/core/emails/alerts_digest_email.html:22 search/models.py:158
 #: search/templates/search/emails/results_email.html:25
@@ -384,6 +383,8 @@ msgid ""
 "Você recebe este e-mail porque salvou buscas como alertas no Optio. Para "
 "pausar ou apagar um alerta, acesse a seção “Alertas” no painel."
 msgstr ""
+"You're receiving this email because you saved searches as alerts on Optio. "
+"To pause or delete an alert, go to the “Alerts” section in the dashboard."
 
 # ============================================================
 # templates — preferences.html
@@ -516,8 +517,8 @@ msgstr ""
 "Welcome to <strong>Optio</strong>. Your privacy and the security of your "
 "personal data are fundamental to us. This Privacy Policy describes how we "
 "collect, use, protect, and manage your information when using our platform "
-"for searching free graduate courses, in strict compliance with the Brazilian "
-"General Data Protection Law (LGPD)."
+"for searching free graduate courses, in strict compliance with the Brazilian"
+" General Data Protection Law (LGPD)."
 
 #: core/templates/core/privacy.html:27
 msgid "1. Que dados recolhemos?"
@@ -556,7 +557,8 @@ msgid ""
 "contra falsificação de pedidos (CSRF)."
 msgstr ""
 "<strong>Session data:</strong> Technical information essential to keep your "
-"account secure, such as session <em>cookies</em> and CSRF protection cookies."
+"account secure, such as session <em>cookies</em> and CSRF protection "
+"cookies."
 
 #: core/templates/core/privacy.html:37
 msgid "2. Como utilizamos os seus dados?"
@@ -564,16 +566,16 @@ msgstr "2. How do we use your data?"
 
 #: core/templates/core/privacy.html:38
 msgid ""
-"A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço "
-"do Optio:"
+"A finalidade exclusiva do tratamento dos seus dados é a prestação do serviço"
+" do Optio:"
 msgstr ""
 "The sole purpose of processing your data is to deliver the Optio service:"
 
 #: core/templates/core/privacy.html:40
 msgid ""
 "<strong>Processamento de Pesquisas:</strong> Utilizar os seus parâmetros "
-"para orquestrar a recolha de dados públicos sobre cursos nas instituições de "
-"ensino."
+"para orquestrar a recolha de dados públicos sobre cursos nas instituições de"
+" ensino."
 msgstr ""
 "<strong>Search processing:</strong> Use your parameters to orchestrate the "
 "collection of public data about courses at educational institutions."
@@ -588,8 +590,8 @@ msgstr ""
 
 #: core/templates/core/privacy.html:42
 msgid ""
-"<strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard) "
-"atualizado com as suas métricas e o seu histórico individual."
+"<strong>Personalização:</strong> Manter o seu painel de controlo (Dashboard)"
+" atualizado com as suas métricas e o seu histórico individual."
 msgstr ""
 "<strong>Personalization:</strong> Keep your dashboard updated with your "
 "individual metrics and history."
@@ -608,8 +610,8 @@ msgid ""
 "garantindo o anonimato da sua pesquisa. Não vendemos nem partilhamos o seu "
 "perfil com terceiros."
 msgstr ""
-"Optio uses automated tools and Artificial Intelligence models to process the "
-"text of public web pages it finds. <strong>Your identity, email, and "
+"Optio uses automated tools and Artificial Intelligence models to process the"
+" text of public web pages it finds. <strong>Your identity, email, and "
 "personal data are never sent to these AI models.</strong> AI is used "
 "strictly as a tool to extract data about courses, keeping your search "
 "anonymous. We do not sell or share your profile with third parties."
@@ -638,12 +640,13 @@ msgstr ""
 
 #: core/templates/core/privacy.html:58
 msgid ""
-"<strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto "
-"limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) "
+"<strong>Criptografia:</strong> A sua palavra-passe não é armazenada em texto"
+" limpo. Utilizamos algoritmos de <em>hashing</em> (PBKDF2 com SHA256) "
 "impossíveis de reverter."
 msgstr ""
 "<strong>Encryption:</strong> Your password is not stored in plain text. We "
-"use <em>hashing</em> algorithms (PBKDF2 with SHA256) that cannot be reversed."
+"use <em>hashing</em> algorithms (PBKDF2 with SHA256) that cannot be "
+"reversed."
 
 #: core/templates/core/privacy.html:59
 msgid ""
@@ -651,8 +654,8 @@ msgid ""
 "e os nossos servidores é forçado a utilizar protocolos seguros (HTTPS com "
 "HSTS)."
 msgstr ""
-"<strong>Secure Communications:</strong> All traffic between your browser and "
-"our servers is forced to use secure protocols (HTTPS with HSTS)."
+"<strong>Secure Communications:</strong> All traffic between your browser and"
+" our servers is forced to use secure protocols (HTTPS with HSTS)."
 
 #: core/templates/core/privacy.html:64
 msgid "5. Os Seus Direitos (LGPD)"
@@ -684,8 +687,8 @@ msgstr ""
 
 #: core/templates/core/privacy.html:69
 msgid ""
-"<strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da "
-"sua conta e de todos os dados associados aos nossos servidores."
+"<strong>Revogar o Consentimento:</strong> Solicitar a eliminação completa da"
+" sua conta e de todos os dados associados aos nossos servidores."
 msgstr ""
 "<strong>Revoke Consent:</strong> Request complete deletion of your account "
 "and all data associated with it on our servers."
@@ -743,10 +746,9 @@ msgstr "Your searches, results, and alerts are waiting for you."
 
 #: core/templates/registration/login.html:35
 #: core/templates/registration/register.html:35
-#, fuzzy, python-format
-#| msgid "100% gratuito · sem cartão de crédito"
+#, python-format
 msgid "100%% gratuito · sem cartão de crédito"
-msgstr "100% free · no credit card"
+msgstr "100%% free · no credit card"
 
 #: core/templates/registration/login.html:39
 msgid "Resultados entregues por e-mail"
@@ -1121,50 +1123,40 @@ msgid "Favorito"
 msgstr "Favorite"
 
 #: search/models.py:223
-#, fuzzy
-#| msgid "Nome do curso"
 msgid "Nome do alerta"
-msgstr "Course name"
+msgstr "Alert name"
 
 #: search/models.py:243
 msgid "Ativo"
-msgstr ""
+msgstr "Active"
 
 #: search/models.py:245
-#, fuzzy
-#| msgid "E-mail para notificação"
 msgid "Última verificação"
-msgstr "Notification email"
+msgstr "Last checked"
 
 #: search/models.py:251
-#, fuzzy
-#| msgid "Alertas"
 msgid "Alerta salvo"
-msgstr "Alerts"
+msgstr "Saved alert"
 
 #: search/models.py:252 search/templates/search/alerts_list.html:3
 #: search/templates/search/alerts_list.html:14
-#, fuzzy
-#| msgid "Alertas"
 msgid "Alertas salvos"
-msgstr "Alerts"
+msgstr "Saved alerts"
 
 #: search/templates/search/alerts_list.html:19
-#, fuzzy
-#| msgid "Salvar como alerta"
 msgid "Novo alerta"
-msgstr "Save as alert"
+msgstr "New alert"
 
 #: search/templates/search/alerts_list.html:29
 #, python-format
 msgid "%(counter)s ativo de %(max_alerts)s"
 msgid_plural "%(counter)s ativos de %(max_alerts)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s active of %(max_alerts)s"
+msgstr[1] "%(counter)s active of %(max_alerts)s"
 
 #: search/templates/search/alerts_list.html:31
 msgid "Te avisamos quando <em>aparecer</em>"
-msgstr ""
+msgstr "We'll tell you when it <em>appears</em>"
 
 #: search/templates/search/alerts_list.html:33
 msgid ""
@@ -1172,10 +1164,12 @@ msgid ""
 "periodicamente. Só notificamos quando algo realmente novo casar com seus "
 "critérios."
 msgstr ""
+"Save a search as an alert and Optio periodically checks official sources. We"
+" only notify you when something genuinely new matches your criteria."
 
 #: search/templates/search/alerts_list.html:53
 msgid "pausado"
-msgstr ""
+msgstr "paused"
 
 #: search/templates/search/alerts_list.html:58
 #: search/templates/search/search_request_form.html:88
@@ -1183,52 +1177,40 @@ msgid "Todas as áreas"
 msgstr "All fields"
 
 #: search/templates/search/alerts_list.html:60
-#, fuzzy
-#| msgid "Todas as áreas"
 msgid "Todas as modalidades"
-msgstr "All fields"
+msgstr "All modalities"
 
 #: search/templates/search/alerts_list.html:62
-#, fuzzy
-#| msgid "Todo o Brasil"
 msgid "Brasil"
-msgstr "All of Brazil"
+msgstr "Brazil"
 
 #: search/templates/search/alerts_list.html:68
-#, fuzzy
-#| msgid "Criar alerta"
 msgid "Pausar alerta"
-msgstr "Create alert"
+msgstr "Pause alert"
 
 #: search/templates/search/alerts_list.html:68
-#, fuzzy
-#| msgid "Criar alerta"
 msgid "Ativar alerta"
-msgstr "Create alert"
+msgstr "Activate alert"
 
 #: search/templates/search/alerts_list.html:78
-#, fuzzy
-#| msgid "Apagar todo o histórico de buscas? Esta ação não pode ser desfeita."
 msgid "Apagar este alerta? Esta ação não pode ser desfeita."
-msgstr "Delete all search history? This action cannot be undone."
+msgstr "Delete this alert? This action cannot be undone."
 
 #: search/templates/search/alerts_list.html:81
-#, fuzzy
-#| msgid "Criar alerta"
 msgid "Apagar alerta"
-msgstr "Create alert"
+msgstr "Delete alert"
 
 #: search/templates/search/alerts_list.html:94
-#, fuzzy
-#| msgid "Seus alertas"
 msgid "Nenhum alerta salvo"
-msgstr "Your alerts"
+msgstr "No saved alerts"
 
 #: search/templates/search/alerts_list.html:96
 msgid ""
 "Faça uma busca e marque “Salvar como alerta” para que o Optio te avise "
 "quando surgirem cursos novos aderentes aos seus critérios."
 msgstr ""
+"Run a search and check “Save as alert” so Optio notifies you when new "
+"courses matching your criteria appear."
 
 #: search/templates/search/alerts_list.html:100
 #: search/templates/search/favorites_list.html:125
@@ -1337,8 +1319,8 @@ msgid ""
 "Sua coleção pessoal de cursos de pós-graduação. Acesse quando quiser e "
 "remova os que não interessam mais."
 msgstr ""
-"Your personal collection of graduate courses. Access them anytime and remove "
-"the ones that no longer interest you."
+"Your personal collection of graduate courses. Access them anytime and remove"
+" the ones that no longer interest you."
 
 #: search/templates/search/favorites_list.html:49
 #: search/templates/search/search_results.html:61
@@ -1378,8 +1360,8 @@ msgid ""
 "Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou "
 "transforme em alerta salvo."
 msgstr ""
-"Everything you've searched. Reopen results, repeat an old search, or turn it "
-"into a saved alert."
+"Everything you've searched. Reopen results, repeat an old search, or turn it"
+" into a saved alert."
 
 # ============================================================
 # templates — search_list.html
@@ -1467,8 +1449,8 @@ msgid ""
 "Descreva em texto livre e refine com os filtros. A confirmação chega em até "
 "4 segundos. Os resultados, por e‑mail logo em seguida."
 msgstr ""
-"Describe in free text and refine with filters. Confirmation arrives within 4 "
-"seconds. Results follow by email shortly after."
+"Describe in free text and refine with filters. Confirmation arrives within 4"
+" seconds. Results follow by email shortly after."
 
 #: search/templates/search/search_request_form.html:44
 msgid "Palavras-chave *"
@@ -1543,10 +1525,8 @@ msgstr "No courses found"
 
 #: search/templates/search/search_results.html:100
 msgid ""
-"Não encontramos cursos de pós-graduação gratuitos para os critérios "
-"informados.<br>\n"
-"      Tente palavras-chave mais genéricas ou remova filtros de estado e "
-"modalidade."
+"Não encontramos cursos de pós-graduação gratuitos para os critérios informados.<br>\n"
+"      Tente palavras-chave mais genéricas ou remova filtros de estado e modalidade."
 msgstr ""
 "We could not find free graduate courses for the criteria provided.<br>\n"
 "      Try more generic keywords or remove state and modality filters."
@@ -1574,11 +1554,11 @@ msgstr ""
 #: search/views.py:61
 #, python-format
 msgid "Alerta \"%(name)s\" salvo. Avisaremos quando surgirem cursos novos."
-msgstr ""
+msgstr "Alert \"%(name)s\" saved. We'll let you know when new courses appear."
 
 #: search/views.py:67
 msgid "Você já tem um alerta ativo com esses critérios."
-msgstr ""
+msgstr "You already have an active alert with these criteria."
 
 #: search/views.py:73
 #, python-format
@@ -1586,6 +1566,8 @@ msgid ""
 "Limite de %(max)s alertas ativos atingido. A busca segue normalmente, mas o "
 "alerta não foi salvo."
 msgstr ""
+"Limit of %(max)s active alerts reached. The search continues normally, but "
+"the alert wasn't saved."
 
 #: search/views.py:91
 msgid ""
@@ -1603,7 +1585,8 @@ msgstr ""
 
 #: search/views.py:115
 msgid ""
-"Busca recebida com sucesso. Os resultados serão processados em segundo plano."
+"Busca recebida com sucesso. Os resultados serão processados em segundo "
+"plano."
 msgstr ""
 "Search received successfully. Results will be processed in the background."
 
@@ -1634,29 +1617,55 @@ msgid "\"%(name)s\" removido dos favoritos."
 msgstr "\"%(name)s\" removed from favorites."
 
 #: search/views.py:258 search/views.py:282
-#, fuzzy
-#| msgid "Busca não encontrada."
 msgid "Alerta não encontrado."
-msgstr "Search not found."
+msgstr "Alert not found."
 
 #: search/views.py:265
 #, python-format
 msgid "Você já tem %(max)s alertas ativos. Pause um antes de ativar outro."
 msgstr ""
+"You already have %(max)s active alerts. Pause one before activating another."
 
 #: search/views.py:269
 msgid "Alerta ativado."
-msgstr ""
+msgstr "Alert activated."
 
 #: search/views.py:271
-#, fuzzy
-#| msgid "Alertas"
 msgid "Alerta pausado."
-msgstr "Alerts"
+msgstr "Alert paused."
 
 #: search/views.py:280
 msgid "Alerta apagado."
-msgstr ""
+msgstr "Alert deleted."
+
+#: search/models.py:125
+msgid "agora mesmo"
+msgstr "just now"
+
+#: search/models.py:133
+msgid "ontem"
+msgstr "yesterday"
+
+#: search/models.py:128
+#, python-format
+msgid "há %(count)d min"
+msgid_plural "há %(count)d min"
+msgstr[0] "%(count)d min ago"
+msgstr[1] "%(count)d min ago"
+
+#: search/models.py:131
+#, python-format
+msgid "há %(count)dh"
+msgid_plural "há %(count)dh"
+msgstr[0] "%(count)dh ago"
+msgstr[1] "%(count)dh ago"
+
+#: search/models.py:135
+#, python-format
+msgid "há %(count)d dia"
+msgid_plural "há %(count)d dias"
+msgstr[0] "%(count)d day ago"
+msgstr[1] "%(count)d days ago"
 
 #~ msgid "Todos"
 #~ msgstr "All"
