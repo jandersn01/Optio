@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _, ngettext
 
 from .choices import SearchModality, SearchStatus, SearchStates_Br, SearchArea
 
@@ -122,17 +122,18 @@ class SearchRequest(models.Model):
         diff = timezone.now() - self.created_at
         s = diff.total_seconds()
         if s < 60:
-            return "agora mesmo"
+            return gettext("agora mesmo")
         if s < 3600:
             m = int(s // 60)
-            return f"há {m} min"
+            return ngettext("há %(count)d min", "há %(count)d min", m) % {"count": m}
         if s < 86400:
             h = int(s // 3600)
-            return f"há {h}h"
+            return ngettext("há %(count)dh", "há %(count)dh", h) % {"count": h}
         if s < 86400 * 2:
-            return "ontem"
+            return gettext("ontem")
         if s < 86400 * 7:
-            return f"há {int(s // 86400)} dias"
+            d = int(s // 86400)
+            return ngettext("há %(count)d dia", "há %(count)d dias", d) % {"count": d}
         return self.created_at.strftime("%d/%m/%Y")
 
     @property
