@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Sum
@@ -12,6 +12,7 @@ from search.models import SearchRequest, SavedAlert
 from search.choices import SearchArea, SearchModality, SearchStatus
 from .forms import CadastroForm, NotificationPreferenceForm, UserIdentityForm
 from .models import NotificationPreference, NotificationSent
+from . import services as metrics_services
 
 
 @login_required
@@ -98,3 +99,32 @@ def cadastro(request):
         messages.success(request, gettext('Conta criada com sucesso! Faça login para continuar.'))
         return redirect('login')
     return render(request, 'registration/register.html', {'form': form})
+
+def is_analyst_user(user):
+    return user.is_active and user.groups.filter(name='Analista').exists()
+
+@login_required
+@user_passes_test(is_analyst_user, login_url='core:dashboard')
+def metrics_dashboard(request):
+    # Captura o período da URL (default: 30)
+    try:
+        days = int(request.GET.get('period', 30))
+    except ValueError:
+        days = 30
+        
+    # Garante que só valores permitidos sejam lidos
+    if days not in [7, 30, 365]:
+        days = 30
+
+    context = {
+        'current_period': days, # Mandamos para o HTML para pintar o botão ativo
+        'kpis': metrics_services.get_kpi_metrics(days=days),
+        'status_distribution': metrics_services.get_search_status_distribuition(days=days),
+        'daily_volume': metrics_services.get_daily_search_volume(days=days),
+        'unmet_demand': metrics_services.get_unmet_demand_keywords(days=days, limit=5),
+        'top_areas': metrics_services.get_top_monitored_areas(limit=5),
+        'top_modalities': metrics_services.get_top_modalities(days=days, limit=5),
+        'top_states': metrics_services.get_top_states(days=days, limit=5),
+        'peak_hours': metrics_services.get_peak_hours(days=days),
+    }
+    return render(request, 'core/metrics_dashboard.html', context)

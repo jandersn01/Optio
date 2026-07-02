@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Métricas e Insights" %} – Optio{% endblock %}
+
+{% block content %}
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <span class="crumb-cur">{% trans "Métricas" %}</span>
+  </div>
+</div>
+
+<div class="page stagger">
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom: var(--d-3);">{% trans "Dashboard Administrativo" %}</div>
+      <h1 class="h-1">{% blocktrans %}Métricas e <em>Insights</em>{% endblocktrans %}</h1>
+      <p class="lede" style="margin-top: var(--d-3);">
+        {% trans "Análise preditiva, comportamento do usuário e estabilidade do sistema." %}
+      </p>
+    </div>
+    
+    {# Menu de Controle de Filtro Temporal #}
+    <nav class="segment">
+      <a href="?period=7" class="segment-btn {% if current_period == 7 %}active{% endif %}">
+        {% trans "Últimos 7 dias" %}
+      </a>
+      <a href="?period=30" class="segment-btn {% if current_period == 30 %}active{% endif %}">
+        {% trans "Últimos 30 dias" %}
+      </a>
+      <a href="?period=365" class="segment-btn {% if current_period == 365 %}active{% endif %}">
+        {% trans "Este Ano" %}
+      </a>
+    </nav>
+  </header>
+
+  {# Grid de KPIs Preditivos #}
+  <div class="stats-grid" style="margin-bottom: var(--d-7);">
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">
+        {% blocktrans %}Volume (Últimos {{ current_period }} dias){% endblocktrans %}
+      </div>
+      <div class="serif stat-value">{{ kpis.total_searches }}</div>
+      <div class="text-xs muted row" style="gap: 4px;">
+        {% if kpis.is_positive_growth %}
+          <span style="color: var(--ok);">+{{ kpis.growth_pct }}%</span> {% trans "vs período anterior" %}
+        {% else %}
+          <span style="color: var(--err);">{{ kpis.growth_pct }}%</span> {% trans "vs período anterior" %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Média de Buscas" %}</div>
+      <div class="serif stat-value">{{ kpis.daily_average }}</div>
+      <div class="text-xs muted">{% trans "Consultas diárias" %}</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Saúde do Crawler" %}</div>
+      <div class="serif stat-value accent">{{ kpis.success_rate }}%</div>
+      <div class="text-xs muted">{% trans "Taxa de eficácia no período" %}</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Base e Retenção" %}</div>
+      <div class="serif stat-value">{{ kpis.total_users }}</div>
+      <div class="text-xs muted">{{ kpis.active_alerts }} {% trans "alertas ativos" %}</div>
+    </div>
+  </div>
+
+  {# Gráficos Dinâmicos (Chart.js) #}
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--d-6); margin-bottom: var(--d-7);">
+    
+    <!-- Gráfico de Tendência (Linhas) -->
+    <section class="card" style="padding: var(--d-5);">
+      <h2 class="h-3" style="margin-bottom: var(--d-4);">
+        {% blocktrans %}Tendência de Volume (Últimos {{ current_period }} dias){% endblocktrans %}
+      </h2>
+      <div style="position: relative; height: 300px; width: 100%;">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Gráfico de Distribuição de Status (Doughnut) -->
+    <section class="card" style="padding: var(--d-5);">
+      <h2 class="h-3" style="margin-bottom: var(--d-4);">{% trans "Saúde das Consultas" %}</h2>
+      <div style="position: relative; height: 300px; width: 100%;">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  {# Oportunidades e Horários #}
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--d-6); margin-bottom: var(--d-7);">
+    
+    <!-- Horários de Pico (Barras) -->
+    <section class="card" style="padding: var(--d-5);">
+      <h2 class="h-3" style="margin-bottom: var(--d-4);">{% trans "Distribuição de Horários (Picos)" %}</h2>
+      <div style="position: relative; height: 250px; width: 100%;">
+        <canvas id="peakHoursChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Lacunas de Produto -->
+    <section class="history-list" style="border: 1px solid var(--line-soft);">
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-5); background: var(--paper-2); border-bottom: 1px solid var(--line-soft); cursor: default;">
+        <span class="label-eyebrow" style="color: var(--warn);">{% trans "Lacunas no Catálogo (Sem Resultados)" %}</span>
+        <span class="label-eyebrow" style="text-align: right;">{% trans "Falhas" %}</span>
+      </div>
+      {% for item in unmet_demand %}
+      <div class="history-row" style="grid-template-columns: 1fr auto; cursor: default;">
+        <span class="serif" style="font-size: 19px; color: var(--ink-2);">"{{ item.keywords }}"</span>
+        <span class="badge warn">{{ item.total }}</span>
+      </div>
+      {% empty %}
+      <div class="empty" style="padding: var(--d-5);"><p class="text-sm muted">{% trans "Nenhuma lacuna." %}</p></div>
+      {% endfor %}
+    </section>
+  </div>
+
+  {# Demografia Bottom #}
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--d-5); margin-bottom: var(--d-7);">
+    
+    <!-- Áreas -->
+    <div class="history-list">
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); background: var(--paper-2); border-bottom: 1px solid var(--line-soft); cursor: default;">
+        <span class="label-eyebrow">{% trans "Top Áreas Monitoradas" %}</span>
+      </div>
+      {% for area in top_areas %}
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); cursor: default;">
+        <span class="sans text-sm">{{ area.label }}</span>
+        <span class="badge">{{ area.total }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Estados -->
+    <div class="history-list">
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); background: var(--paper-2); border-bottom: 1px solid var(--line-soft); cursor: default;">
+        <span class="label-eyebrow">{% trans "Top Localidades" %}</span>
+      </div>
+      {% for state in top_states %}
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); cursor: default;">
+        <span class="sans text-sm">{{ state.label }}</span>
+        <span class="badge">{{ state.total }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Modalidades -->
+    <div class="history-list">
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); background: var(--paper-2); border-bottom: 1px solid var(--line-soft); cursor: default;">
+        <span class="label-eyebrow">{% trans "Top Modalidades" %}</span>
+      </div>
+      {% for mod in top_modalities %}
+      <div class="history-row" style="grid-template-columns: 1fr auto; padding: var(--d-3) var(--d-4); cursor: default;">
+        <span class="sans text-sm">{{ mod.label }}</span>
+        <span class="badge">{{ mod.total }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Passagem de dados Segura do Django para o Javascript -->
+{{ daily_volume|json_script:"daily-volume-data" }}
+{{ status_distribution|json_script:"status-distribution-data" }}
+{{ peak_hours|json_script:"peak-hours-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Importando Chart.js via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Lendo as cores nativas do Design System Optio para harmonizar os gráficos
+    const style = getComputedStyle(document.body);
+    const primaryColor = style.getPropertyValue('--primary').trim();
+    const primarySoft = style.getPropertyValue('--primary-line').trim();
+    const inkColor = style.getPropertyValue('--ink').trim();
+    const warnColor = style.getPropertyValue('--warn').trim();
+    const okColor = style.getPropertyValue('--ok').trim();
+    const errColor = style.getPropertyValue('--err').trim();
+    const paper2 = style.getPropertyValue('--paper-2').trim();
+
+    // 2. Extraindo os dados do Django JSON
+    const dailyVolume = JSON.parse(document.getElementById('daily-volume-data').textContent);
+    const statusData = JSON.parse(document.getElementById('status-distribution-data').textContent);
+    const peakHours = JSON.parse(document.getElementById('peak-hours-data').textContent);
+
+    Chart.defaults.font.family = "'Geist', sans-serif";
+    Chart.defaults.color = inkColor;
+
+    // Gráfico 1: Tendência (Linha)
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: dailyVolume.map(d => d.date),
+            datasets: [{
+                label: 'Volume de Buscas',
+                data: dailyVolume.map(d => d.total),
+                borderColor: primaryColor,
+                backgroundColor: primarySoft,
+                borderWidth: 2,
+                tension: 0.4, // Suaviza a curva
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: paper2 }, beginAtZero: true }
+            }
+        }
+    });
+
+    // Gráfico 2: Saúde das Consultas (Rosca)
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: statusData.map(d => d.label),
+            datasets: [{
+                data: statusData.map(d => d.total),
+                backgroundColor: [okColor, warnColor, errColor, primaryColor, inkColor],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+            }
+        }
+    });
+
+    // Gráfico 3: Horários de Pico (Barras)
+    new Chart(document.getElementById('peakHoursChart'), {
+        type: 'bar',
+        data: {
+            labels: peakHours.map(d => d.hour),
+            datasets: [{
+                label: 'Buscas',
+                data: peakHours.map(d => d.total),
+                backgroundColor: primarySoft,
+                hoverBackgroundColor: primaryColor,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { display: false, beginAtZero: true } // Oculta o eixo Y para ficar clean
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
