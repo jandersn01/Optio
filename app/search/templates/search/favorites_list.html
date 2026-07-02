@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Favoritos" %} — Optio{% endblock %}
+
+{% block content %}
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <span class="crumb-cur">{% trans "Favoritos" %}</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'search:request_create' %}" class="btn btn-secondary btn-sm">
+      {% include "_icon.html" with name="plus" size=14 %}
+      {% trans "Nova busca" %}
+    </a>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
+        {% blocktrans count counter=page_obj.paginator.count %}{{ counter }} programa salvo{% plural %}{{ counter }} programas salvos{% endblocktrans %}
+      </div>
+      <h1 class="h-1">{% blocktrans %}Cursos que <em>importam</em> para você{% endblocktrans %}</h1>
+      <p class="lede" style="margin-top:var(--d-3);">
+        {% trans "Sua coleção pessoal de cursos de pós-graduação. Acesse quando quiser e remova os que não interessam mais." %}
+      </p>
+    </div>
+  </header>
+
+  {% if page_obj.object_list %}
+  <div class="course-grid stagger">
+    {% for favorite in page_obj %}
+    <article class="card" style="padding:var(--d-5);display:flex;flex-direction:column;gap:var(--d-3);">
+
+      <div class="spread">
+        <span class="label-eyebrow">{{ favorite.course.institution }}</span>
+        <form action="{% url 'search:favorite_remove' favorite.course.pk %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'search:favorites_list' %}">
+          <button type="submit"
+                  title="{% trans 'Remover dos favoritos' %}"
+                  style="width:28px;height:28px;border-radius:var(--r-1);color:var(--primary);background:var(--primary-soft);display:grid;place-items:center;cursor:pointer;transition:background var(--t-fast) var(--ease);"
+                  onmouseover="this.style.background='var(--primary-line)'"
+                  onmouseout="this.style.background='var(--primary-soft)'">
+            {% include "_icon.html" with name="bookmark" size=14 fill="currentColor" %}
+          </button>
+        </form>
+      </div>
+
+      <h3 class="serif" style="font-size:21px;line-height:1.2;letter-spacing:-0.01em;">
+        {{ favorite.course.name }}
+      </h3>
+
+      <div class="meta-row">
+        {% if favorite.course.modality %}
+        <span>{{ favorite.course.get_modality_display }}</span>
+        {% endif %}
+        {% if favorite.course.state %}
+        <span class="sep">·</span>
+        <span>{{ favorite.course.get_state_display }}</span>
+        {% endif %}
+        <span class="sep">·</span>
+        <span>{% blocktrans with when=favorite.created_at|timesince %}Salvo {{ when }} atrás{% endblocktrans %}</span>
+      </div>
+
+      {% if favorite.course.link %}
+      <div style="margin-top:auto;padding-top:var(--d-3);border-top:1px solid var(--line-soft);">
+        <a href="{{ favorite.course.link }}" target="_blank" rel="noopener"
+           class="btn btn-primary btn-sm">
+          {% trans "Acessar curso" %}
+          {% include "_icon.html" with name="external" size=12 %}
+        </a>
+      </div>
+      {% endif %}
+
+    </article>
+    {% endfor %}
+  </div>
+
+  {# Paginação #}
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">← Anterior</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <span class="btn btn-sm current">{{ num }}</span>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+      <a href="?page={{ num }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+         class="btn btn-secondary btn-sm">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">Próxima →</a>
+    {% endif %}
+  </nav>
+  <p class="pagination-info">
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    · {{ page_obj.paginator.count }} programa{{ page_obj.paginator.count|pluralize:"s" }} no total
+  </p>
+  {% endif %}
+
+  {% else %}
+  <div class="empty">
+    <div class="em-mark">♡</div>
+    <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nada salvo ainda" %}</h3>
+    <p class="text-sm" style="max-width:380px;margin:0 auto var(--d-4);">
+      {% trans "Quando encontrar um curso interessante nos resultados de busca, clique no marcador de favoritos e ele aparece aqui." %}
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">
+      {% include "_icon.html" with name="search" size=14 %}
+      {% trans "Começar uma busca" %}
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

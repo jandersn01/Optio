@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Painel" %} — Optio{% endblock %}
+
+{% block content %}
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <span class="crumb-cur">{% trans "Painel" %}</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'search:alerts_list' %}" class="btn btn-secondary btn-sm">
+      {% include "_icon.html" with name="bell" size=14 %}
+      {% trans "Alertas" %}
+    </a>
+  </div>
+</div>
+
+<div class="page stagger">
+
+  {# ── Hero: saudação + CTA nova busca ── #}
+  <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:var(--d-6); margin-bottom:var(--d-7); align-items:end;">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom:var(--d-3);">
+        {% now "H" as hour %}
+        {% if hour < "12" %}{% trans "Bom dia" %}{% elif hour < "18" %}{% trans "Boa tarde" %}{% else %}{% trans "Boa noite" %}{% endif %}
+        · {% now "d \d\e N \d\e Y" %}
+      </div>
+      <h1 class="h-display" style="font-size:clamp(40px,4.4vw,60px);">
+        {% blocktrans with name=user.first_name|default:user.email %}Oi, {{ name }}. <em>O que</em> você quer descobrir hoje?{% endblocktrans %}
+      </h1>
+    </div>
+
+    <a href="{% url 'search:request_create' %}"
+       style="background:var(--paper);border:1px solid var(--line);border-radius:var(--r-3);padding:var(--d-4) var(--d-5);display:flex;align-items:center;gap:var(--d-4);box-shadow:var(--sh-1);transition:border-color var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease);text-align:left;"
+       onmouseover="this.style.borderColor='var(--primary)';this.style.boxShadow='var(--sh-2)'"
+       onmouseout="this.style.borderColor='var(--line)';this.style.boxShadow='var(--sh-1)'">
+      <span style="width:44px;height:44px;flex-shrink:0;border-radius:var(--r-2);background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;">
+        {% include "_icon.html" with name="plus" size=20 %}
+      </span>
+      <span style="flex:1;">
+        <span class="serif" style="display:block;font-size:22px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:2px;">
+          {% blocktrans %}Começar uma <em style="color:var(--primary);">nova busca</em>{% endblocktrans %}
+        </span>
+        <span class="text-xs muted" style="display:block;">{% trans "Filtre por área, modalidade e estado" %}</span>
+      </span>
+      {% include "_icon.html" with name="arrow" size=16 style="color:var(--ink-mute);flex-shrink:0;" %}
+    </a>
+  </div>
+
+  {# ── Stats ── #}
+  <div class="stats-grid" style="margin-bottom:var(--d-7);">
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Buscas concluídas" %}</div>
+      <div class="serif stat-value">{{ stats.completed }}</div>
+      <div class="text-xs muted">{% trans "Últimos 30 dias" %}</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Resultados encontrados" %}</div>
+      <div class="serif stat-value">{{ stats.total_results }}</div>
+      <div class="text-xs muted">{% trans "Cursos no histórico" %}</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Em andamento" %}</div>
+      <div class="serif stat-value {% if stats.processing %}accent{% endif %}">{{ stats.processing }}</div>
+      <div class="text-xs muted">{% trans "Processando agora" %}</div>
+    </div>
+    <div class="card stat-card">
+      <div class="label-eyebrow stat-eyebrow">{% trans "Total de buscas" %}</div>
+      <div class="serif stat-value">{{ stats.total }}</div>
+      <div class="text-xs muted">{% trans "Histórico completo" %}</div>
+    </div>
+  </div>
+
+  {# ── Duas colunas: buscas recentes + aside ── #}
+  <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:var(--d-6);">
+
+    {# Coluna esquerda — buscas recentes #}
+    <section>
+      <div class="spread" style="margin-bottom:var(--d-4);">
+        <h2 class="h-2">{% trans "Suas buscas recentes" %}</h2>
+        <a href="{% url 'search:request_list' %}" class="btn btn-ghost btn-sm">
+          {% trans "Ver histórico completo" %}
+          {% include "_icon.html" with name="arrow" size=14 %}
+        </a>
+      </div>
+
+      {% if recent_searches %}
+      <div class="col stagger" style="gap:var(--d-3);">
+        {% for search in recent_searches %}
+        <a href="{% url 'search:search_results' search.pk %}"
+           class="card interactive" style="padding:var(--d-4) var(--d-5);display:block;">
+          <div class="spread" style="margin-bottom:var(--d-3);">
+            <div class="row" style="gap:var(--d-3);">
+              <span class="badge dot status-{{ search.status }}">{{ search.get_status_display }}</span>
+              <span class="text-xs muted">{{ search.relative_time }}</span>
+            </div>
+            <div class="row" style="gap:var(--d-3);">
+              {% if search.status == 'completed' %}
+              <span class="text-xs muted">{% blocktrans count counter=search.results_count %}{{ counter }} resultado{% plural %}{{ counter }} resultados{% endblocktrans %}</span>
+              {% elif search.status == 'processing' or search.status == 'pending' %}
+              <span class="pulse-dot text-xs" style="color:var(--info);"></span>
+              {% endif %}
+              {% include "_icon.html" with name="arrow" size=14 style="color:var(--ink-mute);" %}
+            </div>
+          </div>
+
+          <h3 class="serif" style="font-size:22px;line-height:1.2;letter-spacing:-0.01em;margin-bottom:var(--d-3);">
+            "{{ search.keywords }}"
+          </h3>
+
+          <div class="meta-row">
+            {% if search.area %}<span>{{ search.get_area_display }}</span>{% endif %}
+            {% if search.area and search.modality %}<span class="sep">·</span>{% endif %}
+            {% if search.modality %}<span>{{ search.get_modality_display }}</span>{% endif %}
+            {% if search.state %}<span class="sep">·</span><span>{{ search.get_state_display }}</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div class="empty">
+        <div class="em-mark">∅</div>
+        <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhuma busca ainda" %}</h3>
+        <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Comece criando sua primeira pesquisa de cursos." %}</p>
+        <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
+      </div>
+      {% endif %}
+    </section>
+
+    {# Coluna direita — aside #}
+    <aside style="display:flex; flex-direction:column; gap:var(--d-5);">
+
+      {# Card: Seus alertas #}
+      <section class="card" style="padding:var(--d-5);">
+        <div class="spread" style="margin-bottom:var(--d-4);">
+          <h3 class="h-3">{% trans "Seus alertas" %}</h3>
+          <a href="{% url 'search:alerts_list' %}" class="btn-link text-xs">{% trans "Gerenciar" %}</a>
+        </div>
+
+        {% if alerts %}
+        <div class="col" style="gap:var(--d-3);">
+          {% for alert in alerts %}
+          <a href="{% url 'search:alerts_list' %}" class="row" style="gap:var(--d-3);padding:var(--d-3) 0;border-top:1px solid var(--line-soft);text-align:left;">
+            <span style="width:32px;height:32px;flex-shrink:0;border-radius:var(--r-2);background:var(--paper-2);color:var(--ink-mute);display:grid;place-items:center;">
+              {% include "_icon.html" with name="bell" size=14 %}
+            </span>
+            <span class="grow" style="min-width:0;">
+              <span class="text-sm" style="display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ alert.name }}</span>
+              <span class="text-xs muted">{% trans "Semanal" %}</span>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="padding:var(--d-4) 0; text-align:center; border-top:1px solid var(--line-soft);">
+          <div style="font-family:var(--serif);font-style:italic;font-size:40px;color:var(--ink-mute);line-height:1;margin-bottom:var(--d-3);">∅</div>
+          <p class="text-xs muted" style="margin:0 0 var(--d-3);">
+            {% trans "Nenhum alerta ativo ainda." %}
+          </p>
+          <a href="{% url 'search:request_create' %}" class="btn btn-secondary btn-sm">
+            {% include "_icon.html" with name="plus" size=12 %}
+            {% trans "Criar alerta" %}
+          </a>
+        </div>
+        {% endif %}
+      </section>
+
+      {# Card: Dica do Optio #}
+      <section style="padding:var(--d-5);border:1px dashed var(--line);border-radius:var(--r-3);">
+        <div class="row" style="gap:8px;margin-bottom:var(--d-3);">
+          {# Ícone sparkle #}
+          {% include "_icon.html" with name="sparkles" size=14 style="color:var(--primary);flex-shrink:0;" %}
+          <span class="label-eyebrow" style="color:var(--primary);">{% trans "Dica do Optio" %}</span>
+        </div>
+        <p class="text-sm" style="margin:0;line-height:1.55;color:var(--ink-2);">
+          {% blocktrans %}Salve buscas que você refaria toda semana como <strong>alertas</strong>. A gente verifica fontes oficiais e te avisa só quando algo novo aparecer.{% endblocktrans %}
+        </p>
+      </section>
+
+    </aside>
+  </div>
+
+  {# ── Novos programas para você (vindos do scraping das preferências) ── #}
+  {% if new_programs %}
+  <section style="margin-top:var(--d-7);">
+    <div class="label-eyebrow" style="margin-bottom:var(--d-3);">{% trans "Adicionados esta semana" %}</div>
+    <h2 class="h-2" style="margin-bottom:var(--d-4);">{% trans "Novos programas para você" %}</h2>
+    <div class="course-grid stagger">
+      {% for program in new_programs %}
+      <article class="card" style="padding:var(--d-5);display:flex;flex-direction:column;gap:var(--d-3);">
+        <span class="label-eyebrow">{{ program.course_institution }}</span>
+        <h3 class="serif" style="font-size:20px;line-height:1.2;letter-spacing:-0.01em;">
+          {{ program.course_name }}
+        </h3>
+        <div class="meta-row" style="margin-top:auto;">
+          <span>{% blocktrans with when=program.sent_at|timesince %}Adicionado {{ when }} atrás{% endblocktrans %}</span>
+        </div>
+        {% if program.course_link %}
+        <div style="padding-top:var(--d-3);border-top:1px solid var(--line-soft);">
+          <a href="{{ program.course_link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            {% trans "Acessar curso" %}
+            {% include "_icon.html" with name="external" size=12 %}
+          </a>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

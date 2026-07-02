@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% blocktrans with keywords=search_request.keywords %}Resultados — {{ keywords }}{% endblocktrans %} — Optio{% endblock %}
+
+{% block content %}
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <a href="{% url 'search:request_list' %}">{% trans "Minhas buscas" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <span class="crumb-cur">{% trans "Resultados" %}</span>
+  </div>
+  <div class="topbar-actions">
+    <span class="badge dot status-{{ search_request.status }}">{{ search_request.get_status_display }}</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom: var(--d-3);">
+        {% if courses %}{% blocktrans count counter=courses|length %}{{ counter }} resultado encontrado{% plural %}{{ counter }} resultados encontrados{% endblocktrans %}{% endif %}
+      </div>
+      <h1 class="h-1">"<em>{{ search_request.keywords }}</em>"</h1>
+      <div class="meta-row" style="margin-top: var(--d-3);">
+        {% if search_request.area %}<span>{{ search_request.get_area_display }}</span>{% endif %}
+        {% if search_request.area and search_request.modality %}<span class="sep">·</span>{% endif %}
+        {% if search_request.modality %}<span>{{ search_request.get_modality_display }}</span>{% endif %}
+        {% if search_request.state %}<span class="sep">·</span><span>{{ search_request.get_state_display }}</span>{% endif %}
+      </div>
+    </div>
+    <a href="{% url 'search:request_list' %}" class="btn btn-secondary btn-sm">
+      {% include "_icon.html" with name="arrow-left" size=14 %}
+      {% trans "Voltar" %}
+    </a>
+  </header>
+
+  {% if courses %}
+  <div class="course-grid stagger">
+    {% for course in courses %}
+    <article class="card interactive">
+      <div class="course-card-body">
+        <div class="spread" style="margin-bottom: var(--d-3);">
+          <span class="label-eyebrow">{{ course.institution }}</span>
+          <div class="row" style="gap:var(--d-2);">
+            {% if course.modality %}
+            <span class="badge">{{ course.get_modality_display }}</span>
+            {% endif %}
+            {% if course.pk in favorite_map %}
+            <form action="{% url 'search:favorite_remove' course.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
+              <button type="submit" title="{% trans 'Remover dos favoritos' %}"
+                      style="width:28px;height:28px;border-radius:var(--r-1);color:var(--primary);background:var(--primary-soft);display:grid;place-items:center;cursor:pointer;border:none;">
+                {% include "_icon.html" with name="bookmark" size=14 fill="currentColor" %}
+              </button>
+            </form>
+            {% else %}
+            <form action="{% url 'search:favorite_add' course.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'search:search_results' search_request.pk %}">
+              <button type="submit" title="{% trans 'Salvar nos favoritos' %}"
+                      style="width:28px;height:28px;border-radius:var(--r-1);color:var(--ink-mute);background:var(--paper-2);border:1px solid var(--line-soft);display:grid;place-items:center;cursor:pointer;">
+                {% include "_icon.html" with name="bookmark" size=14 %}
+              </button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        <h3 class="course-name">{{ course.name }}</h3>
+        <div class="meta-row">
+          {% if course.state %}<span>{{ course.get_state_display }}</span>{% endif %}
+        </div>
+        {% if course.link %}
+        <div style="margin-top: var(--d-4); padding-top: var(--d-3); border-top: 1px solid var(--line-soft);">
+          <a href="{{ course.link }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            {% trans "Acessar curso" %}
+            {% include "_icon.html" with name="external" size=12 %}
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  {% elif search_request.status == 'no_results' %}
+  <div class="empty">
+    <div class="em-mark">∅</div>
+    <h3 class="h-3" style="margin-bottom: 8px;">{% trans "Nenhum curso encontrado" %}</h3>
+    <p class="text-sm" style="margin-bottom: var(--d-4);">
+      {% blocktrans %}Não encontramos cursos de pós-graduação gratuitos para os critérios informados.<br>
+      Tente palavras-chave mais genéricas ou remova filtros de estado e modalidade.{% endblocktrans %}
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
+  </div>
+
+  {% elif search_request.status == 'failed' %}
+  <div class="empty">
+    <div class="em-mark">✗</div>
+    <h3 class="h-3" style="margin-bottom: 8px;">{% trans "Erro ao processar busca" %}</h3>
+    <p class="text-sm" style="margin-bottom: var(--d-4);">
+      {% trans "Ocorreu um erro durante o processamento. Por favor, tente novamente." %}
+    </p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
+  </div>
+
+  {% else %}
+  <div class="empty">
+    <div style="margin-bottom: var(--d-3);">
+      <span class="pulse-dot text-xs" style="color: var(--info); gap: 10px; font-size: 14px;">
+        <span style="margin-left: 8px;">{% trans "Processando sua busca…" %}</span>
+      </span>
+    </div>
+    <p class="text-sm muted" style="margin-bottom: var(--d-4);">
+      {% blocktrans %}Os resultados aparecerão aqui assim que o processamento for concluído.<br>
+      Você também receberá um e-mail quando estiverem prontos.{% endblocktrans %}
+    </p>
+    <meta http-equiv="refresh" content="5">
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

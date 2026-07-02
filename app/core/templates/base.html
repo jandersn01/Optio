@@ -1,0 +1,126 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Optio{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="app {% if not user.is_authenticated %}guest{% endif %}">
+
+  {% if user.is_authenticated %}
+  <aside class="sidebar">
+    <div class="brand-row">
+      <a href="{% url 'core:dashboard' %}" class="brand">
+        <span class="brand-mark">Opti<em>o</em></span>
+        <span class="brand-tag">Beta</span>
+      </a>
+      {% include "_lang_switcher.html" %}
+    </div>
+
+    <nav class="nav">
+      <span class="nav-group-label">{% trans "Trabalho" %}</span>
+
+      <a href="{% url 'core:dashboard' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        {% include "_icon.html" with name="home" %}
+        {% trans "Painel" %}
+      </a>
+
+      <a href="{% url 'search:request_list' %}"
+         class="nav-item {% if request.resolver_match.url_name in 'request_list search_delete search_repeat' %}active{% endif %}">
+        {% include "_icon.html" with name="list" %}
+        {% trans "Minhas buscas" %}
+        {% if total_searches %}
+        <span class="nav-count">{{ total_searches }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'search:favorites_list' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'favorites_list' %}active{% endif %}">
+        {% include "_icon.html" with name="bookmark" %}
+        {% trans "Favoritos" %}
+        {% if total_favorites %}
+        <span class="nav-count">{{ total_favorites }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{% url 'search:alerts_list' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'alerts_list' %}active{% endif %}">
+        {% include "_icon.html" with name="bell" %}
+        {% trans "Alertas" %}
+      </a>
+
+      {% if is_analyst %}
+      <span class="nav-group-label" style="margin-top: 1.5rem;">{% trans "Administração" %}</span>
+      
+      <a href="{% url 'core:metrics_dashboard' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'metrics_dashboard' %}active{% endif %}">
+        {% include "_icon.html" with name="activity" %} 
+        {% trans "Métricas" %}
+      </a>
+      {% endif %}
+
+
+      <span class="nav-group-label" style="margin-top: auto;">{% trans "Conta" %}</span>
+
+      <a href="{% url 'core:preferences' %}"
+         class="nav-item {% if request.resolver_match.url_name == 'preferences' %}active{% endif %}">
+        {% include "_icon.html" with name="settings" %}
+        {% trans "Preferências" %}
+      </a>
+
+      <form method="post" action="{% url 'core:logout' %}" style="display: contents;">
+        {% csrf_token %}
+        <button type="submit" class="nav-item">
+          {% include "_icon.html" with name="logout" %}
+          {% trans "Sair" %}
+        </button>
+      </form>
+    </nav>
+
+    <div class="sidebar-user">
+      <span class="avatar">{{ user.first_name.0|upper|default:user.email.0|upper }}</span>
+      <div class="sidebar-user-info">
+        <strong>{{ user.get_full_name|default:user.email }}</strong>
+        <span>{{ user.email }}</span>
+      </div>
+    </div>
+  </aside>
+  {% endif %}
+
+  <main class="main">
+    {% if messages %}
+    <div class="toast-stack" id="toasts">
+      {% for message in messages %}
+      <div class="toast {% if 'success' in message.tags %}toast-ok{% elif 'error' in message.tags %}toast-err{% elif 'warning' in message.tags %}toast-warn{% endif %}">
+        <span class="dot"></span>
+        <span>{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(function(){
+        var t=document.getElementById('toasts');
+        if(t){t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(function(){t.remove()},400);}
+      },3500);
+    </script>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

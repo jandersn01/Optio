@@ -1,0 +1,51 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Resultados da sua busca" %}</title>
+</head>
+<body>
+    <h1>{% trans "Resultados da sua busca no Optio" %}</h1>
+
+    <p>{% trans "Olá!" %}</p>
+
+    <p>
+        {% trans "Encontramos alguns resultados relacionados à sua solicitação de busca." %}
+    </p>
+
+    <h2>{% trans "Cursos encontrados" %}</h2>
+
+    {% if courses %}
+        <ul>
+            {% for course in courses %}
+                <li>
+                    <strong>{{ course.name }}</strong><br>
+                    {% trans "Instituição" %}: {{ course.institution }}<br>
+                    {% trans "Modalidade" %}: {{ course.modality }}<br>
+                    {% trans "Estado" %}: {{ course.state }}<br>
+
+                    {% if course.link %}
+                        <a href="{{ course.link }}">{% trans "Ver curso" %}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{% trans "Nenhum curso foi encontrado para os critérios informados." %}</p>
+    {% endif %}
+
+    <p>
+        <a href="{{ results_url }}">
+            {% trans "Ver resultados no Optio" %}
+        </a>
+    </p>
+
+    <hr>
+
+    <p>
+        {% trans "Este e-mail foi enviado automaticamente pelo Optio." %}
+    </p>
+</body>
+</html>

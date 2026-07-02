@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Minhas buscas" %} — Optio{% endblock %}
+
+{% block content %}
+
+{# Topbar #}
+<div class="topbar">
+  <div class="crumbs">
+    <a href="{% url 'core:dashboard' %}">{% trans "Painel" %}</a>
+    <span class="crumb-sep">
+      {% include "_icon.html" with name="chevron-right" size=12 %}
+    </span>
+    <span class="crumb-cur">{% trans "Minhas buscas" %}</span>
+  </div>
+  <div class="topbar-actions">
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary btn-sm">
+      {% include "_icon.html" with name="plus" size=14 %}
+      {% trans "Nova busca" %}
+    </a>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="page-header-editorial">
+    <div>
+      <div class="label-eyebrow" style="margin-bottom: var(--d-3);">
+        {% blocktrans count counter=counts.all %}{{ counter }} busca registrada{% plural %}{{ counter }} buscas registradas{% endblocktrans %}
+      </div>
+      <h1 class="h-1">{% blocktrans %}Histórico de <em>buscas</em>{% endblocktrans %}</h1>
+      <p class="lede" style="margin-top: var(--d-3);">
+        {% trans "Tudo que você já pesquisou. Reabra resultados, refaça uma busca antiga ou transforme em alerta salvo." %}
+      </p>
+    </div>
+  </header>
+
+  {# Barra de filtros #}
+  <div style="display:flex; gap:var(--d-3); margin-bottom:var(--d-5); align-items:center; flex-wrap:wrap;">
+
+    {# Input de texto — submete com Enter #}
+    <form method="get" action="{% url 'search:request_list' %}"
+          style="position:relative; flex:1; min-width:240px; display:flex; gap:var(--d-2);">
+      {% if filters.status %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
+      <div style="position:relative; flex:1;">
+        {% include "_icon.html" with name="search" size=16 style="position:absolute;left:12px;top:14px;color:var(--ink-mute);" %}
+        <input class="input" style="padding-left:38px;" name="q"
+               value="{{ filters.q|default:'' }}"
+               placeholder="{% trans 'Filtrar por palavras-chave…' %}">
+      </div>
+    </form>
+
+    {# Segmented control de status #}
+    <nav class="segment">
+      <a href="?{% if filters.q %}q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if not filters.status %}active{% endif %}">
+        {% trans "Todas" %} · {{ counts.all }}
+      </a>
+      <a href="?status=completed{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'completed' %}active{% endif %}">
+        {% trans "Concluídas" %} · {{ counts.completed }}
+      </a>
+      <a href="?status=processing{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'processing' %}active{% endif %}">
+        {% trans "Em andamento" %} · {{ counts.processing }}
+      </a>
+      <a href="?status=no_results{% if filters.q %}&q={{ filters.q }}{% endif %}"
+         class="segment-btn {% if filters.status == 'no_results' %}active{% endif %}">
+        {% trans "Sem resultados" %} · {{ counts.no_results }}
+      </a>
+    </nav>
+
+  </div>
+
+  {# Lista #}
+  {% if page_obj.object_list %}
+  <div class="history-list stagger">
+    {% for search in page_obj %}
+    {# Row inteira clicável via onclick; botões de ação param propagação #}
+    <div style="
+          display:grid;
+          grid-template-columns:160px 1fr auto;
+          gap:var(--d-5);
+          align-items:center;
+          padding:var(--d-4) var(--d-5);
+          border-bottom:1px solid var(--line-soft);
+          cursor:pointer;
+          transition:background var(--t-fast) var(--ease);
+         "
+         onclick="window.location='{% url 'search:search_results' search.pk %}'"
+         onmouseover="this.style.background='var(--paper-2)'"
+         onmouseout="this.style.background='transparent'">
+
+      {# Col 1 — status + data #}
+      <div>
+        <span class="badge dot status-{{ search.status }}">{{ search.get_status_display }}</span>
+        <div class="text-xs muted" style="margin-top:6px;">{{ search.created_at|date:"d/m/Y H:i" }}</div>
+      </div>
+
+      {# Col 2 — keywords em serif com aspas + meta #}
+      <div style="min-width:0;">
+        <h3 class="serif" style="font-size:19px;line-height:1.25;letter-spacing:-0.005em;margin-bottom:4px;">
+          "{{ search.keywords }}"
+        </h3>
+        <div class="meta-row">
+          {% if search.area %}<span>{{ search.get_area_display }}</span>{% endif %}
+          {% if search.area and search.modality %}<span class="sep">·</span>{% endif %}
+          {% if search.modality %}<span>{{ search.get_modality_display }}</span>{% endif %}
+          {% if search.state %}<span class="sep">·</span><span>{{ search.get_state_display }}</span>{% endif %}
+        </div>
+      </div>
+
+      {# Col 3 — contagem / estado + ações + chevron #}
+      <div class="row" style="gap:var(--d-4); align-items:center;">
+
+        {% if search.status == 'completed' %}
+        <div style="text-align:right;">
+          <div class="serif" style="font-size:26px;line-height:1;letter-spacing:-0.02em;">{{ search.results_count }}</div>
+          <div class="text-xs muted" style="margin-top:2px;">{% blocktrans count counter=search.results_count %}resultado{% plural %}resultados{% endblocktrans %}</div>
+        </div>
+        {% elif search.status == 'processing' or search.status == 'pending' %}
+        <span class="pulse-dot text-xs" style="color:var(--info);">
+          <span style="margin-left:6px;">{% trans "processando" %}</span>
+        </span>
+        {% endif %}
+
+        {# Ações — stopPropagation para não acionar o onclick da row #}
+        <div class="row" style="gap:var(--d-1);" onclick="event.stopPropagation()">
+          <form action="{% url 'search:search_repeat' search.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Repetir busca' %}">
+              {% include "_icon.html" with name="refresh" size=14 %}
+            </button>
+          </form>
+
+          {% trans "Remover esta busca do histórico?" as confirm_remove_search %}
+          <form action="{% url 'search:search_delete' search.pk %}" method="post"
+                onsubmit="return confirm('{{ confirm_remove_search|escapejs }}')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm" title="{% trans 'Excluir' %}" style="color:var(--err);">
+              {% include "_icon.html" with name="trash" size=14 %}
+            </button>
+          </form>
+        </div>
+
+        {# Chevron indicando navegação #}
+        {% include "_icon.html" with name="chevron-right" size=16 style="color:var(--ink-mute);flex-shrink:0;" %}
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {# Paginação #}
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">{% trans "← Anterior" %}</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <span class="btn btn-sm current">{{ num }}</span>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+      <a href="?page={{ num }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+         class="btn btn-secondary btn-sm">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% for k,v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}"
+       class="btn btn-secondary btn-sm">{% trans "Próxima →" %}</a>
+    {% endif %}
+  </nav>
+  <p class="pagination-info">
+    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Página {{ current }} de {{ total }}{% endblocktrans %}
+    · {% blocktrans count counter=page_obj.paginator.count %}{{ counter }} busca no total{% plural %}{{ counter }} buscas no total{% endblocktrans %}
+  </p>
+  {% endif %}
+
+  {% else %}
+  {# Estado vazio — ∅ em Instrument Serif #}
+  <div class="empty">
+    <div class="em-mark">∅</div>
+    <h3 class="h-3" style="margin-bottom:8px;">{% trans "Nenhuma busca encontrada" %}</h3>
+    {% if filters.status or filters.q %}
+    <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Tente outro filtro ou limpe a busca." %}</p>
+    <a href="{% url 'search:request_list' %}" class="btn btn-secondary">{% trans "Ver todas" %}</a>
+    {% else %}
+    <p class="text-sm" style="margin-bottom:var(--d-4);">{% trans "Comece criando sua primeira pesquisa de cursos." %}</p>
+    <a href="{% url 'search:request_create' %}" class="btn btn-primary">{% trans "Nova busca" %}</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

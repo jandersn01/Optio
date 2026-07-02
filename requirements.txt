@@ -1,0 +1,38 @@
+Django>=5.0,<6.0
+
+gunicorn
+
+whitenoise
+
+# API (caso você exponha endpoints REST)
+djangorestframework
+
+# Banco de dados PostgreSQL
+psycopg2-binary
+
+# Variáveis de ambiente
+python-dotenv
+
+# HTTP requests (para APIs externas / scraping leve)
+requests
+
+# Scraping dinâmico (caso use Selenium)
+selenium
+
+# Mensageria (RabbitMQ)
+pika
+
+# Agendamento de jobs (notificação de novos cursos)
+APScheduler
+
+# Serialização e parsing (útil para dados externos)
+pydantic
+
+# Email (opcional, mas comum)
+django-anymail
+
+# LLM
+openai
+
+# Web scraping via Firecrawl
+firecrawl-py
