@@ -2,6 +2,8 @@ Django>=5.0,<6.0
 
 gunicorn
 
+whitenoise
+
 # API (caso você exponha endpoints REST)
 djangorestframework
 
