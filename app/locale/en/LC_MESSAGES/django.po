@@ -767,6 +767,10 @@ msgstr "Back"
 msgid "Conexão segura"
 msgstr "Secure connection"
 
+#: core/templates/_lang_switcher.html:12
+msgid "Idioma"
+msgstr "Language"
+
 #: core/templates/registration/login.html:62
 msgid "Entrar no Optio"
 msgstr "Sign in to Optio"

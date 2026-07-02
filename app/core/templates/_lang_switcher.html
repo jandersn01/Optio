@@ -1,0 +1,22 @@
+{% load i18n %}
+{% comment %}
+  Seletor de idioma. Usa a view built-in set_language: o POST persiste a
+  escolha na sessão (com fallback para cookie) e o LocaleMiddleware passa a
+  respeitá-la em toda requisição, sobrepondo o Accept-Language do navegador.
+  Reaproveita o componente .segment do design system.
+{% endcomment %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% get_available_languages as AVAILABLE_LANGUAGES %}
+<form action="{% url 'set_language' %}" method="post" class="segment lang-switch"
+      aria-label="{% translate 'Idioma' %}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  {% for code, name in AVAILABLE_LANGUAGES %}
+  <button type="submit" name="language" value="{{ code }}" lang="{{ code }}"
+          title="{{ name }}"
+          class="segment-btn {% if code == CURRENT_LANGUAGE %}active{% endif %}"
+          {% if code == CURRENT_LANGUAGE %}aria-current="true"{% endif %}>
+    {{ code|slice:":2"|upper }}
+  </button>
+  {% endfor %}
+</form>

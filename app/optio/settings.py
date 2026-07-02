@@ -42,6 +42,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Serve arquivos estáticos sob o gunicorn (deve vir logo após o SecurityMiddleware)
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -103,6 +105,10 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Permite ao WhiteNoise servir os estáticos direto dos STATICFILES_DIRS,
+# sem depender de 'collectstatic' (o volume ./app:/app sobrescreve o build)
+WHITENOISE_USE_FINDERS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
