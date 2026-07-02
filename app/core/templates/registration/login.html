@@ -23,7 +23,7 @@
     </a>
     <div style="margin: auto 0;">
       <h1 class="h-display" style="font-size: clamp(48px, 5vw, 72px); margin-bottom: 24px;">
-        {% blocktrans %}Bem&#8209;vinda<br>de volta.{% endblocktrans %}
+        {% blocktrans %}Bem&#8209;vindo<br>de volta.{% endblocktrans %}
       </h1>
       <p class="lede" style="font-size: 17px;">
         {% trans "Suas buscas, resultados e alertas estão esperando por você." %}
@@ -93,8 +93,16 @@
           <div class="spread">
             <label class="field-label" for="id_password">{% trans "Senha" %}</label>
           </div>
-          <input class="input" type="password" name="password" id="id_password"
-                 placeholder="{% trans 'Sua senha' %}" required>
+          <div style="position: relative;">
+            <input class="input" type="password" name="password" id="id_password"
+                   placeholder="{% trans 'Sua senha' %}" required>
+            <button type="button" tabindex="-1" onclick="togglePasswordVisibility('id_password')"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-mute); cursor: pointer; display: grid; place-items: center;"
+                    title="{% trans 'Mostrar senha' %}">
+              <span class="icon-eye-off">{% include "_icon.html" with name="eye-off" size=18 %}</span>
+              <span class="icon-eye" style="display: none;">{% include "_icon.html" with name="eye" size=18 %}</span>
+            </button>
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 8px;">
@@ -115,5 +123,25 @@
   </section>
 
 </div>
+
+<script>
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const container = input.parentElement;
+    const iconEye = container.querySelector('.icon-eye');
+    const iconEyeOff = container.querySelector('.icon-eye-off');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        iconEye.style.display = 'block';
+        iconEyeOff.style.display = 'none';
+    } else {
+        input.type = 'password';
+        iconEye.style.display = 'none';
+        iconEyeOff.style.display = 'block';
+    }
+}
+</script>
+
 </body>
 </html>

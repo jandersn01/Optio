@@ -734,7 +734,7 @@ msgid "Entrar"
 msgstr "Sign in"
 
 #: core/templates/registration/login.html:26
-msgid "Bem&#8209;vinda<br>de volta."
+msgid "Bem&#8209;vindo<br>de volta."
 msgstr "Welcome<br>back."
 
 #: core/templates/registration/login.html:29
