@@ -78,9 +78,19 @@
           <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
           {% endif %}
           {% if field.field.widget.input_type == 'password' %}
-            <input class="input {% if field.errors %}is-invalid{% endif %}"
-                   type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
-                   placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
+            <div style="position: relative;">
+                <input class="input {% if field.errors %}is-invalid{% endif %}"
+                       type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                       placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                       style="padding-right: 40px;">
+                
+                <button type="button" tabindex="-1" onclick="togglePasswordVisibility('{{ field.id_for_label }}')"
+                        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-mute); cursor: pointer; display: grid; place-items: center;"
+                        title="{% trans 'Mostrar senha' %}">
+                  <span class="icon-eye-off">{% include "_icon.html" with name="eye-off" size=18 %}</span>
+                  <span class="icon-eye" style="display: none;">{% include "_icon.html" with name="eye" size=18 %}</span>
+                </button>
+            </div>
           {% elif field.field.widget.input_type == 'email' %}
             <input class="input {% if field.errors %}is-invalid{% endif %}"
                    type="email" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
@@ -122,5 +132,23 @@
   </section>
 
 </div>
+<script>
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const container = input.parentElement;
+    const iconEye = container.querySelector('.icon-eye');
+    const iconEyeOff = container.querySelector('.icon-eye-off');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        iconEye.style.display = 'block';
+        iconEyeOff.style.display = 'none';
+    } else {
+        input.type = 'password';
+        iconEye.style.display = 'none';
+        iconEyeOff.style.display = 'block';
+    }
+}
+</script>
 </body>
 </html>
