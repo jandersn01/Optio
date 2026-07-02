@@ -101,7 +101,7 @@ class Command(BaseCommand):
             try:
                 search_request = SearchRequest.objects.get(id=search_id)
 
-                if status == "COMPLETED" and courses_data:
+                if status == SearchStatus.COMPLETED and courses_data:
                     Course.objects.bulk_create([
                         Course(
                             search_request=search_request,
@@ -117,9 +117,9 @@ class Command(BaseCommand):
                 search_request.status = status
                 search_request.save(update_fields=["status", "results_count", "updated_at"])
 
-                if status == "COMPLETED":
-                    send_results_email(user_email=email, courses=courses_data, search_id=search_request.id)         
-                elif status == "NO_RESULTS":
+                if status == SearchStatus.COMPLETED:
+                    send_results_email(user_email=email, courses=courses_data, search_id=search_request.id)
+                elif status == SearchStatus.NO_RESULTS:
                     send_no_results_email(user_email=email, search_id=search_request.id, keywords=keywords)
                 
                 logger.info(f"Busca manual {search_id} finalizada. Status: {status}")
@@ -136,7 +136,7 @@ class Command(BaseCommand):
         job_type = payload.get("job_type")
         job_id = payload.get("job_id")
 
-        if not courses_data or payload.get("status") != "COMPLETED":
+        if not courses_data or payload.get("status") != SearchStatus.COMPLETED:
             return 
         
         try:
