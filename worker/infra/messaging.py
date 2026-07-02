@@ -64,7 +64,7 @@ class RabbitMQConsumer:
                         self.processor.publisher.publish_result(
                             job_id=job_id,
                             job_type=job_type,
-                            status="FAILED",
+                            status="failed",
                             email=email,
                             criteria=payload.get("criteria", {})
                         )

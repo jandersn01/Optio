@@ -17,7 +17,7 @@ class SearchProcessor:
 
         try:
             courses = self.finder.find(request.criteria)
-            status = "COMPLETED" if courses else "NO_RESULTS"
+            status = "completed" if courses else "no_results"
 
             self.publisher.publish_result(
                 job_id=request.job_id,
@@ -33,7 +33,7 @@ class SearchProcessor:
             self.publisher.publish_result(
                 job_id=request.job_id,
                 job_type=request.job_type,
-                status="FAILED",
+                status="failed",
                 email=request.notification_email,
                 criteria=request.criteria.model_dump()
             )
