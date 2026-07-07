@@ -2,6 +2,7 @@
 duplicata, toggle e exclusão)."""
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from search.models import SavedAlert
 from search import services
@@ -32,7 +33,7 @@ class AlertServiceTests(TestCase):
         self.assertEqual(SavedAlert.objects.filter(user=self.user).count(), 1)
 
     def test_respeita_limite_de_ativos(self):
-        for i in range(services.MAX_ACTIVE_ALERTS_PER_USER):
+        for i in range(services.FREE_MAX_ACTIVE_ALERTS):
             _, reason = services.create_alert_from_search(self.user, self._data(keywords=f'busca {i}'))
             self.assertEqual(reason, 'created')
         alert, reason = services.create_alert_from_search(self.user, self._data(keywords='excedente'))
@@ -49,7 +50,7 @@ class AlertServiceTests(TestCase):
         self.assertTrue(a.active)
 
     def test_toggle_bloqueado_ao_atingir_limite(self):
-        for i in range(services.MAX_ACTIVE_ALERTS_PER_USER):
+        for i in range(services.FREE_MAX_ACTIVE_ALERTS):
             services.create_alert_from_search(self.user, self._data(keywords=f'a{i}'))
         paused = SavedAlert.objects.create(
             user=self.user, name='pausado', keywords='pausado', active=False
@@ -63,3 +64,14 @@ class AlertServiceTests(TestCase):
         alert, _ = services.create_alert_from_search(self.user, self._data())
         services.delete_alert(self.user, alert.pk)
         self.assertFalse(SavedAlert.objects.filter(pk=alert.pk).exists())
+
+    def test_premium_tem_limite_maior(self):
+        # Usuário comum usa o limite gratuito
+        self.assertEqual(services.max_active_alerts_for(self.user), services.FREE_MAX_ACTIVE_ALERTS)
+        self.assertFalse(self.user.is_premium)
+
+        # Ao entrar no grupo Premium, ganha o limite premium
+        premium_group, _ = Group.objects.get_or_create(name=User.PREMIUM_GROUP)
+        self.user.groups.add(premium_group)
+        self.assertTrue(self.user.is_premium)
+        self.assertEqual(services.max_active_alerts_for(self.user), services.PREMIUM_MAX_ACTIVE_ALERTS)

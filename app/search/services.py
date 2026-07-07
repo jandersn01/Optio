@@ -9,7 +9,14 @@ from .publisher import QueuePublishError, publish_search_request
 
 PAGE_SIZE = 10
 
-MAX_ACTIVE_ALERTS_PER_USER = int(os.getenv("MAX_ACTIVE_ALERTS_PER_USER", "3"))
+# Limite de alertas ativos por papel do usuário (quem é premium é decidido em core)
+FREE_MAX_ACTIVE_ALERTS = int(os.getenv("MAX_ACTIVE_ALERTS_PER_USER", "3"))
+PREMIUM_MAX_ACTIVE_ALERTS = int(os.getenv("PREMIUM_MAX_ACTIVE_ALERTS", "20"))
+
+
+def max_active_alerts_for(user) -> int:
+    """Limite de alertas ativos conforme o papel do usuário."""
+    return PREMIUM_MAX_ACTIVE_ALERTS if user.is_premium else FREE_MAX_ACTIVE_ALERTS
 
 
 def get_favorites(user, page: int):
@@ -89,7 +96,7 @@ def create_alert_from_search(user, data: dict) -> tuple[SavedAlert | None, str]:
         return None, "duplicate"
 
     active_count = SavedAlert.objects.filter(user=user, active=True).count()
-    if active_count >= MAX_ACTIVE_ALERTS_PER_USER:
+    if active_count >= max_active_alerts_for(user):
         return None, "limit"
 
     alert = SavedAlert.objects.create(
@@ -112,7 +119,7 @@ def toggle_alert(user, pk: int) -> tuple[SavedAlert, bool]:
     alert = SavedAlert.objects.get(pk=pk, user=user)
     if not alert.active:
         active_count = SavedAlert.objects.filter(user=user, active=True).count()
-        if active_count >= MAX_ACTIVE_ALERTS_PER_USER:
+        if active_count >= max_active_alerts_for(user):
             return alert, False
     alert.active = not alert.active
     alert.save(update_fields=["active", "updated_at"])
