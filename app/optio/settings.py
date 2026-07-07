@@ -104,13 +104,18 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 43200
+
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_ADAPTER = 'core.adapters.CustomAccountAdapter'
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
@@ -127,7 +132,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         },
         'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
+        'AUTH_PARAMS': {'access_type': 'online',
+                        'prompt': 'select_account'},
     }
 }
 

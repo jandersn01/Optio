@@ -1,5 +1,5 @@
 from datetime import timedelta
-
+from allauth.account.models import EmailAddress
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
@@ -95,9 +95,24 @@ def cadastro(request):
         return redirect('core:dashboard')
     form = CadastroForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, gettext('Conta criada com sucesso! Faça login para continuar.'))
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
+        
+        email_address = EmailAddress.objects.create(
+            user = user,
+            email = user.email,
+            primary = True,
+            verified = False
+        )
+        
+        email_address.send_confirmation(request, signup=True)
+        
+        messages.success(request, "Conta criada! Enviamos um link de confirmação para o seu e-mail.")
         return redirect('login')
+    else: 
+        form = CadastroForm()
+        
     return render(request, 'registration/register.html', {'form': form})
 
 def is_analyst_user(user):
