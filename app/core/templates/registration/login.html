@@ -112,6 +112,9 @@
           </div>
           <input class="input" type="password" name="password" id="id_password"
                  placeholder="{% trans 'Sua senha' %}" required>
+          <a href="{% url 'account_reset_password' %}" class="btn-link text-xs">
+              {% trans "Esqueceu sua senha?" %}
+          </a>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 8px;">
