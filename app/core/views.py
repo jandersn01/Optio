@@ -108,10 +108,11 @@ def cadastro(request):
         
         email_address.send_confirmation(request, signup=True)
         
-        messages.success(request, "Conta criada! Enviamos um link de confirmação para o seu e-mail.")
-        return redirect('login')
-    else: 
-        form = CadastroForm()
+        return render(request, 'registration/register.html', {
+            'form': CadastroForm(), 
+            'cadastro_sucesso': True,
+            'email_cadastrado': user.email
+        })
         
     return render(request, 'registration/register.html', {'form': form})
 
