@@ -120,6 +120,9 @@
               <span class="icon-eye" style="display: none;">{% include "_icon.html" with name="eye" size=18 %}</span>
             </button>
           </div>
+          <a href="{% url 'account_reset_password' %}" class="btn-link text-xs">
+            {% trans "Esqueceu sua senha?" %}
+          </a>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 8px;">
