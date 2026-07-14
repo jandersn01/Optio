@@ -16,6 +16,8 @@ urlpatterns = [
     # Autenticação (usando views built-in do Django)
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('', views.dashboard, name='dashboard'),
+    
+    path('accounts/', include('allauth.urls')),
 
     # App Core (dashboard, pesquisas e logout)
     path("core/", include("core.urls")),
