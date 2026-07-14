@@ -50,6 +50,9 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = _('Usuário')
         verbose_name_plural = _('Usuários')
+        permissions = [
+            ('view_metrics', _('Pode ver o dashboard de métricas')),
+        ]
 
     def __str__(self):
         return self.email

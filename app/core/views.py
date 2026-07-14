@@ -1,7 +1,7 @@
 from datetime import timedelta
 from allauth.account.models import EmailAddress
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Sum
@@ -116,11 +116,8 @@ def cadastro(request):
         
     return render(request, 'registration/register.html', {'form': form})
 
-def is_analyst_user(user):
-    return user.is_active and user.groups.filter(name='Analista').exists()
-
 @login_required
-@user_passes_test(is_analyst_user, login_url='core:dashboard')
+@permission_required('core.view_metrics', login_url='core:dashboard')
 def metrics_dashboard(request):
     # Captura o período da URL (default: 30)
     try:
