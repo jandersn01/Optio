@@ -65,7 +65,7 @@ class TestSearchProcessorProcess:
         call_kwargs = mock_publisher.publish_result.call_args.kwargs
         assert call_kwargs["job_id"] == "123"
         assert call_kwargs["job_type"] == "manual"
-        assert call_kwargs["status"] == "COMPLETED"
+        assert call_kwargs["status"] == "completed"
         assert call_kwargs["email"] == "user@test.com"
         assert call_kwargs["courses"] == courses
         assert call_kwargs["criteria"] == request.criteria.model_dump()
@@ -83,7 +83,7 @@ class TestSearchProcessorProcess:
 
         mock_publisher.publish_result.assert_called_once()
         call_kwargs = mock_publisher.publish_result.call_args.kwargs
-        assert call_kwargs["status"] == "NO_RESULTS"
+        assert call_kwargs["status"] == "no_results"
         assert call_kwargs["courses"] == []
 
     def test_finder_lanca_excecao_publica_failed_sem_propagar(self):
@@ -100,7 +100,7 @@ class TestSearchProcessorProcess:
 
         mock_publisher.publish_result.assert_called_once()
         call_kwargs = mock_publisher.publish_result.call_args.kwargs
-        assert call_kwargs["status"] == "FAILED"
+        assert call_kwargs["status"] == "failed"
         assert call_kwargs["job_id"] == "123"
         # Quando há exceção, courses NÃO é passado (confirmado no código)
         assert "courses" not in call_kwargs
@@ -118,7 +118,7 @@ class TestSearchProcessorProcess:
 
         call_kwargs = mock_publisher.publish_result.call_args.kwargs
         # None é falsy, então status deve ser NO_RESULTS
-        assert call_kwargs["status"] == "NO_RESULTS"
+        assert call_kwargs["status"] == "no_results"
 
     def test_dados_do_request_sao_passados_corretamente(self):
         """Verifica que todos os dados do request são passados ao publisher."""

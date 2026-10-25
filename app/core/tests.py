@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from .models import CustomUser, NotificationPreference
-
+from allauth.account.models import EmailAddress
 
 class CadastroTests(TestCase):
     def setUp(self):
@@ -21,11 +21,22 @@ class CadastroTests(TestCase):
 
     def test_cadastro_valido_cria_usuario(self):
         response = self.client.post(self.url, self.dados_validos)
-        self.assertRedirects(response, reverse('login'))
-        self.assertTrue(CustomUser.objects.filter(email='joao@example.com').exists())
-        usuario = CustomUser.objects.get(email='joao@example.com')
-        self.assertEqual(usuario.first_name, 'João Silva')
 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/register.html")
+        self.assertTrue(response.context["cadastro_sucesso"])
+
+        usuario = CustomUser.objects.get(email="joao@example.com")
+        self.assertEqual(usuario.first_name, "João Silva")
+        self.assertFalse(usuario.is_active)
+
+        endereco = EmailAddress.objects.get(
+            user=usuario,
+            email=usuario.email,
+        )
+        self.assertTrue(endereco.primary)
+        self.assertFalse(endereco.verified)
+        
     def test_cadastro_valido_salva_senha_com_hash(self):
         self.client.post(self.url, self.dados_validos)
         usuario = CustomUser.objects.get(email='joao@example.com')

@@ -87,15 +87,12 @@ class TestJobRequestFromPayload:
         with pytest.raises(InvalidMessageError):
             JobRequest.from_payload(payload)
 
-    def test_job_id_como_numero_e_aceito(self):
-        """job_id como número é aceito (Pydantic converte para string)."""
+    def test_job_id_como_numero_e_rejeitado(self):
         payload = self._valid_payload()
-        payload["job_id"] = 123  # número em vez de string
+        payload["job_id"] = 123
 
-        # Pydantic deve converter para string ou aceitar
-        request = JobRequest.from_payload(payload)
-        # O resultado pode ser string "123" ou int 123 dependendo da config
-        assert str(request.job_id) == "123"
+        with pytest.raises(InvalidMessageError):
+            JobRequest.from_payload(payload)
 
     def test_notification_email_vazio_e_aceito(self):
         """notification_email vazio é aceito (campo tem default)."""

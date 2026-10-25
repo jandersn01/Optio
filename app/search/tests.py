@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from unittest.mock import patch, MagicMock
-
+from search.services import get_favorites
 from search.models import SearchRequest, Course, Favorite
 from search.choices import SearchStatus
 from search.emails import send_no_results_email, send_results_email
@@ -559,27 +559,31 @@ class FavoritesListViewTestCase(TestCase):
 
     def test_select_related_used_in_query(self):
         """Verifica que select_related e utilizado na consulta."""
-        Favorite.objects.create(user=self.user, course=self.course)
+        self._create_favorites(5)
 
-        self.client.login(email="test@example.com", password="testpass123")
+        with self.assertNumQueries(2):
+            pagina = get_favorites(self.user, page=1)
+            nomes = [
+                favorito.course.name
+                for favorito in pagina.object_list
+            ]
 
-        with self.assertNumQueries(6):
-            # 1: session, 2: user, 3-4: COUNTs do sidebar_context (favoritos + buscas),
-            # 5: COUNT do Paginator, 6: favoritos com select_related(course)
-            response = self.client.get(reverse("search:favorites_list"))
-            self.assertEqual(response.status_code, 200)
-            # Acessar os cursos no template nao deve gerar queries adicionais
-            self.assertContains(response, "Curso de Teste")
+        self.assertCountEqual(
+            nomes,
+            [f"Curso {i:02d}" for i in range(5)],
+        )
 
     def _create_favorites(self, total):
-        """Cria `total` favoritos do usuario para os testes de paginacao."""
         for i in range(total):
             course = Course.objects.create(
                 search_request=self.search_request,
                 name=f"Curso {i:02d}",
                 institution="IFPB",
             )
-            Favorite.objects.create(user=self.user, course=course)
+            Favorite.objects.create(
+                user=self.user,
+                course=course,
+            )
 
     def test_second_page_returns_favorites_11_to_20(self):
         """Verifica que ?page=2 retorna a segunda pagina (favoritos 11-20)."""

@@ -3,7 +3,7 @@
 Task 2: Busca travada há mais de 5 minutos é marcada como FAILED.
 """
 from datetime import timedelta
-
+from unittest.mock import patch
 from django.test import TestCase
 from django.utils import timezone
 from django.contrib.auth import get_user_model
@@ -104,14 +104,18 @@ class FailStalledSearchesTests(TestCase):
 
     def test_limite_exato_5_minutos_nao_e_mexida(self):
         """Busca exatamente no limite de 5 minutos não é alterada."""
-        search = self._create_search(SearchStatus.PENDING, minutes_ago=5)
+        agora = timezone.now()
 
-        fail_stalled_searches()
+        with patch("search.tasks.timezone.now", return_value=agora):
+            search = self._create_search(
+                SearchStatus.PENDING,
+                minutes_ago=5,
+            )
 
-        search.refresh_from_db()
-        # O código usa created_at__lt=threshold (estritamente menor)
-        # então 5 minutos exatos não é afetado
-        self.assertEqual(search.status, SearchStatus.PENDING)
+            fail_stalled_searches()
+
+            search.refresh_from_db()
+            self.assertEqual(search.status, SearchStatus.PENDING)
 
     def test_multiplas_buscas_travadas_sao_marcadas(self):
         """Múltiplas buscas travadas são todas marcadas como FAILED."""
