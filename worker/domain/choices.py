@@ -1,39 +1,37 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _
+from enum import StrEnum
 
-
-class SearchModality(models.TextChoices):
-    EAD = "ead", _("EAD")
-    PRESENCIAL = "presencial", _("Presencial")
-    HIBRIDO = "hibrido", _("Híbrido")
+class SearchModality(StrEnum):
+    EAD = "ead"
+    PRESENCIAL = "presencial"
+    HIBRIDO = "hibrido"
     # "Todas as modalidades" é representado por "" (string vazia) na persistência;
     # o rótulo "Todas" é tratado apenas na camada de formulário.
 
-class SearchStates_Br(models.TextChoices):
-    AC = "AC", _("Acre")
-    AL = "AL", _("Alagoas")
-    AP = "AP", _("Amapá")
-    AM = "AM", _("Amazonas")
-    BA = "BA", _("Bahia")
-    CE = "CE", _("Ceará")
-    DF = "DF", _("Distrito Federal")
-    ES = "ES", _("Espírito Santo")
-    GO = "GO", _("Goiás")
-    MA = "MA", _("Maranhão")
-    MT = "MT", _("Mato Grosso")
-    MS = "MS", _("Mato Grosso do Sul")
-    MG = "MG", _("Minas Gerais")
-    PA = "PA", _("Pará")
-    PB = "PB", _("Paraíba")
-    PR = "PR", _("Paraná")
-    PE = "PE", _("Pernambuco")
-    PI = "PI", _("Piauí")
-    RJ = "RJ", _("Rio de Janeiro")
-    RN = "RN", _("Rio Grande do Norte")
-    RS = "RS", _("Rio Grande do Sul")
-    RO = "RO", _("Rondônia")
-    RR = "RR", _("Roraima")
-    SC = "SC", _("Santa Catarina")
-    SP = "SP", _("São Paulo")
-    SE = "SE", _("Sergipe")
-    TO = "TO", _("Tocantins")
+class SearchStates_Br(StrEnum):
+    AC = "AC",
+    AL = "AL",
+    AP = "AP",
+    AM = "AM",
+    BA = "BA",
+    CE = "CE",
+    DF = "DF", 
+    ES = "ES", 
+    GO = "GO", 
+    MA = "MA", 
+    MT = "MT", 
+    MS = "MS", 
+    MG = "MG", 
+    PA = "PA", 
+    PB = "PB", 
+    PR = "PR", 
+    PE = "PE", 
+    PI = "PI", 
+    RJ = "RJ", 
+    RN = "RN", 
+    RS = "RS", 
+    RO = "RO", 
+    RR = "RR", 
+    SC = "SC", 
+    SP = "SP", 
+    SE = "SE", 
+    TO = "TO", 
