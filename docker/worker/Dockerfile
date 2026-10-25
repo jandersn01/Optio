@@ -1,13 +1,23 @@
-FROM python:3.12
+FROM python:3.12 AS base
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONPATH=/app
 
 WORKDIR /worker
 
-COPY requirements.txt /worker/
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-worker.txt constraints.txt ./
+RUN pip install --no-cache-dir -r requirements-worker.txt
+
+FROM base AS test
+
+COPY requirements-dev.txt ./
+RUN pip install --no-cache-dir -c constraints.txt -r requirements-dev.txt
+
+COPY ./worker /worker
+
+CMD ["python", "-m", "pytest", "-q"]
+
+FROM base AS runtime
 
 COPY ./worker /worker
 
