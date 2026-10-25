@@ -1,0 +1,6 @@
+-c constraints.txt
+
+pika
+pydantic
+openai
+firecrawl-py
